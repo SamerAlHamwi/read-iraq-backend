@@ -9,6 +9,9 @@ namespace ReadIraq.Authorization.Accounts
         Task<IsTenantAvailableOutput> IsTenantAvailable(IsTenantAvailableInput input);
 
         Task<RegisterOutput> Register(RegisterInput input);
+
+        Task<object> RegisterUser(RegisterUserInput input);
+
         Task<dynamic> SignUpWithPhoneNumberAsync(SignInWithPhoneNumberInputDto input);
 
         Task<dynamic> VerifySignUpWithPhoneNumberAsync(VerifySignUpWithPhoneNumberInputDto input);

@@ -318,3 +318,4 @@ C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\refin
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.xml
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.pdb
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ref\ReadIraq.Web.Core.dll
+C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.sourcelink.json

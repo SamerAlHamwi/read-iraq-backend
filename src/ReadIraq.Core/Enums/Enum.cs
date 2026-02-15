@@ -60,8 +60,10 @@ namespace ReadIraq.Enums
             CompanyUser = 3,
             CustomerService = 4,
             CompanyBranchUser = 5,
-            MediatorUser = 6
-
+            MediatorUser = 6,
+            Student = 7,
+            Teacher = 8,
+            SuperAdmin = 9
         }
 
 

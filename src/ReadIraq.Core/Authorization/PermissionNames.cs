@@ -53,6 +53,7 @@
         public const string City_FullControl = "City.FullControl";
         public const string Region_FullControl = "Region.FullControl";
         public const string Country_FullControl = "Country.FullControl";
+        public const string Grade_FullControl = "Grade.FullControl";
         public const string SourceType_FullControl = "SourceType.FullControl";
         public const string AttributeForSourceType_FullControl = "AttributeForSourceType.FullControl";
         public const string AttributeChoice_FullControl = "AttributeChoice.FullControl";
@@ -82,11 +83,6 @@
         public const string SetFileSizeSetting = "SetFileSizeSetting";
         public const string SetHoursInSystem = "SetHoursInSystem";
         public const string SetSmsSetting = "SetSmsSetting";
-
-
-
-
-
 
     }
 }

@@ -52,6 +52,7 @@ using ReadIraq.Domain.TimeWorks;
 using ReadIraq.Domain.Toolss;
 using ReadIraq.Domains.UserVerficationCodes;
 using ReadIraq.MultiTenancy;
+using ReadIraq.Domain.Grades;
 
 namespace ReadIraq.EntityFrameworkCore
 {
@@ -124,6 +125,7 @@ namespace ReadIraq.EntityFrameworkCore
         public virtual DbSet<TimeWork> TimeWork { get; set; }
         public virtual DbSet<ApkBuild> ApkBuilds { get; set; }
         public virtual DbSet<MoneyTransfer> MoneyTransfers { get; set; }
+        public virtual DbSet<Grade> Grades { get; set; }
 
         public ReadIraqDbContext(DbContextOptions<ReadIraqDbContext> options)
             : base(options)

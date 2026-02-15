@@ -154,6 +154,53 @@ namespace ReadIraq.Authorization.Users
                 return user;
             }
         }
+
+        public async Task<User> RegisterUserAsync(string fullName, string dialCode, string phoneNumber, string password, int gradeId, int governorateId, UserType userType)
+        {
+             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
+            {
+                var tenant = await _tenantManager.FindByTenancyNameAsync("Default");
+
+                var user = new User
+                {
+                    TenantId = tenant.Id,
+                    Name = fullName,
+                    Surname = fullName,
+                    UserName = phoneNumber,
+                    PhoneNumber = phoneNumber,
+                    DialCode = dialCode,
+                    RegistrationFullName = fullName,
+                    GradeId = gradeId,
+                    GovernorateId = governorateId,
+                    Type = userType,
+                    IsActive = true,
+                    IsEmailConfirmed = true,
+                    PIN = await GenerateDefaultUniquePIN(),
+                    EmailAddress = await GenerateRandomEmail(),
+                    Roles = new List<UserRole>()
+                };
+
+                user.SetNormalizedNames();
+
+                string roleName = StaticRoleNames.Tenants.BasicUser;
+                if (userType == UserType.Admin || userType == UserType.SuperAdmin)
+                {
+                    roleName = StaticRoleNames.Tenants.Admin;
+                }
+                // Add specific roles for Student/Teacher if they exist in the future
+
+                foreach (var role in await _roleManager.Roles.Where(r => r.Name == roleName).ToListAsync())
+                {
+                    user.Roles.Add(new UserRole(tenant.Id, user.Id, role.Id));
+                }
+
+                await _userManager.InitializeOptionsAsync(tenant.Id);
+                await CreateUserByTeneant(tenant.Id, user, password);
+
+                return user;
+            }
+        }
+
         private async Task CreateUserByTeneant(int tenantId, User userForCreate, string password)
         {
             using (UnitOfWorkManager.Current.SetTenantId(tenantId))

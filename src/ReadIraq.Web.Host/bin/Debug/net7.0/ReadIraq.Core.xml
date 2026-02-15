@@ -687,6 +687,11 @@
               Looks up a localized string similar to FrequentlyQuestion.
             </summary>
         </member>
+        <member name="P:ReadIraq.Localization.SourceFiles.Tokens.Grade">
+            <summary>
+              Looks up a localized string similar to Grade.
+            </summary>
+        </member>
         <member name="P:ReadIraq.Localization.SourceFiles.Tokens.Mediator">
             <summary>
               Looks up a localized string similar to Mediator.

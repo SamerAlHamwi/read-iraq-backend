@@ -1556,6 +1556,12 @@ namespace ReadIraq.Migrations
                     b.Property<string>("FcmToken")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("GovernorateId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GradeId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -1647,6 +1653,10 @@ namespace ReadIraq.Migrations
                     b.HasIndex("CreatorUserId");
 
                     b.HasIndex("DeleterUserId");
+
+                    b.HasIndex("GovernorateId");
+
+                    b.HasIndex("GradeId");
 
                     b.HasIndex("LastModifierUserId");
 
@@ -3211,6 +3221,48 @@ namespace ReadIraq.Migrations
                     b.HasIndex("CoreId");
 
                     b.ToTable("FrequentlyQuestionTranslations");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Grades.Grade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Grades");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.Mediators.Mediator", b =>
@@ -5491,6 +5543,14 @@ namespace ReadIraq.Migrations
                         .WithMany()
                         .HasForeignKey("DeleterUserId");
 
+                    b.HasOne("ReadIraq.Domain.Cities.City", "Governorate")
+                        .WithMany()
+                        .HasForeignKey("GovernorateId");
+
+                    b.HasOne("ReadIraq.Domain.Grades.Grade", "Grade")
+                        .WithMany()
+                        .HasForeignKey("GradeId");
+
                     b.HasOne("ReadIraq.Authorization.Users.User", "LastModifierUser")
                         .WithMany()
                         .HasForeignKey("LastModifierUserId");
@@ -5498,6 +5558,10 @@ namespace ReadIraq.Migrations
                     b.Navigation("CreatorUser");
 
                     b.Navigation("DeleterUser");
+
+                    b.Navigation("Governorate");
+
+                    b.Navigation("Grade");
 
                     b.Navigation("LastModifierUser");
                 });

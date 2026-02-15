@@ -239,7 +239,16 @@ namespace ReadIraq.Localization.SourceFiles {
                 return ResourceManager.GetString("FrequentlyQuestion", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Grade.
+        /// </summary>
+        public static string Grade {
+            get {
+                return ResourceManager.GetString("Grade", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Mediator.
         /// </summary>

@@ -1,8 +1,11 @@
 ﻿using Abp.Authorization.Users;
 using Abp.Extensions;
+using ReadIraq.Domain.Cities;
+using ReadIraq.Domain.Grades;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Authorization.Users
@@ -20,6 +23,14 @@ namespace ReadIraq.Authorization.Users
         [StringLength(6)]
         public string PIN { get; set; }
         public new virtual bool IsLockoutEnabled { get; set; } = false;
+
+        public int? GradeId { get; set; }
+        [ForeignKey(nameof(GradeId))]
+        public virtual Grade Grade { get; set; }
+
+        public int? GovernorateId { get; set; }
+        [ForeignKey(nameof(GovernorateId))]
+        public virtual City Governorate { get; set; }
 
         public static string CreateRandomPassword()
         {
@@ -42,8 +53,5 @@ namespace ReadIraq.Authorization.Users
 
             return user;
         }
-
-
-
     }
 }

@@ -473,3 +473,4 @@ C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Host\obj\Debug\net7.0\ReadI
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Host\obj\Debug\net7.0\ReadIraq.Web.Host.genruntimeconfig.cache
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Host\obj\Debug\net7.0\ref\ReadIraq.Web.Host.dll
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Host\obj\Debug\net7.0\ReadIraq.Web.Host.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Host\obj\Debug\net7.0\ReadIraq.Web.Host.sourcelink.json

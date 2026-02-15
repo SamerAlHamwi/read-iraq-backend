@@ -19,3 +19,4 @@ C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\refint\Re
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ReadIraq.Core.xml
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ReadIraq.Core.pdb
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ref\ReadIraq.Core.dll
+C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ReadIraq.Core.sourcelink.json

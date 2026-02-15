@@ -20,3 +20,4 @@ C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.EntityFrameworkCore\obj\Debug\n
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.EntityFrameworkCore\obj\Debug\net7.0\ReadIraq.EntityFrameworkCore.pdb
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.EntityFrameworkCore\obj\Debug\net7.0\ReadIraq.EntityFrameworkCore.genruntimeconfig.cache
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.EntityFrameworkCore\obj\Debug\net7.0\ref\ReadIraq.EntityFrameworkCore.dll
+C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.EntityFrameworkCore\obj\Debug\net7.0\ReadIraq.EntityFrameworkCore.sourcelink.json

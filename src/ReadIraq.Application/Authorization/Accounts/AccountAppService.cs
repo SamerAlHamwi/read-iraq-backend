@@ -5,6 +5,7 @@ using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Net.Mail;
 using Abp.UI;
+using Abp.Web.Models;
 using Abp.Zero.Configuration;
 using ReadIraq.Domain.ChangedPhoneNumber;
 using Microsoft.AspNetCore.Authorization;
@@ -123,6 +124,49 @@ namespace ReadIraq.Authorization.Accounts
                 CanLogin = user.IsActive && (user.IsEmailConfirmed || !isEmailConfirmationRequiredForLogin)
             };
         }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [DontWrapResult]
+        public async Task<object> RegisterUser(RegisterUserInput input)
+        {
+            using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
+            {
+                var existingUser = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == input.Phone && u.DialCode == input.DialCode);
+                if (existingUser != null)
+                {
+                    // Return 409 as per requirement
+                    throw new UserFriendlyException(409, string.Format(Exceptions.ObjectIsAlreadyExist, Tokens.PhoneNumber));
+                }
+
+                var user = await _userRegistrationManager.RegisterUserAsync(
+                    input.FullName,
+                    input.DialCode,
+                    input.Phone,
+                    input.Password,
+                    input.GradeId,
+                    input.GovernorateId,
+                    input.UserType
+                );
+
+                // Mocking OTP sending
+                bool otpSent = true;
+                string otpCode = "123456";
+
+                return new
+                {
+                    success = true,
+                    data = new
+                    {
+                        userId = user.Id.ToString(),
+                        phone = $"{user.DialCode}{user.PhoneNumber}",
+                        otpSent = otpSent,
+                        message = $"OTP {otpCode} sent to phone"
+                    }
+                };
+            }
+        }
+
         [AbpAuthorize]
         [HttpPost]
         public async Task AddOrEditUserProfilePhoto(AddUserProfilePhotoDto input)

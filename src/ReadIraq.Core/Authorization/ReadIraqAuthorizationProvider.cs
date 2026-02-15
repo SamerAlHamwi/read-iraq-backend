@@ -49,6 +49,7 @@ namespace ReadIraq.Authorization
             context.CreatePermission(PermissionNames.City_FullControl, L("CityFullControl"));
             context.CreatePermission(PermissionNames.Region_FullControl, L("RegionFullControl"));
             context.CreatePermission(PermissionNames.Country_FullControl, L("CountryFullControl"));
+            context.CreatePermission(PermissionNames.Grade_FullControl, L("GradeFullControl"));
             context.CreatePermission(PermissionNames.SourceType_FullControl, L("SourceTypeFullControl"));
             context.CreatePermission(PermissionNames.AttributeForSourceType_FullControl, L("AttributeForSourceTypeFullControl"));
             context.CreatePermission(PermissionNames.AttributeChoice_FullControl, L("AttributeChoiceFullControl"));
