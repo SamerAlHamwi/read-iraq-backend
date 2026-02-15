@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <VersionPrefix>1.0.0.0</VersionPrefix>
+    <TargetFramework>net7.0</TargetFramework>
+    <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+    <AssemblyName>ReadIraq.Application</AssemblyName>
+    <PackageId>ReadIraq.Application</PackageId>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <RootNamespace>ReadIraq</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="FirebaseAdmin" Version="3.0.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
+    <PackageReference Include="NSwag.Annotations" Version="14.0.3" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
+    <PackageReference Include="Stripe.net" Version="43.3.0" />
+    <PackageReference Include="Twilio" Version="6.14.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ReadIraq.Core\ReadIraq.Core.csproj" />
+    <ProjectReference Include="..\ReadIraq.EntityFrameworkCore\ReadIraq.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+</Project>

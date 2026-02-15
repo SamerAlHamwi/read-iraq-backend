@@ -1,0 +1,446 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Host\\ReadIraq.Web.Host.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\ReadIraq.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\ReadIraq.Application.csproj",
+        "projectName": "ReadIraq.Application",
+        "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\ReadIraq.Application.csproj",
+        "packagesPath": "C:\\Users\\Tech\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Tech\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {
+              "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Core\\ReadIraq.Core.csproj": {
+                "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Core\\ReadIraq.Core.csproj"
+              },
+              "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj": {
+                "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "FirebaseAdmin": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "Google.Apis.Auth": {
+              "target": "Package",
+              "version": "[1.68.0, )"
+            },
+            "NSwag.Annotations": {
+              "target": "Package",
+              "version": "[14.0.3, )"
+            },
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[3.0.1, )"
+            },
+            "Stripe.net": {
+              "target": "Package",
+              "version": "[43.3.0, )"
+            },
+            "Twilio": {
+              "target": "Package",
+              "version": "[6.14.1, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Core\\ReadIraq.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Core\\ReadIraq.Core.csproj",
+        "projectName": "ReadIraq.Core",
+        "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Core\\ReadIraq.Core.csproj",
+        "packagesPath": "C:\\Users\\Tech\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Tech\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "Abp.AutoMapper": {
+              "target": "Package",
+              "version": "[8.4.0, )"
+            },
+            "Abp.ZeroCore.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.4.0, )"
+            },
+            "Castle.Windsor.MsDependencyInjection": {
+              "target": "Package",
+              "version": "[4.1.0, )"
+            },
+            "NSwag.Annotations": {
+              "target": "Package",
+              "version": "[14.0.3, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj",
+        "projectName": "ReadIraq.EntityFrameworkCore",
+        "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj",
+        "packagesPath": "C:\\Users\\Tech\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Tech\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {
+              "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Core\\ReadIraq.Core.csproj": {
+                "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Core\\ReadIraq.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.12, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[7.0.12, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.12, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Core\\ReadIraq.Web.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Core\\ReadIraq.Web.Core.csproj",
+        "projectName": "ReadIraq.Web.Core",
+        "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Core\\ReadIraq.Web.Core.csproj",
+        "packagesPath": "C:\\Users\\Tech\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Tech\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {
+              "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\ReadIraq.Application.csproj": {
+                "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\ReadIraq.Application.csproj"
+              },
+              "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj": {
+                "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "Abp.AspNetCore": {
+              "target": "Package",
+              "version": "[8.4.0, )"
+            },
+            "Abp.AspNetCore.SignalR": {
+              "target": "Package",
+              "version": "[8.4.0, )"
+            },
+            "Abp.ZeroCore": {
+              "target": "Package",
+              "version": "[8.4.0, )"
+            },
+            "Google.Apis.Auth": {
+              "target": "Package",
+              "version": "[1.68.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[7.0.12, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Host\\ReadIraq.Web.Host.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Host\\ReadIraq.Web.Host.csproj",
+        "projectName": "ReadIraq.Web.Host",
+        "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Host\\ReadIraq.Web.Host.csproj",
+        "packagesPath": "C:\\Users\\Tech\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Host\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Tech\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {
+              "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Core\\ReadIraq.Web.Core.csproj": {
+                "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Core\\ReadIraq.Web.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "Abp.Castle.Log4Net": {
+              "target": "Package",
+              "version": "[8.4.0, )"
+            },
+            "FirebaseAdmin": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "Google.Apis.Auth": {
+              "target": "Package",
+              "version": "[1.68.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.12, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

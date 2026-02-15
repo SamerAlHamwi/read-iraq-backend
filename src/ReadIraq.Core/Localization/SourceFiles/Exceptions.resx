@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AttributeDataTypeDoesnotMatchInput" xml:space="preserve">
+    <value>Attribute data type does not match input</value>
+  </data>
+  <data name="AttributeValueIsAlreadyExist" xml:space="preserve">
+    <value>Your attribute value has previous value</value>
+  </data>
+  <data name="CompanyBranchCannotDelete" xml:space="preserve">
+    <value>You Can't Delete the Branch, There Is Offer With Status {0}</value>
+  </data>
+  <data name="CompanyCannotDelete" xml:space="preserve">
+    <value>You Can't Delete the Company, There Is Offer With Status {0}</value>
+  </data>
+  <data name="CompanyCannotDeleteBecauseHasingChilds" xml:space="preserve">
+    <value>You Can't Delete the Company, you Must Delete the Branches First</value>
+  </data>
+  <data name="IncompatibleValue" xml:space="preserve">
+    <value>Incompatible Value</value>
+  </data>
+  <data name="MediatorCodeIsNotCorrect" xml:space="preserve">
+    <value>The Broker Code You Entered is not Correct.</value>
+  </data>
+  <data name="ObjectCantBeDeactivate" xml:space="preserve">
+    <value>Cant be deactivate It has related {0}</value>
+  </data>
+  <data name="ObjectCantBeDelete" xml:space="preserve">
+    <value>It is not possible to delete. There are Quote Requests that use this {0}</value>
+  </data>
+  <data name="ObjectIsAlreadyExist" xml:space="preserve">
+    <value>{0} Is Already Exist</value>
+  </data>
+  <data name="ObjectWasNotFound" xml:space="preserve">
+    <value>{0} Not Found</value>
+  </data>
+  <data name="OfferNotApproved" xml:space="preserve">
+    <value>Offer Not Approved</value>
+  </data>
+  <data name="OfferNotMatchWithUser" xml:space="preserve">
+    <value>The offer is not provided for your quote request</value>
+  </data>
+  <data name="PhoneNumberNotFoundInCode" xml:space="preserve">
+    <value>Phone Number Not Found</value>
+  </data>
+  <data name="ReachedMaximumNumberAllowed" xml:space="preserve">
+    <value>You have reached the maximum number allowed.</value>
+  </data>
+  <data name="SignUpNotComplete" xml:space="preserve">
+    <value>Your signingup information not correct</value>
+  </data>
+  <data name="TheCodeIsAlreadyUsed" xml:space="preserve">
+    <value>The code is already used</value>
+  </data>
+  <data name="ThisPositionIsAlreadyExist" xml:space="preserve">
+    <value>This Position Is Already Exist</value>
+  </data>
+  <data name="UserIdIsRequird" xml:space="preserve">
+    <value>The user ID of the user requesting a quote is required</value>
+  </data>
+  <data name="VerificationCodeIsExpired" xml:space="preserve">
+    <value>Verification code is expired.</value>
+  </data>
+  <data name="VerificationCodeIsnotCorrect" xml:space="preserve">
+    <value>Verification code isn't correct</value>
+  </data>
+  <data name="VerificationCodeIsnotValid" xml:space="preserve">
+    <value>Verification code Isn't valid</value>
+  </data>
+  <data name="YouCannotAddNewDraft" xml:space="preserve">
+    <value>You Can not Add New Draft, You Need To Delete Your Old Draft</value>
+  </data>
+  <data name="YouCannotDoThisAction" xml:space="preserve">
+    <value>You can't not do this action</value>
+  </data>
+  <data name="YouCannotEdit" xml:space="preserve">
+    <value>It is not possible to modify. Submit a request to modify or wait for approval</value>
+  </data>
+  <data name="YouDonotHAveMuchPoints" xml:space="preserve">
+    <value>You Do not Have Enough Points</value>
+  </data>
+  <data name="YourEmailIsNotConfirmed" xml:space="preserve">
+    <value>Your Email Is Not Confirmed</value>
+  </data>
+  <data name="YourPhoneNumberIsntVerified" xml:space="preserve">
+    <value>Your phone number is not verified</value>
+  </data>
+</root>

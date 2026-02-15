@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ReadIraq.Web.Core</name>
+    </assembly>
+    <members>
+        <member name="M:ReadIraq.Controllers.TokenAuthController.CreateJwtClaims(System.Security.Claims.ClaimsIdentity)">
+            <summary>
+            
+            </summary>
+            <param name="identity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ReadIraq.Controllers.TokenAuthController.CreateAccountAfterSignUpAsync(ReadIraq.Models.TokenAuth.VerifySignUpByPhoneNumberInput)">
+            <summary>
+            Create account after signup 
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+            <exception cref="T:Abp.UI.UserFriendlyException"></exception>
+        </member>
+        <member name="M:ReadIraq.Controllers.TokenAuthController.VerifySignInWithPhoneNumberAsync(ReadIraq.Models.TokenAuth.VerifyLoginByPhoneNumberInput)">
+             <summary>
+            this end point verify PhoneNumber For Company Branch User Or Verify PhoneNumber To Update Password
+             </summary>
+             <param name="input"></param>
+             <returns></returns>
+             <exception cref="T:Abp.UI.UserFriendlyException"></exception>
+        </member>
+        <member name="M:ReadIraq.Controllers.TokenAuthController.VerifyUserToSetNewPassword(ReadIraq.Models.TokenAuth.VerifyResetPasswordForUserInputDto)">
+            <summary>
+            
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+            <exception cref="T:Abp.UI.UserFriendlyException"></exception>
+        </member>
+        <member name="M:ReadIraq.Controllers.TokenAuthController.VerifyUserToSetNewPasswordByEmail(ReadIraq.Models.TokenAuth.VerifyResetPasswordForUserUsingEmailInputDto)">
+            <summary>
+            
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+            <exception cref="T:Abp.UI.UserFriendlyException"></exception>
+        </member>
+        <member name="M:ReadIraq.Controllers.TokenAuthController.VerifyChangePhoneNumberAsync(ReadIraq.Models.TokenAuth.VerifyChangePhoneNumberInput)">
+             <summary>
+            (mobile) Insert New PhoneNumber And New Dialcode With ConfirmCode To Change PhoneNumber
+             </summary>
+             <param name="input"></param>
+             <returns></returns>
+             <exception cref="T:Abp.UI.UserFriendlyException"></exception>
+        </member>
+    </members>
+</doc>
