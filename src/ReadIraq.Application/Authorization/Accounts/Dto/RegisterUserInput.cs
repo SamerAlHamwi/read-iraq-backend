@@ -14,9 +14,9 @@ namespace ReadIraq.Authorization.Accounts.Dto
         [Required]
         public string FullName { get; set; }
 
-        public int GradeId { get; set; }
+        public int? GradeId { get; set; }
 
-        public int GovernorateId { get; set; }
+        public int? GovernorateId { get; set; }
 
         [Required]
         public string Password { get; set; }

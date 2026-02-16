@@ -155,11 +155,15 @@ namespace ReadIraq.Authorization.Users
             }
         }
 
-        public async Task<User> RegisterUserAsync(string fullName, string dialCode, string phoneNumber, string password, int gradeId, int governorateId, UserType userType)
+        public async Task<User> RegisterUserAsync(string fullName, string dialCode, string phoneNumber, string password, int? gradeId, int? governorateId, UserType userType)
         {
              using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
                 var tenant = await _tenantManager.FindByTenancyNameAsync("Default");
+                if (tenant == null)
+                {
+                    throw new UserFriendlyException("Default tenant not found!");
+                }
 
                 var user = new User
                 {
@@ -187,9 +191,9 @@ namespace ReadIraq.Authorization.Users
                 {
                     roleName = StaticRoleNames.Tenants.Admin;
                 }
-                // Add specific roles for Student/Teacher if they exist in the future
 
-                foreach (var role in await _roleManager.Roles.Where(r => r.Name == roleName).ToListAsync())
+                var roles = await _roleManager.Roles.Where(r => r.Name == roleName).ToListAsync();
+                foreach (var role in roles)
                 {
                     user.Roles.Add(new UserRole(tenant.Id, user.Id, role.Id));
                 }

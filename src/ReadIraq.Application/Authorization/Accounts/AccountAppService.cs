@@ -16,9 +16,11 @@ using ReadIraq.Authorization.Accounts.Dto;
 using ReadIraq.Authorization.Users;
 using ReadIraq.Cities;
 using ReadIraq.Domain.Attachments;
+using ReadIraq.Domain.Cities;
 using ReadIraq.Domain.Cities.Dto;
 using ReadIraq.Domain.Companies;
 using ReadIraq.Domain.CompanyBranches;
+using ReadIraq.Domain.Grades;
 using ReadIraq.Domain.RegisterdPhoneNumbers;
 using ReadIraq.Domain.RequestForQuotations;
 using ReadIraq.Domains.UserVerficationCodes;
@@ -47,6 +49,9 @@ namespace ReadIraq.Authorization.Accounts
         private readonly IRepository<User, long> _userRepository;
         private readonly ICompanyBranchManager _companyBranchManager;
         private readonly IRequestForQuotationManager _requestForQuotationManager;
+        private readonly IRepository<Grade, int> _gradeRepository;
+        private readonly IRepository<City, int> _cityRepository;
+
         public AccountAppService(
             UserRegistrationManager userRegistrationManager,
             UserManager userManager,
@@ -60,7 +65,9 @@ namespace ReadIraq.Authorization.Accounts
             ICompanyManager companyManager,
             IRepository<User, long> userRepository,
             ICompanyBranchManager companyBranchManager,
-            IRequestForQuotationManager requestForQuotationManager
+            IRequestForQuotationManager requestForQuotationManager,
+            IRepository<Grade, int> gradeRepository,
+            IRepository<City, int> cityRepository
             )
 
 
@@ -78,6 +85,8 @@ namespace ReadIraq.Authorization.Accounts
             _userRepository = userRepository;
             _companyBranchManager = companyBranchManager;
             _requestForQuotationManager = requestForQuotationManager;
+            _gradeRepository = gradeRepository;
+            _cityRepository = cityRepository;
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -132,11 +141,29 @@ namespace ReadIraq.Authorization.Accounts
         {
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
+                // Validate Phone Existence
                 var existingUser = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == input.Phone && u.DialCode == input.DialCode);
                 if (existingUser != null)
                 {
-                    // Return 409 as per requirement
-                    throw new UserFriendlyException(409, string.Format(Exceptions.ObjectIsAlreadyExist, Tokens.PhoneNumber));
+                    throw new UserFriendlyException(409, L(nameof(Exceptions.ObjectIsAlreadyExist), L(nameof(Tokens.PhoneNumber))));
+                }
+
+                // Validate Grade
+                if (input.GradeId.HasValue)
+                {
+                    if (!await _gradeRepository.GetAll().AnyAsync(x => x.Id == input.GradeId.Value))
+                    {
+                        throw new UserFriendlyException(400, L(nameof(Exceptions.ObjectWasNotFound), L(nameof(Tokens.Grade))));
+                    }
+                }
+
+                // Validate Governorate (City)
+                if (input.GovernorateId.HasValue)
+                {
+                    if (!await _cityRepository.GetAll().AnyAsync(x => x.Id == input.GovernorateId.Value))
+                    {
+                        throw new UserFriendlyException(400, L(nameof(Exceptions.ObjectWasNotFound), L(nameof(Tokens.City))));
+                    }
                 }
 
                 var user = await _userRegistrationManager.RegisterUserAsync(
@@ -149,7 +176,7 @@ namespace ReadIraq.Authorization.Accounts
                     input.UserType
                 );
 
-                // Mocking OTP sending
+                // Mock OTP logic
                 bool otpSent = true;
                 string otpCode = "123456";
 

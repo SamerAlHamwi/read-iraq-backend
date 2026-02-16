@@ -3,18 +3,6 @@
   "WorkspaceRootPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E0580562-F8F2-4EBB-B07A-ABFC6F2C314F}|src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj|c:\\users\\tech\\source\\repos\\readiraq\\src\\readiraq.entityframeworkcore\\migrations\\20260215112748_created_grade_table_and_user_relation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0580562-F8F2-4EBB-B07A-ABFC6F2C314F}|src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj|solutionrelative:src\\readiraq.entityframeworkcore\\migrations\\20260215112748_created_grade_table_and_user_relation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215111840_Created_Grade_Table_And_User_Relations.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215111840_Created_Grade_Table_And_User_Relations.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215111117_Added_Grade_And_Governorate_To_User.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215111117_Added_Grade_And_Governorate_To_User.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{3870C648-4AEA-4B85-BA3F-F2F63B96136A}|src\\ReadIraq.Application\\ReadIraq.Application.csproj|c:\\users\\tech\\source\\repos\\readiraq\\src\\readiraq.application\\authorization\\accounts\\accountappservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3870C648-4AEA-4B85-BA3F-F2F63B96136A}|src\\ReadIraq.Application\\ReadIraq.Application.csproj|solutionrelative:src\\readiraq.application\\authorization\\accounts\\accountappservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -31,53 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "20260215112748_Created_Grade_Table_And_User_Relation.cs",
-              "DocumentMoniker": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215112748_Created_Grade_Table_And_User_Relation.cs",
-              "RelativeDocumentMoniker": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215112748_Created_Grade_Table_And_User_Relation.cs",
-              "ToolTip": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215112748_Created_Grade_Table_And_User_Relation.cs",
-              "RelativeToolTip": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215112748_Created_Grade_Table_And_User_Relation.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T11:27:53.096Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "20260215111840_Created_Grade_Table_And_User_Relations.cs",
-              "DocumentMoniker": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215111840_Created_Grade_Table_And_User_Relations.cs",
-              "RelativeDocumentMoniker": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215111840_Created_Grade_Table_And_User_Relations.cs",
-              "ToolTip": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215111840_Created_Grade_Table_And_User_Relations.cs",
-              "RelativeToolTip": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215111840_Created_Grade_Table_And_User_Relations.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T11:18:40.973Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "20260215111117_Added_Grade_And_Governorate_To_User.cs",
-              "DocumentMoniker": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215111117_Added_Grade_And_Governorate_To_User.cs",
-              "RelativeDocumentMoniker": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215111117_Added_Grade_And_Governorate_To_User.cs",
-              "ToolTip": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215111117_Added_Grade_And_Governorate_To_User.cs",
-              "RelativeToolTip": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260215111117_Added_Grade_And_Governorate_To_User.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T11:11:17.586Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "AccountAppService.cs",
               "DocumentMoniker": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\Authorization\\Accounts\\AccountAppService.cs",
               "RelativeDocumentMoniker": "src\\ReadIraq.Application\\Authorization\\Accounts\\AccountAppService.cs",
               "ToolTip": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\Authorization\\Accounts\\AccountAppService.cs",
               "RelativeToolTip": "src\\ReadIraq.Application\\Authorization\\Accounts\\AccountAppService.cs",
-              "ViewState": "AQIAABUAAAAAAAAAAAAvwB8AAAA9AAAA",
+              "ViewState": "AQIAAKkAAAAAAAAAAAAmwLAAAAASAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T11:08:19.823Z",
+              "WhenOpened": "2026-02-16T05:46:48.471Z",
               "EditorCaption": ""
             }
           ]
