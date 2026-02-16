@@ -60,6 +60,10 @@
               "target": "Package",
               "version": "[1.68.0, )"
             },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[7.0.12, )"
+            },
             "NSwag.Annotations": {
               "target": "Package",
               "version": "[14.0.3, )"
@@ -150,6 +154,10 @@
             "Castle.Windsor.MsDependencyInjection": {
               "target": "Package",
               "version": "[4.1.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[7.0.12, )"
             },
             "NSwag.Annotations": {
               "target": "Package",

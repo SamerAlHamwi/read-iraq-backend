@@ -6,18 +6,14 @@ namespace ReadIraq.Authorization.Accounts
 {
     public interface IAccountAppService : IApplicationService
     {
-        Task<IsTenantAvailableOutput> IsTenantAvailable(IsTenantAvailableInput input);
-
-        Task<RegisterOutput> Register(RegisterInput input);
-
         Task<object> RegisterUser(RegisterUserInput input);
-
-        Task<dynamic> SignUpWithPhoneNumberAsync(SignInWithPhoneNumberInputDto input);
-
-        Task<dynamic> VerifySignUpWithPhoneNumberAsync(VerifySignUpWithPhoneNumberInputDto input);
-
-        Task<dynamic> SignInWithPhoneNumberAsync(SignInWithPhoneNumberInputDto input);
-        Task<dynamic> ResendVerificationCodeAsync(VerifiyPhoneNumberInputDto input);
+        Task<object> VerifySignUpWithPhoneNumber(VerifySignUpInput input);
+        Task<object> ResendVerificationCode(ResendCodeInput input);
+        Task<object> SignInWithPhoneNumber(SignInInput input);
+        Task LogOut();
+        Task<UserDetailDto> GetProfileInfo();
+        Task UpdateProfile(UpdateProfileDto input);
+        Task AddOrEditUserProfilePhoto(AddUserProfilePhotoDto input);
         Task DeleteAccount();
     }
 }

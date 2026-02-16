@@ -3,8 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3870C648-4AEA-4B85-BA3F-F2F63B96136A}|src\\ReadIraq.Application\\ReadIraq.Application.csproj|c:\\users\\tech\\source\\repos\\readiraq\\src\\readiraq.application\\authorization\\accounts\\accountappservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3870C648-4AEA-4B85-BA3F-F2F63B96136A}|src\\ReadIraq.Application\\ReadIraq.Application.csproj|solutionrelative:src\\readiraq.application\\authorization\\accounts\\accountappservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3870C648-4AEA-4B85-BA3F-F2F63B96136A}|src\\ReadIraq.Application\\ReadIraq.Application.csproj|c:\\users\\tech\\source\\repos\\readiraq\\src\\readiraq.application\\tools\\toolappservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3870C648-4AEA-4B85-BA3F-F2F63B96136A}|src\\ReadIraq.Application\\ReadIraq.Application.csproj|solutionrelative:src\\readiraq.application\\tools\\toolappservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0FA75A5B-AB83-4FD0-B545-279774C01E87}|src\\ReadIraq.Core\\ReadIraq.Core.csproj|c:\\users\\tech\\source\\repos\\readiraq\\src\\readiraq.core\\domain\\terms\\term.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0FA75A5B-AB83-4FD0-B545-279774C01E87}|src\\ReadIraq.Core\\ReadIraq.Core.csproj|solutionrelative:src\\readiraq.core\\domain\\terms\\term.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,14 +23,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AccountAppService.cs",
-              "DocumentMoniker": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\Authorization\\Accounts\\AccountAppService.cs",
-              "RelativeDocumentMoniker": "src\\ReadIraq.Application\\Authorization\\Accounts\\AccountAppService.cs",
-              "ToolTip": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\Authorization\\Accounts\\AccountAppService.cs",
-              "RelativeToolTip": "src\\ReadIraq.Application\\Authorization\\Accounts\\AccountAppService.cs",
-              "ViewState": "AQIAAKkAAAAAAAAAAAAmwLAAAAASAAAA",
+              "Title": "ToolAppService.cs",
+              "DocumentMoniker": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\Tools\\ToolAppService.cs",
+              "RelativeDocumentMoniker": "src\\ReadIraq.Application\\Tools\\ToolAppService.cs",
+              "ToolTip": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\Tools\\ToolAppService.cs",
+              "RelativeToolTip": "src\\ReadIraq.Application\\Tools\\ToolAppService.cs",
+              "ViewState": "AQIAACgAAAAAAAAAAAAgwAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-16T05:46:48.471Z",
+              "WhenOpened": "2026-02-16T06:59:02.176Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Term.cs",
+              "DocumentMoniker": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Core\\Domain\\Terms\\Term.cs",
+              "RelativeDocumentMoniker": "src\\ReadIraq.Core\\Domain\\Terms\\Term.cs",
+              "ToolTip": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Core\\Domain\\Terms\\Term.cs",
+              "RelativeToolTip": "src\\ReadIraq.Core\\Domain\\Terms\\Term.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-16T06:58:41.81Z",
               "EditorCaption": ""
             }
           ]

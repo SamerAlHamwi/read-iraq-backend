@@ -5,6 +5,8 @@ using Abp.Reflection.Extensions;
 using Abp.Threading.BackgroundWorkers;
 using AutoMapper;
 using ReadIraq.Authorization;
+using ReadIraq.Authorization.Accounts.Dto;
+using ReadIraq.Authorization.Users;
 using ReadIraq.Cities.Dto;
 using ReadIraq.ContactUsService.Dto;
 using ReadIraq.Countries;
@@ -14,6 +16,7 @@ using ReadIraq.Domain.AttributeChoices.Dto;
 using ReadIraq.Domain.AttributesForSourceType;
 using ReadIraq.Domain.AttributesForSourceType.Dto;
 using ReadIraq.Domain.Cities;
+using ReadIraq.Domain.Cities.Dto;
 using ReadIraq.Domain.Companies;
 using ReadIraq.Domain.Companies.Dto;
 using ReadIraq.Domain.CompanyBranches;
@@ -22,6 +25,7 @@ using ReadIraq.Domain.ContactUses;
 using ReadIraq.Domain.Countries;
 using ReadIraq.Domain.FrequentlyQuestions;
 using ReadIraq.Domain.FrequentlyQuestions.Dto;
+using ReadIraq.Domain.Grades;
 using ReadIraq.Domain.Points;
 using ReadIraq.Domain.PrivacyPolicies;
 using ReadIraq.Domain.PushNotifications;
@@ -38,6 +42,7 @@ using ReadIraq.Domain.SubServices.Dto;
 using ReadIraq.Domain.Terms;
 using ReadIraq.Domain.Toolss;
 using ReadIraq.Domain.Toolss.Dto;
+using ReadIraq.Grades.Dto;
 using ReadIraq.Points.Dto;
 using ReadIraq.PrivacyPolicyService.Dto;
 using ReadIraq.PushNotifications.Dto;
@@ -79,6 +84,16 @@ namespace ReadIraq
         {
             public static void CreateMappings(IMapperConfigurationExpression configuration, MultiLingualMapContext context)
             {
+
+                #region User
+                configuration.CreateMap<User, UserDetailDto>();
+                configuration.CreateMap<User, ProfileInfoDto>();
+                #endregion
+
+                #region Grade
+                configuration.CreateMap<Grade, GradeDto>();
+                configuration.CreateMap<Grade, LiteGradeDto>();
+                #endregion
 
                 #region PushNotification
                 configuration.CreateMultiLingualMap<PushNotification, PushNotificationTranslation, PushNotificationDetailsDto>(context).TranslationMap

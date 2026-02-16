@@ -30,6 +30,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using static ReadIraq.Enums.Enum;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ReadIraq.Controllers
 {
@@ -39,7 +40,7 @@ namespace ReadIraq.Controllers
         private readonly LogInManager _logInManager;
         private readonly ITenantCache _tenantCache;
         private readonly AbpLoginResultTypeHelper _abpLoginResultTypeHelper;
-        private readonly TokenAuthConfiguration _configuration;
+        private readonly ReadIraq.Authentication.JwtBearer.TokenAuthConfiguration _configuration;
         private readonly IExternalAuthConfiguration _externalAuthConfiguration;
         private readonly IExternalAuthManager _externalAuthManager;
         private readonly UserRegistrationManager _userRegistrationManager;
@@ -51,14 +52,14 @@ namespace ReadIraq.Controllers
         private readonly IRepository<ChangedPhoneNumberForUser> _changedPhoneNumberForUserRepository;
         private readonly IMediatorManager _mediatorManager;
         private readonly TenantManager _tenantManager;
-        private readonly IRepository<User, long> _userRepository;
+        private readonly IRepository<ReadIraq.Authorization.Users.User, long> _userRepository;
         private readonly RoleManager _roleManager;
 
         public TokenAuthController(
             LogInManager logInManager,
             ITenantCache tenantCache,
             AbpLoginResultTypeHelper abpLoginResultTypeHelper,
-            TokenAuthConfiguration configuration,
+            ReadIraq.Authentication.JwtBearer.TokenAuthConfiguration configuration,
             IExternalAuthConfiguration externalAuthConfiguration,
             IExternalAuthManager externalAuthManager,
             UserRegistrationManager userRegistrationManager,
@@ -70,7 +71,7 @@ namespace ReadIraq.Controllers
             IRepository<ChangedPhoneNumberForUser> changedPhoneNumberForUserRepository,
             IMediatorManager mediatorManager,
             TenantManager tenantManager,
-            IRepository<User, long> userRepository,
+            IRepository<ReadIraq.Authorization.Users.User, long> userRepository,
             RoleManager roleManager)
         {
             _logInManager = logInManager;
@@ -96,7 +97,7 @@ namespace ReadIraq.Controllers
         public async Task<AuthenticateResultModel> Authenticate([FromBody] AuthenticateModel model)
         {
             var isForTenant = false;
-            var loginResult = new AbpLoginResult<Tenant, User>(AbpLoginResultType.Success);
+            var loginResult = new AbpLoginResult<Tenant, ReadIraq.Authorization.Users.User>(AbpLoginResultType.Success);
             if (!model.IsForCompany && !model.IsForCompanyBranch)
                 loginResult = await GetLoginResultAsync(
                    model.UserNameOrEmailAddress,
@@ -116,19 +117,13 @@ namespace ReadIraq.Controllers
 
             if (loginResult.User.Type == UserType.Admin || loginResult.User.Type == UserType.CustomerService)
             {
-                var hammoud = await _roleManager.GetRoleIdsByUserIdAsync(loginResult.User.Id);
-                foreach (var item in hammoud)
+                var roleIds = await _roleManager.GetRoleIdsByUserIdAsync(loginResult.User.Id);
+                foreach (var roleId in roleIds)
                 {
-                    try
+                    using (UnitOfWorkManager.Current.SetTenantId(1))
                     {
-                        using (UnitOfWorkManager.Current.SetTenantId(1))
-                        {
-                            permissions.AddRange(_roleManager.GetGrantedPermissionsAsync(item).Result.Select(x => x.Name).ToList());
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        throw;
+                        var grantedPermissions = await _roleManager.GetGrantedPermissionsAsync(roleId);
+                        permissions.AddRange(grantedPermissions.Select(x => x.Name).ToList());
                     }
                 }
             }
@@ -145,14 +140,10 @@ namespace ReadIraq.Controllers
                 default:
                     break;
             }
-            //if ((model.IsForCompany && CompanyId == 0 && CompanyBranchId != 0 && !model.IsForCompanyBranch)
-            //    || (model.IsForCompanyBranch && CompanyId != 0 && CompanyBranchId == 0 && !model.IsForCompany)
-            //    || (!model.IsForCompany && !model.IsForCompanyBranch && (CompanyId != 0 || CompanyBranchId != 0)))
-            //    throw new UserFriendlyException(Exceptions.YouCannotDoThisAction);
+
             try
             {
                 var accessToken = CreateAccessToken(CreateJwtClaims(loginResult.Identity));
-
 
                 var result = new AuthenticateResultModel
                 {
@@ -164,13 +155,11 @@ namespace ReadIraq.Controllers
                     CompanyId = CompanyId,
                     CompanyBranchId = CompanyBranchId,
                     Language = await SettingManager.GetSettingValueForUserAsync(
-                    LocalizationSettingNames.DefaultLanguage,
-                                     loginResult.Tenant.Id,
-                                       loginResult.User.Id),
+                        LocalizationSettingNames.DefaultLanguage,
+                        loginResult.Tenant.Id,
+                        loginResult.User.Id),
                     Permissions = permissions,
-
                 };
-
 
                 return result;
             }
@@ -213,7 +202,6 @@ namespace ReadIraq.Controllers
                             };
                         }
 
-                        // Try to login again with newly registered user!
                         loginResult = await _logInManager.LoginAsync(new UserLoginInfo(model.AuthProvider, model.ProviderKey, model.AuthProvider), GetTenancyNameOrNull());
                         if (loginResult.Result != AbpLoginResultType.Success)
                         {
@@ -244,14 +232,14 @@ namespace ReadIraq.Controllers
             }
         }
 
-        private async Task<User> RegisterExternalUserAsync(ExternalAuthUserInfo externalUser)
+        private async Task<ReadIraq.Authorization.Users.User> RegisterExternalUserAsync(ExternalAuthUserInfo externalUser)
         {
             var user = await _userRegistrationManager.RegisterAsync(
                 externalUser.Name,
                 externalUser.Surname,
                 externalUser.EmailAddress,
                 externalUser.EmailAddress,
-                Authorization.Users.User.CreateRandomPassword(),
+                ReadIraq.Authorization.Users.User.CreateRandomPassword(),
                 false
             );
 
@@ -291,7 +279,7 @@ namespace ReadIraq.Controllers
             return _tenantCache.GetOrNull(AbpSession.TenantId.Value)?.TenancyName;
         }
 
-        private async Task<AbpLoginResult<Tenant, User>> GetLoginResultAsync(string usernameOrEmailAddress, string password, string tenancyName)
+        private async Task<AbpLoginResult<Tenant, ReadIraq.Authorization.Users.User>> GetLoginResultAsync(string usernameOrEmailAddress, string password, string tenancyName)
         {
             var loginResult = await _logInManager.LoginAsync(usernameOrEmailAddress, password, tenancyName);
 
@@ -304,56 +292,14 @@ namespace ReadIraq.Controllers
             }
         }
 
-        private string CreateAccessToken(IEnumerable<Claim> claims, TimeSpan? expiration = null)
-        {
-            var now = DateTime.UtcNow;
-
-            var jwtSecurityToken = new JwtSecurityToken(
-                issuer: _configuration.Issuer,
-                audience: _configuration.Audience,
-                claims: claims,
-                notBefore: now,
-                expires: now.Add(expiration ?? _configuration.Expiration),
-                signingCredentials: _configuration.SigningCredentials
-
-            );
-            return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="identity"></param>
-        /// <returns></returns>
-        private static List<Claim> CreateJwtClaims(ClaimsIdentity identity)
-        {
-            var claims = identity.Claims.ToList();
-            var nameIdClaim = claims.First(c => c.Type == ClaimTypes.NameIdentifier);
-
-            // Specifically add the jti (random nonce), iat (issued timestamp), and sub (subject/user) claims.
-            claims.AddRange(new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, nameIdClaim.Value),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
-            });
-
-            return claims;
-        }
-
         private string GetEncryptedAccessToken(string accessToken)
         {
             return SimpleStringCipher.Instance.Encrypt(accessToken);
         }
-        /// <summary>
-        /// Create account after signup 
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        /// <exception cref="UserFriendlyException"></exception>
+
         [HttpPost]
         public async Task<VerifyLoginByPhoneNumberOutput> CreateAccountAfterSignUpAsync([FromBody] VerifySignUpByPhoneNumberInput input)
         {
-
             var registerdUser = await _registerdPhoneNumberManager.GetRegisteredPhoneNumberAsync(input.DialCode, input.PhoneNumber);
             if (registerdUser is not null)
             {
@@ -385,7 +331,7 @@ namespace ReadIraq.Controllers
                   type,
                   input.FullName,
                   input.MediatorCode);
-                AbpLoginResult<Tenant, User> loginResult = new AbpLoginResult<Tenant, User>(AbpLoginResultType.Success);
+                AbpLoginResult<Tenant, ReadIraq.Authorization.Users.User> loginResult = new AbpLoginResult<Tenant, ReadIraq.Authorization.Users.User>(AbpLoginResultType.Success);
                 if (input.IsForCompany || input.IsForCompanyBranch)
                     loginResult = await GetLoginResultAsync(
                     input.PhoneNumber,
@@ -423,100 +369,56 @@ namespace ReadIraq.Controllers
                     UserName = user.UserName,
                     ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds,
                     UserType = loginResult.User.Type,
-
                 };
-
-
             }
             else
                 throw new UserFriendlyException(string.Format(Exceptions.SignUpNotComplete));
         }
-        /// <summary>
-        ///this end point verify PhoneNumber For Company Branch User Or Verify PhoneNumber To Update Password
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        /// <exception cref="UserFriendlyException"></exception>
+
         [HttpPost]
         public async Task<AuthenticateResultModel> VerifySignInWithPhoneNumberAsync([FromBody] VerifyLoginByPhoneNumberInput input)
         {
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
-                var registerdUser = new User();
+                var registerdUser = new ReadIraq.Authorization.Users.User();
                 if (input.IsFromBasicApp)
                     registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == input.PhoneNumber && x.DialCode == input.DialCode && x.TenantId == 1);
                 else
                     registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == input.PhoneNumber && x.DialCode == input.DialCode && x.TenantId == 2);
+
                 if (registerdUser is not null)
                 {
-                    //var userCode = await _userVerficationCodeManager.GetUserWithVerificationCodeAsync(registerdUser.Id, ConfirmationCodeType.ConfirmPhoneNumber);
-                    //if (!await _userVerficationCodeManager.CheckVerificationCodeIsValidAsync(registerdUser.Id, ConfirmationCodeType.ConfirmPhoneNumber))
-                    //{
-                    //    throw new UserFriendlyException(string.Format(Exceptions.VerificationCodeIsnotValid));
-                    //}
-                    //var response = await _smsSenderAppService.VerificationCheckOTP(input.Code, $"{input.DialCode}{input.PhoneNumber}");
-                    
-                        throw new UserFriendlyException(string.Format(Exceptions.VerificationCodeIsnotCorrect));
-                    //if (userCode.VerficationCode.Equals(input.Code))
-                    //{
-                    //    if (input.IsForUpdatePassword)
-                    //        return new AuthenticateResultModel();
-                    //    registerdUser.IsEmailConfirmed = true;
-                    //    registerdUser.IsPhoneNumberConfirmed = true;
-                    //    registerdUser.IsActive = true;
-                    //    var user = await _userManager.UpdateAsync(registerdUser);
-                    //    await UnitOfWorkManager.Current.SaveChangesAsync();
-                    //    return await Authenticate(new AuthenticateModel
-                    //    {
-                    //        UserNameOrEmailAddress = input.PhoneNumber,
-                    //        Password = input.Password,
-                    //        IsForCompanyOrBranch = true,
-                    //        RememberClient = false
-                    //    });
-
-                    //}
-                    //throw new UserFriendlyException(string.Format(Exceptions.ObjectWasNotFound, Tokens.User));
+                    throw new UserFriendlyException(string.Format(Exceptions.VerificationCodeIsnotCorrect));
                 }
                 throw new UserFriendlyException(string.Format(Exceptions.ObjectWasNotFound, Tokens.User));
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        /// <exception cref="UserFriendlyException"></exception>
+
         [HttpPut]
         public async Task<bool> VerifyUserToSetNewPassword([FromBody] VerifyResetPasswordForUserInputDto input)
         {
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
-                var registerdUser = new User();
+                var registerdUser = new ReadIraq.Authorization.Users.User();
                 if (input.IsFromBasicApp)
                     registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == input.PhoneNumber && x.DialCode == input.DialCode && x.TenantId == 1);
                 else
                     registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == input.PhoneNumber && x.DialCode == input.DialCode && x.TenantId == 2);
                 if (registerdUser is not null)
                 {
-
                     CheckErrors(await _userManager.ChangePasswordAsync(registerdUser, input.NewPassword));
                     return true;
                 }
                 throw new UserFriendlyException(string.Format(Exceptions.ObjectWasNotFound, Tokens.User));
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        /// <exception cref="UserFriendlyException"></exception>
+
         [HttpPut]
         public async Task<bool> VerifyUserToSetNewPasswordByEmail([FromBody] VerifyResetPasswordForUserUsingEmailInputDto input)
         {
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
-                var registerdUser = new User();
+                var registerdUser = new ReadIraq.Authorization.Users.User();
                 if (input.IsFromBasicApp)
                     registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.EmailAddress == input.EmailAddress && x.TenantId == 1);
                 else
@@ -532,12 +434,6 @@ namespace ReadIraq.Controllers
             }
         }
 
-        /// <summary>
-        ///(mobile) Insert New PhoneNumber And New Dialcode With ConfirmCode To Change PhoneNumber
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        /// <exception cref="UserFriendlyException"></exception>
         [HttpPost]
         public async Task<bool> VerifyChangePhoneNumberAsync([FromBody] VerifyChangePhoneNumberInput input)
         {
@@ -546,21 +442,42 @@ namespace ReadIraq.Controllers
                 var newPhoneNumberForUser = await _changedPhoneNumberForUserRepository.GetAll().Where(x => x.NewPhoneNumber == input.PhoneNumber && x.NewDialCode == input.DialCode).FirstOrDefaultAsync();
                 if (newPhoneNumberForUser is not null)
                 {
-                    var registerdUser = await _userManager.GetUserByIdAsync(newPhoneNumberForUser.UserId);
-
-                    //var userCode = await _userVerficationCodeManager.GetUserWithVerificationCodeAsync(registerdUser.Id, Enums.Enum.ConfirmationCodeType.ConfirmPhoneNumber);
-                    //if (!await _userVerficationCodeManager.CheckVerificationCodeIsValidAsync(registerdUser.Id, Enums.Enum.ConfirmationCodeType.ConfirmPhoneNumber))
-                    //    throw new UserFriendlyException(string.Format(Exceptions.VerificationCodeIsnotValid));
-
-                    //var response = await _smsSenderAppService.VerificationCheckOTP(input.Code, $"{input.DialCode}{input.PhoneNumber}");
-                    
-                        throw new UserFriendlyException(string.Format(Exceptions.VerificationCodeIsnotCorrect));
-
+                    throw new UserFriendlyException(string.Format(Exceptions.VerificationCodeIsnotCorrect));
                 }
                 throw new UserFriendlyException(string.Format(Exceptions.ObjectWasNotFound, Tokens.PhoneNumber));
             }
         }
 
+        private string CreateAccessToken(IEnumerable<Claim> claims, TimeSpan? expiration = null)
+        {
+            var now = DateTime.UtcNow;
 
+            var jwtSecurityToken = new JwtSecurityToken(
+                issuer: _configuration.Issuer,
+                audience: _configuration.Audience,
+                claims: claims,
+                notBefore: now,
+                expires: now.Add(expiration ?? _configuration.Expiration),
+                signingCredentials: _configuration.SigningCredentials
+
+            );
+            return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+        }
+
+        private static List<Claim> CreateJwtClaims(ClaimsIdentity identity)
+        {
+            var claims = identity.Claims.ToList();
+            var nameIdClaim = claims.First(c => c.Type == ClaimTypes.NameIdentifier);
+
+            // Specifically add the jti (random nonce), iat (issued timestamp), and sub (subject/user) claims.
+            claims.AddRange(new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, nameIdClaim.Value),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
+            });
+
+            return claims;
+        }
     }
 }

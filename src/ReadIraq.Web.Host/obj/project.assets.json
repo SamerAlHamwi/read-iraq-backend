@@ -2775,6 +2775,7 @@
         "dependencies": {
           "FirebaseAdmin": "3.0.0",
           "Google.Apis.Auth": "1.68.0",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.12",
           "NSwag.Annotations": "14.0.3",
           "ReadIraq.Core": "1.0.0",
           "ReadIraq.EntityFrameworkCore": "1.0.0",
@@ -2796,6 +2797,7 @@
           "Abp.AutoMapper": "8.4.0",
           "Abp.ZeroCore.EntityFrameworkCore": "8.4.0",
           "Castle.Windsor.MsDependencyInjection": "4.1.0",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.12",
           "NSwag.Annotations": "14.0.3"
         },
         "compile": {

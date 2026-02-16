@@ -10,6 +10,7 @@
         "dependencies": {
           "FirebaseAdmin": "3.0.0",
           "Google.Apis.Auth": "1.68.0",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.12",
           "NSwag.Annotations": "14.0.3",
           "ReadIraq.Core": "1.0.0",
           "ReadIraq.EntityFrameworkCore": "1.0.0",
@@ -315,6 +316,17 @@
           "lib/netstandard2.0/JetBrains.Annotations.dll": {
             "assemblyVersion": "4242.42.42.42",
             "fileVersion": "2023.2.0.0"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.JwtBearer/7.0.12": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.24.0"
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
+            "assemblyVersion": "7.0.12.0",
+            "fileVersion": "7.0.1223.47922"
           }
         }
       },
@@ -1295,6 +1307,7 @@
           "Abp.AutoMapper": "8.4.0",
           "Abp.ZeroCore.EntityFrameworkCore": "8.4.0",
           "Castle.Windsor.MsDependencyInjection": "4.1.0",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.12",
           "NSwag.Annotations": "14.0.3"
         },
         "runtime": {
@@ -1483,6 +1496,13 @@
       "sha512": "sha512-dvO//8aLmLRsCVVgoc/7qBqi2/y4BTyRcg20LCBWtK4n6E9Um06Zp7jF1n0hOE+yqBHwcrDzAjWvCaM3qH8flg==",
       "path": "jetbrains.annotations/2023.2.0",
       "hashPath": "jetbrains.annotations.2023.2.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.JwtBearer/7.0.12": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KlSupL6h5oUwjMAoNJO2vp0MrqGYeO6nfdGjAEriK8xUccQndmQW9zQwF7d1R80abrZD/T9b01hmhk3v3LX05g==",
+      "path": "microsoft.aspnetcore.authentication.jwtbearer/7.0.12",
+      "hashPath": "microsoft.aspnetcore.authentication.jwtbearer.7.0.12.nupkg.sha512"
     },
     "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
       "type": "package",

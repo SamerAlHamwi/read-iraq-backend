@@ -197,69 +197,6 @@
             <param name="input"></param>
             <returns></returns>
         </member>
-        <member name="M:ReadIraq.Authorization.Accounts.AccountAppService.Register(ReadIraq.Authorization.Accounts.Dto.RegisterInput)">
-            <summary>
-            Register user
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ReadIraq.Authorization.Accounts.AccountAppService.SignUpWithPhoneNumberAsync(ReadIraq.Authorization.Accounts.Dto.SignInWithPhoneNumberInputDto)">
-            <summary>
-            (mobile)Signup with phone number 
-            this End point just for register new client in system
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ReadIraq.Authorization.Accounts.AccountAppService.SignInWithPhoneNumberAsync(ReadIraq.Authorization.Accounts.Dto.SignInWithPhoneNumberInputDto)">
-             <summary>
-            (mobile) Signin with phone number
-            this endpoint for login  a registerd client in system this end point return a verification code temporarily
-            it will be send via sms later
-             </summary>
-             <param name="input"></param>
-             <returns></returns>
-        </member>
-        <member name="M:ReadIraq.Authorization.Accounts.AccountAppService.ResendVerificationCodeAsync(ReadIraq.Authorization.Accounts.Dto.VerifiyPhoneNumberInputDto)">
-            <summary>
-            Resend verification code
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-            <exception cref="T:Abp.UI.UserFriendlyException"></exception>
-        </member>
-        <member name="M:ReadIraq.Authorization.Accounts.AccountAppService.VerifySignUpWithPhoneNumberAsync(ReadIraq.Authorization.Accounts.Dto.VerifySignUpWithPhoneNumberInputDto)">
-            <summary>
-            Verify SignUp With PhoneNumber
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-            <exception cref="T:Abp.UI.UserFriendlyException"></exception>
-        </member>
-        <member name="M:ReadIraq.Authorization.Accounts.AccountAppService.ChangePhoneNumber(ReadIraq.Authorization.Accounts.Dto.ChangePhoneNumberDto)">
-            <summary>
-            
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ReadIraq.Authorization.Accounts.AccountAppService.SendVerificationCodeToEmailAsync(ReadIraq.Authorization.Accounts.Dto.RequestCodeToEmailInput)">
-            <summary>
-            Call This To Send Verification Code To Email For Confirm Email Or ForgetPassword
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-            <exception cref="T:Abp.UI.UserFriendlyException"></exception>
-        </member>
-        <member name="M:ReadIraq.Authorization.Accounts.AccountAppService.VerifyUserEmailAccount(ReadIraq.Authorization.Accounts.Dto.ConfirmEmailWithCodeInputDto)">
-            <summary>
-            Verify Email Account
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-            <exception cref="T:Abp.UI.UserFriendlyException"></exception>
-        </member>
         <member name="T:ReadIraq.Cities.CityAppService">
             <summary>
             
@@ -326,43 +263,6 @@
             </summary>
             <param name="input"></param>
             <returns></returns>
-        </member>
-        <member name="M:ReadIraq.Configuration.ConfigurationAppService.SetEmailSetting(ReadIraq.Configuration.Dto.EmailSettingDto)">
-            <summary>
-            kkkk
-            </summary>
-            <param name="input"></param>
-        </member>
-        <member name="M:ReadIraq.Configuration.ConfigurationAppService.SetFileSizeSetting(ReadIraq.Configuration.Dto.FileSizeSettingDto)">
-            <summary>
-            Set Allowed Uploaded File Size in MegaByte 
-            </summary>
-            <param name="input"></param>
-        </member>
-        <member name="P:ReadIraq.Configuration.Dto.EmailSettingDto.Message">
-            <summary>
-            Normal Message For Verify Account
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Configuration.Dto.EmailSettingDto.MessageForResetPassword">
-            <summary>
-            Message For Reset Account 
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Configuration.Dto.SmsSettingDto.SmsUserName">
-            <summary>
-            accountSid
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Configuration.Dto.SmsSettingDto.SmsPassword">
-            <summary>
-            authToken
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Configuration.Dto.SmsSettingDto.ServiceAccountSID">
-            <summary>
-            Phone Number Sender
-            </summary>
         </member>
         <member name="T:ReadIraq.Countries.CountryAppService">
             <summary>
