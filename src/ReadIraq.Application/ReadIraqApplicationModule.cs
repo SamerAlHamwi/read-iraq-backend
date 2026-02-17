@@ -21,6 +21,7 @@ using ReadIraq.Domain.PrivacyPolicies;
 using ReadIraq.Domain.PushNotifications;
 using ReadIraq.Domain.Regions;
 using ReadIraq.Domain.Regions.Dto;
+using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.Terms;
 using ReadIraq.Domain.Translations;
@@ -28,6 +29,7 @@ using ReadIraq.Domain.Translations.Dto;
 using ReadIraq.Grades.Dto;
 using ReadIraq.PrivacyPolicyService.Dto;
 using ReadIraq.PushNotifications.Dto;
+using ReadIraq.Subjects.Dto;
 using ReadIraq.Teachers.Dto;
 using ReadIraq.TermService.Dto;
 
@@ -87,6 +89,15 @@ namespace ReadIraq
                 configuration.CreateMap<TeacherProfile, TeacherProfileDto>();
                 configuration.CreateMap<TeacherProfile, LiteTeacherProfileDto>();
                 configuration.CreateMap<TeacherRatingBreakdown, TeacherRatingBreakdownDto>();
+                #endregion
+
+                #region TeacherReview
+                configuration.CreateMap<TeacherReview, TeacherReviewDto>();
+                #endregion
+
+                #region Subject
+                configuration.CreateMap<Subject, SubjectDto>();
+                configuration.CreateMap<Subject, LiteSubjectDto>();
                 #endregion
 
                 #region Translation

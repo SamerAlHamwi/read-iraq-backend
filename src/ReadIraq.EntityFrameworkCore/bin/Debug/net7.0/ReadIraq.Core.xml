@@ -729,6 +729,11 @@
               Looks up a localized string similar to Teacher Profile.
             </summary>
         </member>
+        <member name="P:ReadIraq.Localization.SourceFiles.Tokens.Subject">
+            <summary>
+              Looks up a localized string similar to Subject.
+            </summary>
+        </member>
         <member name="F:ReadIraq.ReadIraqConsts.DefaultPassPhrase">
             <summary>
             Default pass phrase for SimpleStringCipher decrypt/encrypt operations

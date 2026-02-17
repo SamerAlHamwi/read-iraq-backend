@@ -5,6 +5,13 @@ namespace ReadIraq.Enums
 {
     public class Enum
     {
+        public enum SubjectLevel : byte
+        {
+            FirstTerm = 1,
+            SecondTerm = 2,
+            Semester = 3
+        }
+
         public enum ConfirmationCodeType : byte
         {
             [Display(ResourceType = typeof(Tokens), Name = nameof(Tokens.ForgetPassword))]

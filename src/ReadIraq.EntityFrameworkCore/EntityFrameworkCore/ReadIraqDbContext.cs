@@ -67,6 +67,7 @@ namespace ReadIraq.EntityFrameworkCore
         public virtual DbSet<TeacherFeatureMap> TeacherFeaturesMap { get; set; }
         public virtual DbSet<TeacherSubject> TeacherSubjects { get; set; }
         public virtual DbSet<TeacherRatingBreakdown> TeacherRatingBreakdowns { get; set; }
+        public virtual DbSet<TeacherReview> TeacherReviews { get; set; }
 
         public ReadIraqDbContext(DbContextOptions<ReadIraqDbContext> options)
             : base(options)

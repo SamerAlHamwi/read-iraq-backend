@@ -1,3 +1,4 @@
+using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using ReadIraq.Domain.Translations;
 using System;
@@ -7,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ReadIraq.Domain.Grades
 {
     [Table("Grades")]
-    public class Grade : FullAuditedEntity
+    public class Grade : FullAuditedEntity<int>, IEntity<int>
     {
         public virtual ICollection<Translation> Name { get; set; }
 

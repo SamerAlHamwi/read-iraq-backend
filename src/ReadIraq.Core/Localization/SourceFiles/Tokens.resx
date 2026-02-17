@@ -175,4 +175,7 @@
   <data name="TeacherProfile" xml:space="preserve">
     <value>Teacher Profile</value>
   </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Subject</value>
+  </data>
 </root>
