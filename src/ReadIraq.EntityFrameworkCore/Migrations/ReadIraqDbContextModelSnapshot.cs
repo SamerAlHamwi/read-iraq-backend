@@ -1374,66 +1374,6 @@ namespace ReadIraq.Migrations
                     b.ToTable("AbpWebhookSubscriptions");
                 });
 
-            modelBuilder.Entity("AttributeForSourceTypeSourceType", b =>
-                {
-                    b.Property<int>("AttributesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SourceTypesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AttributesId", "SourceTypesId");
-
-                    b.HasIndex("SourceTypesId");
-
-                    b.ToTable("AttributeForSourceTypeSourceType");
-                });
-
-            modelBuilder.Entity("CityCompany", b =>
-                {
-                    b.Property<int>("AvailableCitiesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CompaniesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AvailableCitiesId", "CompaniesId");
-
-                    b.HasIndex("CompaniesId");
-
-                    b.ToTable("CityCompany");
-                });
-
-            modelBuilder.Entity("CityCompanyBranch", b =>
-                {
-                    b.Property<int>("AvailableCitiesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CompanyBranchesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AvailableCitiesId", "CompanyBranchesId");
-
-                    b.HasIndex("CompanyBranchesId");
-
-                    b.ToTable("CityCompanyBranch");
-                });
-
-            modelBuilder.Entity("CityPartner", b =>
-                {
-                    b.Property<int>("CitiesPartnerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PartnersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CitiesPartnerId", "PartnersId");
-
-                    b.HasIndex("PartnersId");
-
-                    b.ToTable("CityPartner");
-                });
-
             modelBuilder.Entity("ReadIraq.Authorization.Roles.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -1905,9 +1845,6 @@ namespace ReadIraq.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<int?>("AttributeAndAttachmentsForDraftId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("AttributeChoiceAndAttachmentId")
                         .HasColumnType("int");
 
@@ -1955,374 +1892,7 @@ namespace ReadIraq.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AttributeAndAttachmentsForDraftId");
-
-                    b.HasIndex("AttributeChoiceAndAttachmentId");
-
                     b.ToTable("Attachments");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeAndAttachments.AttributeChoiceAndAttachment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AttributeChoiceId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("RequestForQuotationId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AttributeChoiceId");
-
-                    b.HasIndex("RequestForQuotationId");
-
-                    b.ToTable("AttributeChoiceAndAttachments");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeAndAttachmentsForDrafts.AttributeAndAttachmentsForDraft", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AttributeChoiceId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DraftId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DraftId");
-
-                    b.ToTable("AttributeAndAttachmentsForDrafts");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeChoices.AttributeChoice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AttributeChociceParentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AttributeForSourceTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsAttributeChoiceParent")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("PointsToBuyRequest")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PointsToGiftToCompany")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AttributeChociceParentId");
-
-                    b.HasIndex("AttributeForSourceTypeId");
-
-                    b.ToTable("AttributeChoices");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeChoices.AttributeChoiceTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CoreId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CoreId");
-
-                    b.ToTable("AttributeChoiceTranslations");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeForSourcTypeValues.AttributeForSourceTypeValue", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AttributeChoiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AttributeForSourcTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("RequestForQuotationId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AttributeChoiceId");
-
-                    b.HasIndex("AttributeForSourcTypeId");
-
-                    b.HasIndex("RequestForQuotationId");
-
-                    b.ToTable("AttributeForSourceTypeValues");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeForSourceTypeValuesForDrafts.AttributeForSourceTypeValuesForDraft", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AttributeChoiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AttributeForSourcTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DraftId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DraftId");
-
-                    b.ToTable("AttributeForSourceTypeValuesForDrafts");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributesForSourceType.AttributeForSourceType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AttributeForSourcTypes");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributesForSourceType.AttributeForSourceTypeTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CoreId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CoreId");
-
-                    b.ToTable("AttributeForSourceTypeTranslations");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.ChangedPhoneNumber.ChangedPhoneNumberForUser", b =>
@@ -2453,439 +2023,6 @@ namespace ReadIraq.Migrations
                     b.HasIndex("CoreId");
 
                     b.ToTable("CityTranslations");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Codes.Code", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte>("CodeType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("DiscountPercentage")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("PartnerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PhonesNumbers")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RSMCode")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PartnerId");
-
-                    b.ToTable("Codes");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.CommissionGroups.CommissionGroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<double>("Name")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CommissionGroups");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Companies.Company", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("AcceptPossibleRequests")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("AcceptRequests")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CommissionGroupId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CompanyContactId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("EndFeatureSubscribtionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsFeature")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("NumberOfGiftedPoints")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumberOfPaidPoints")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumberOfTransfers")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ParentCompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ReasonRefuse")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("RegionId")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("ServiceType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<DateTime?>("StartFeatureSubscribtionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<byte>("statues")
-                        .HasColumnType("tinyint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommissionGroupId");
-
-                    b.HasIndex("CompanyContactId");
-
-                    b.HasIndex("RegionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Companies");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Companies.CompanyContact", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DialCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmailAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WebSite")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CompanyContacts");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Companies.CompanyTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CoreId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CoreId");
-
-                    b.ToTable("CompanyTranslations");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.CompanyBranches.CompanyBranch", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("AcceptPossibleRequests")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("AcceptRequests")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("CompanyContactId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("EndFeatureSubscribtionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsFeature")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("NumberOfGiftedPoints")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumberOfPaidPoints")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumberOfTransfers")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ReasonRefuse")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("RegionId")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("ServiceType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<DateTime?>("StartFeatureSubscribtionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte?>("Statues")
-                        .HasColumnType("tinyint");
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyContactId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("RegionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("CompanyBranches");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.CompanyBranches.CompanyBranchTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CoreId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CoreId");
-
-                    b.ToTable("CompanyBranchTranslation");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.ContactUses.ContactUs", b =>
@@ -3057,84 +2194,6 @@ namespace ReadIraq.Migrations
                     b.ToTable("CountryTranslations");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.Drafts.Draft", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("ArrivalAtUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DestinationAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DestinationCityId")
-                        .HasColumnType("int");
-
-                    b.Property<double?>("DestinationLatitude")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("DestinationLongitude")
-                        .HasColumnType("float");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("MoveAtUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte?>("ServiceType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("SourceAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("SourceCityId")
-                        .HasColumnType("int");
-
-                    b.Property<double?>("SourceLatitude")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("SourceLongitude")
-                        .HasColumnType("float");
-
-                    b.Property<int?>("SourceTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Drafts");
-                });
-
             modelBuilder.Entity("ReadIraq.Domain.FrequentlyQuestions.FrequentlyQuestion", b =>
                 {
                     b.Property<int>("Id")
@@ -3243,6 +2302,9 @@ namespace ReadIraq.Migrations
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("GradeGroupId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -3252,17 +2314,76 @@ namespace ReadIraq.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GradeGroupId");
+
+                    b.ToTable("Grades");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Grades.GradeGroup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Grades");
+                    b.ToTable("GradeGroups");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Grades.GradeSubject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GradeId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("SubjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("GradeId", "SubjectId")
+                        .IsUnique();
+
+                    b.ToTable("GradeSubjects");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.Mediators.Mediator", b =>
@@ -3337,392 +2458,6 @@ namespace ReadIraq.Migrations
                     b.HasIndex("CityId");
 
                     b.ToTable("Mediator");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.MoneyTransfers.MoneyTransfer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
-
-                    b.Property<int?>("CompanyBranchId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("OfferId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("PaidDestination")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte>("PaidProvider")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte>("PaidStatues")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte>("ReasonOfPaid")
-                        .HasColumnType("tinyint");
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyBranchId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("MoneyTransfers");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Offers.Offer", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsExtendStorage")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("PriceForOnDayStorage")
-                        .HasColumnType("float");
-
-                    b.Property<byte>("Provider")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("ReasonRefuse")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RejectReasonDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("RejectReasonId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("SelectedCompaniesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte>("Statues")
-                        .HasColumnType("tinyint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RejectReasonId");
-
-                    b.HasIndex("SelectedCompaniesId");
-
-                    b.ToTable("Offers");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.PaidRequestPossibles.PaidRequestPossible", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CompanyBranchId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("NumberOfPaidPoints")
-                        .HasColumnType("int");
-
-                    b.Property<long>("RequestId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyBranchId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("RequestId");
-
-                    b.ToTable("PaidRequestPossibles");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Partners.Partner", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CompanyPhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PartnerPhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Partner");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Points.Point", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsForFeature")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("NumberInMonths")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumberOfPoint")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Points");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Points.PointTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CoreId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CoreId");
-
-                    b.ToTable("PointTranslations");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.PointsValues.PointsValue", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CompanyBranchId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsForFeature")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int?>("PointId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyBranchId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("PointId");
-
-                    b.ToTable("PointsValue");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.PrivacyPolicies.PrivacyPolicy", b =>
@@ -4037,323 +2772,6 @@ namespace ReadIraq.Migrations
                     b.ToTable("RegisterdPhoneNumbers");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.RejectReasons.RejectReason", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<byte>("PossibilityPotentialClient")
-                        .HasColumnType("tinyint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RejectReasons");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.RejectReasons.RejectReasonTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CoreId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CoreId");
-
-                    b.ToTable("RejectReasonTranslations");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.RequestForQuotationContacts.RequestForQuotationContact", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("DailCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsCallAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsTelegramAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsWhatsAppAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("RequestForQuotationContactType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<long>("RequestForQuotationId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RequestForQuotationId");
-
-                    b.ToTable("RequestForQuotationContacts");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.RequestForQuotationContactsForDrafts.RequestForQuotationContactsForDraft", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("DailCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DraftId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsCallAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsTelegramAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsWhatsAppAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("RequestForQuotationContactType")
-                        .HasColumnType("tinyint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DraftId");
-
-                    b.ToTable("RequestForQuotationContactsForDrafts");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.RequestForQuotations.RequestForQuotation", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime?>("ArrivalAtUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ConfirmFinishDateByCompany")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ConfirmFinishDateByUser")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DestinationAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DestinationCityId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("DestinationLatitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("DestinationLongitude")
-                        .HasColumnType("float");
-
-                    b.Property<string>("DestinationPlaceNameByGoogle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("FinishedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("HadOffersDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("MoveAtUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("PossibledDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ReasonOfNotFinish")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReasonRefuse")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("ServiceType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("SourceAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("SourceCityId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("SourceLatitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("SourceLongitude")
-                        .HasColumnType("float");
-
-                    b.Property<string>("SourcePlaceNameByGoogle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SourceTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("Statues")
-                        .HasColumnType("tinyint");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DestinationCityId");
-
-                    b.HasIndex("SourceCityId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RequestForQuotations");
-                });
-
             modelBuilder.Entity("ReadIraq.Domain.Reviews.Review", b =>
                 {
                     b.Property<int>("Id")
@@ -4406,23 +2824,16 @@ namespace ReadIraq.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OfferId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.SearchedPlacesByUsers.SearchedPlacesByUser", b =>
+            modelBuilder.Entity("ReadIraq.Domain.Subjects.Subject", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AddressName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
@@ -4445,407 +2856,186 @@ namespace ReadIraq.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("PlaceId")
+                    b.HasKey("Id");
+
+                    b.ToTable("Subjects");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherFeature", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TeacherFeatures");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherFeatureMap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("TeacherFeatureId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TeacherProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeacherFeatureId");
+
+                    b.HasIndex("TeacherProfileId", "TeacherFeatureId")
+                        .IsUnique();
+
+                    b.ToTable("TeacherFeaturesMap");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AvatarUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("AverageRating")
+                        .HasColumnType("decimal(3,2)");
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Color")
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("ReviewsCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Specialization")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentsCount")
+                        .HasColumnType("int");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
-
-                    b.Property<double>("lang")
-                        .HasColumnType("float");
-
-                    b.Property<double>("lat")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SearchedPlacesByUsers");
+                    b.ToTable("TeacherProfiles");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.SelectedCompaniesByUsers.SelectedCompaniesBySystemForRequest", b =>
+            modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherRatingBreakdown", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TeacherProfileId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("CompanyBranchId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("RequestForQuotationId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyBranchId");
+                    b.HasIndex("TeacherProfileId", "Rating")
+                        .IsUnique();
 
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("RequestForQuotationId");
-
-                    b.ToTable("SelectedCompaniesBySystemForRequests");
+                    b.ToTable("TeacherRatingBreakdowns");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.ServiceValueForOffers.ServiceValueForOffer", b =>
+            modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherSubject", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("SubjectId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid?>("OfferId")
+                    b.Property<Guid>("TeacherProfileId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubServiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ToolId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("OfferId");
+                    b.HasIndex("SubjectId");
 
-                    b.HasIndex("ServiceId");
+                    b.HasIndex("TeacherProfileId", "SubjectId")
+                        .IsUnique();
 
-                    b.ToTable("ServiceValueForOffers");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.ServiceValues.ServiceValue", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<int?>("CompanyBranchId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("RequestForQuotationId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int?>("ServiceId")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("ServiceValueType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<int?>("SubServiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ToolId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyBranchId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("RequestForQuotationId");
-
-                    b.HasIndex("ServiceId");
-
-                    b.ToTable("ServiceValues");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.ServiceValuesForDrafts.ServiceValuesForDraft", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DraftId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int?>("ServiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SubServiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ToolId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DraftId");
-
-                    b.ToTable("ServiceValuesForDrafts");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.SourceTypes.SourceType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsMainForPoints")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("PointsToBuyRequest")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PointsToGiftToCompany")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SourceTypes");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.SourceTypes.SourceTypeTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CoreId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CoreId");
-
-                    b.ToTable("SourceTypeTranslations");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.SubServices.SubService", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ServiceId");
-
-                    b.ToTable("SubServices");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.SubServices.SubServiceTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CoreId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CoreId");
-
-                    b.ToTable("SubServiceTranslations");
+                    b.ToTable("TeacherSubjects");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.Terms.Term", b =>
@@ -4936,232 +3126,42 @@ namespace ReadIraq.Migrations
                     b.ToTable("TermTranslations");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.TimeWorks.TimeWork", b =>
+            modelBuilder.Entity("ReadIraq.Domain.Translations.Translation", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CompanyBranchId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("Day")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("EndDate")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("StartDate")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyBranchId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("TimeWork");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Toolss.Tool", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int?>("SubServiceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubServiceId");
-
-                    b.ToTable("Tools");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Toolss.ToolTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CoreId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Language")
+                    b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("LastModificationTime")
+                    b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("LastModifierUserId")
+                    b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
+
+                    b.Property<Guid?>("GradeGroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("GradeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("CoreId");
-
-                    b.ToTable("ToolTranslations");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.services.Service", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsForStorage")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsForTruck")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("SubjectId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Services");
-                });
+                    b.HasIndex("GradeGroupId");
 
-            modelBuilder.Entity("ReadIraq.Domain.services.ServiceTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.HasIndex("GradeId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.HasIndex("SubjectId");
 
-                    b.Property<int>("CoreId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CoreId");
-
-                    b.ToTable("ServiceTranslations");
+                    b.ToTable("Translations");
                 });
 
             modelBuilder.Entity("ReadIraq.Domains.UserVerficationCodes.UserVerficationCode", b =>
@@ -5452,66 +3452,6 @@ namespace ReadIraq.Migrations
                     b.Navigation("WebhookEvent");
                 });
 
-            modelBuilder.Entity("AttributeForSourceTypeSourceType", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.AttributesForSourceType.AttributeForSourceType", null)
-                        .WithMany()
-                        .HasForeignKey("AttributesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ReadIraq.Domain.SourceTypes.SourceType", null)
-                        .WithMany()
-                        .HasForeignKey("SourceTypesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CityCompany", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Cities.City", null)
-                        .WithMany()
-                        .HasForeignKey("AvailableCitiesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ReadIraq.Domain.Companies.Company", null)
-                        .WithMany()
-                        .HasForeignKey("CompaniesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CityCompanyBranch", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Cities.City", null)
-                        .WithMany()
-                        .HasForeignKey("AvailableCitiesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ReadIraq.Domain.CompanyBranches.CompanyBranch", null)
-                        .WithMany()
-                        .HasForeignKey("CompanyBranchesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CityPartner", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Cities.City", null)
-                        .WithMany()
-                        .HasForeignKey("CitiesPartnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ReadIraq.Domain.Partners.Partner", null)
-                        .WithMany()
-                        .HasForeignKey("PartnersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ReadIraq.Authorization.Roles.Role", b =>
                 {
                     b.HasOne("ReadIraq.Authorization.Users.User", "CreatorUser")
@@ -5588,120 +3528,6 @@ namespace ReadIraq.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.Attachments.Attachment", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.AttributeAndAttachmentsForDrafts.AttributeAndAttachmentsForDraft", null)
-                        .WithMany("Attachments")
-                        .HasForeignKey("AttributeAndAttachmentsForDraftId");
-
-                    b.HasOne("ReadIraq.Domain.AttributeAndAttachments.AttributeChoiceAndAttachment", null)
-                        .WithMany("Attachments")
-                        .HasForeignKey("AttributeChoiceAndAttachmentId");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeAndAttachments.AttributeChoiceAndAttachment", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.AttributeChoices.AttributeChoice", "AttributeChoice")
-                        .WithMany()
-                        .HasForeignKey("AttributeChoiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ReadIraq.Domain.RequestForQuotations.RequestForQuotation", "RequestForQuotation")
-                        .WithMany("AttributeChoiceAndAttachments")
-                        .HasForeignKey("RequestForQuotationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AttributeChoice");
-
-                    b.Navigation("RequestForQuotation");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeAndAttachmentsForDrafts.AttributeAndAttachmentsForDraft", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Drafts.Draft", "Draft")
-                        .WithMany("AttributeChoiceAndAttachments")
-                        .HasForeignKey("DraftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Draft");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeChoices.AttributeChoice", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.AttributeChoices.AttributeChoice", "ParentChoice")
-                        .WithMany()
-                        .HasForeignKey("AttributeChociceParentId");
-
-                    b.HasOne("ReadIraq.Domain.AttributesForSourceType.AttributeForSourceType", "Attribute")
-                        .WithMany("AttributeChoices")
-                        .HasForeignKey("AttributeForSourceTypeId");
-
-                    b.Navigation("Attribute");
-
-                    b.Navigation("ParentChoice");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeChoices.AttributeChoiceTranslation", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.AttributeChoices.AttributeChoice", "Core")
-                        .WithMany("Translations")
-                        .HasForeignKey("CoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Core");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeForSourcTypeValues.AttributeForSourceTypeValue", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.AttributeChoices.AttributeChoice", "AttributeChoice")
-                        .WithMany()
-                        .HasForeignKey("AttributeChoiceId");
-
-                    b.HasOne("ReadIraq.Domain.AttributesForSourceType.AttributeForSourceType", "AttributeForSourcType")
-                        .WithMany()
-                        .HasForeignKey("AttributeForSourcTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ReadIraq.Domain.RequestForQuotations.RequestForQuotation", "RequestForQuotation")
-                        .WithMany("AttributeForSourceTypeValues")
-                        .HasForeignKey("RequestForQuotationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AttributeChoice");
-
-                    b.Navigation("AttributeForSourcType");
-
-                    b.Navigation("RequestForQuotation");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeForSourceTypeValuesForDrafts.AttributeForSourceTypeValuesForDraft", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Drafts.Draft", "Draft")
-                        .WithMany("AttributeForSourceTypeValues")
-                        .HasForeignKey("DraftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Draft");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributesForSourceType.AttributeForSourceTypeTranslation", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.AttributesForSourceType.AttributeForSourceType", "Core")
-                        .WithMany("Translations")
-                        .HasForeignKey("CoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Core");
-                });
-
             modelBuilder.Entity("ReadIraq.Domain.Cities.City", b =>
                 {
                     b.HasOne("ReadIraq.Countries.Country", "Country")
@@ -5716,93 +3542,6 @@ namespace ReadIraq.Migrations
             modelBuilder.Entity("ReadIraq.Domain.Cities.CityTranslation", b =>
                 {
                     b.HasOne("ReadIraq.Domain.Cities.City", "Core")
-                        .WithMany("Translations")
-                        .HasForeignKey("CoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Core");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Codes.Code", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Partners.Partner", "Partner")
-                        .WithMany("Codes")
-                        .HasForeignKey("PartnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Partner");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Companies.Company", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.CommissionGroups.CommissionGroup", null)
-                        .WithMany("Companies")
-                        .HasForeignKey("CommissionGroupId");
-
-                    b.HasOne("ReadIraq.Domain.Companies.CompanyContact", "CompanyContact")
-                        .WithMany()
-                        .HasForeignKey("CompanyContactId");
-
-                    b.HasOne("ReadIraq.Domain.Regions.Region", "Region")
-                        .WithMany()
-                        .HasForeignKey("RegionId");
-
-                    b.HasOne("ReadIraq.Authorization.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("CompanyContact");
-
-                    b.Navigation("Region");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Companies.CompanyTranslation", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Companies.Company", "Core")
-                        .WithMany("Translations")
-                        .HasForeignKey("CoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Core");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.CompanyBranches.CompanyBranch", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Companies.CompanyContact", "CompanyContact")
-                        .WithMany()
-                        .HasForeignKey("CompanyContactId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ReadIraq.Domain.Companies.Company", "Company")
-                        .WithMany("CompanyBranches")
-                        .HasForeignKey("CompanyId");
-
-                    b.HasOne("ReadIraq.Domain.Regions.Region", "Region")
-                        .WithMany()
-                        .HasForeignKey("RegionId");
-
-                    b.HasOne("ReadIraq.Authorization.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Company");
-
-                    b.Navigation("CompanyContact");
-
-                    b.Navigation("Region");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.CompanyBranches.CompanyBranchTranslation", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.CompanyBranches.CompanyBranch", "Core")
                         .WithMany("Translations")
                         .HasForeignKey("CoreId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -5833,17 +3572,6 @@ namespace ReadIraq.Migrations
                     b.Navigation("Core");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.Drafts.Draft", b =>
-                {
-                    b.HasOne("ReadIraq.Authorization.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ReadIraq.Domain.FrequentlyQuestions.FrequentlyQuestionTranslation", b =>
                 {
                     b.HasOne("ReadIraq.Domain.FrequentlyQuestions.FrequentlyQuestion", "Core")
@@ -5855,6 +3583,36 @@ namespace ReadIraq.Migrations
                     b.Navigation("Core");
                 });
 
+            modelBuilder.Entity("ReadIraq.Domain.Grades.Grade", b =>
+                {
+                    b.HasOne("ReadIraq.Domain.Grades.GradeGroup", "GradeGroup")
+                        .WithMany()
+                        .HasForeignKey("GradeGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GradeGroup");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Grades.GradeSubject", b =>
+                {
+                    b.HasOne("ReadIraq.Domain.Grades.Grade", "Grade")
+                        .WithMany("GradeSubjects")
+                        .HasForeignKey("GradeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ReadIraq.Domain.Subjects.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Grade");
+
+                    b.Navigation("Subject");
+                });
+
             modelBuilder.Entity("ReadIraq.Domain.Mediators.Mediator", b =>
                 {
                     b.HasOne("ReadIraq.Domain.Cities.City", "City")
@@ -5862,99 +3620,6 @@ namespace ReadIraq.Migrations
                         .HasForeignKey("CityId");
 
                     b.Navigation("City");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.MoneyTransfers.MoneyTransfer", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.CompanyBranches.CompanyBranch", "CompanyBranch")
-                        .WithMany()
-                        .HasForeignKey("CompanyBranchId");
-
-                    b.HasOne("ReadIraq.Domain.Companies.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-
-                    b.HasOne("ReadIraq.Authorization.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Company");
-
-                    b.Navigation("CompanyBranch");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Offers.Offer", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.RejectReasons.RejectReason", "RejectReason")
-                        .WithMany()
-                        .HasForeignKey("RejectReasonId");
-
-                    b.HasOne("ReadIraq.Domain.SelectedCompaniesByUsers.SelectedCompaniesBySystemForRequest", "SelectedCompanies")
-                        .WithMany()
-                        .HasForeignKey("SelectedCompaniesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("RejectReason");
-
-                    b.Navigation("SelectedCompanies");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.PaidRequestPossibles.PaidRequestPossible", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.CompanyBranches.CompanyBranch", "CompanyBranch")
-                        .WithMany()
-                        .HasForeignKey("CompanyBranchId");
-
-                    b.HasOne("ReadIraq.Domain.Companies.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-
-                    b.HasOne("ReadIraq.Domain.RequestForQuotations.RequestForQuotation", "RequestForQuotation")
-                        .WithMany()
-                        .HasForeignKey("RequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
-                    b.Navigation("CompanyBranch");
-
-                    b.Navigation("RequestForQuotation");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Points.PointTranslation", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Points.Point", "Core")
-                        .WithMany("Translations")
-                        .HasForeignKey("CoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Core");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.PointsValues.PointsValue", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.CompanyBranches.CompanyBranch", "CompanyBranche")
-                        .WithMany("PointsPurchased")
-                        .HasForeignKey("CompanyBranchId");
-
-                    b.HasOne("ReadIraq.Domain.Companies.Company", "Company")
-                        .WithMany("PointsPurchased")
-                        .HasForeignKey("CompanyId");
-
-                    b.HasOne("ReadIraq.Domain.Points.Point", "Point")
-                        .WithMany()
-                        .HasForeignKey("PointId");
-
-                    b.Navigation("Company");
-
-                    b.Navigation("CompanyBranche");
-
-                    b.Navigation("Point");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.PrivacyPolicies.PrivacyPolicyTranslation", b =>
@@ -6001,81 +3666,8 @@ namespace ReadIraq.Migrations
                     b.Navigation("Core");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.RejectReasons.RejectReasonTranslation", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.RejectReasons.RejectReason", "Core")
-                        .WithMany("Translations")
-                        .HasForeignKey("CoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Core");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.RequestForQuotationContacts.RequestForQuotationContact", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.RequestForQuotations.RequestForQuotation", "RequestForQuotation")
-                        .WithMany("RequestForQuotationContacts")
-                        .HasForeignKey("RequestForQuotationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("RequestForQuotation");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.RequestForQuotationContactsForDrafts.RequestForQuotationContactsForDraft", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Drafts.Draft", "Draft")
-                        .WithMany("RequestForQuotationContacts")
-                        .HasForeignKey("DraftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Draft");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.RequestForQuotations.RequestForQuotation", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Cities.City", "DestinationCity")
-                        .WithMany()
-                        .HasForeignKey("DestinationCityId");
-
-                    b.HasOne("ReadIraq.Domain.Cities.City", "SourceCity")
-                        .WithMany()
-                        .HasForeignKey("SourceCityId");
-
-                    b.HasOne("ReadIraq.Authorization.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DestinationCity");
-
-                    b.Navigation("SourceCity");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ReadIraq.Domain.Reviews.Review", b =>
                 {
-                    b.HasOne("ReadIraq.Domain.Offers.Offer", "Offer")
-                        .WithMany()
-                        .HasForeignKey("OfferId");
-
-                    b.HasOne("ReadIraq.Authorization.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Offer");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.SearchedPlacesByUsers.SearchedPlacesByUser", b =>
-                {
                     b.HasOne("ReadIraq.Authorization.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -6085,113 +3677,64 @@ namespace ReadIraq.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.SelectedCompaniesByUsers.SelectedCompaniesBySystemForRequest", b =>
+            modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherFeatureMap", b =>
                 {
-                    b.HasOne("ReadIraq.Domain.CompanyBranches.CompanyBranch", "CompanyBranch")
+                    b.HasOne("ReadIraq.Domain.Teachers.TeacherFeature", "TeacherFeature")
                         .WithMany()
-                        .HasForeignKey("CompanyBranchId");
+                        .HasForeignKey("TeacherFeatureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("ReadIraq.Domain.Companies.Company", "Company")
+                    b.HasOne("ReadIraq.Domain.Teachers.TeacherProfile", "TeacherProfile")
+                        .WithMany("Features")
+                        .HasForeignKey("TeacherProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TeacherFeature");
+
+                    b.Navigation("TeacherProfile");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherProfile", b =>
+                {
+                    b.HasOne("ReadIraq.Authorization.Users.User", "User")
                         .WithMany()
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("ReadIraq.Domain.RequestForQuotations.RequestForQuotation", "RequestForQuotation")
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherRatingBreakdown", b =>
+                {
+                    b.HasOne("ReadIraq.Domain.Teachers.TeacherProfile", "TeacherProfile")
+                        .WithMany("RatingBreakdowns")
+                        .HasForeignKey("TeacherProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TeacherProfile");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherSubject", b =>
+                {
+                    b.HasOne("ReadIraq.Domain.Subjects.Subject", "Subject")
                         .WithMany()
-                        .HasForeignKey("RequestForQuotationId")
+                        .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
-                    b.Navigation("CompanyBranch");
-
-                    b.Navigation("RequestForQuotation");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.ServiceValueForOffers.ServiceValueForOffer", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Offers.Offer", null)
-                        .WithMany("ServiceValueForOffers")
-                        .HasForeignKey("OfferId");
-
-                    b.HasOne("ReadIraq.Domain.services.Service", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceId")
+                    b.HasOne("ReadIraq.Domain.Teachers.TeacherProfile", "TeacherProfile")
+                        .WithMany("Subjects")
+                        .HasForeignKey("TeacherProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Service");
-                });
+                    b.Navigation("Subject");
 
-            modelBuilder.Entity("ReadIraq.Domain.ServiceValues.ServiceValue", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.CompanyBranches.CompanyBranch", "CompanyBranche")
-                        .WithMany("services")
-                        .HasForeignKey("CompanyBranchId");
-
-                    b.HasOne("ReadIraq.Domain.Companies.Company", "Company")
-                        .WithMany("services")
-                        .HasForeignKey("CompanyId");
-
-                    b.HasOne("ReadIraq.Domain.RequestForQuotations.RequestForQuotation", "RequestForQuotation")
-                        .WithMany("Services")
-                        .HasForeignKey("RequestForQuotationId");
-
-                    b.HasOne("ReadIraq.Domain.services.Service", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceId");
-
-                    b.Navigation("Company");
-
-                    b.Navigation("CompanyBranche");
-
-                    b.Navigation("RequestForQuotation");
-
-                    b.Navigation("Service");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.ServiceValuesForDrafts.ServiceValuesForDraft", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Drafts.Draft", "Draft")
-                        .WithMany("Services")
-                        .HasForeignKey("DraftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Draft");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.SourceTypes.SourceTypeTranslation", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.SourceTypes.SourceType", "Core")
-                        .WithMany("Translations")
-                        .HasForeignKey("CoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Core");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.SubServices.SubService", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.services.Service", "Service")
-                        .WithMany("SubServices")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Service");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.SubServices.SubServiceTranslation", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.SubServices.SubService", "Core")
-                        .WithMany("Translations")
-                        .HasForeignKey("CoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Core");
+                    b.Navigation("TeacherProfile");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.Terms.TermTranslation", b =>
@@ -6205,50 +3748,19 @@ namespace ReadIraq.Migrations
                     b.Navigation("Core");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.TimeWorks.TimeWork", b =>
+            modelBuilder.Entity("ReadIraq.Domain.Translations.Translation", b =>
                 {
-                    b.HasOne("ReadIraq.Domain.CompanyBranches.CompanyBranch", "CompanyBranch")
-                        .WithMany()
-                        .HasForeignKey("CompanyBranchId");
+                    b.HasOne("ReadIraq.Domain.Grades.GradeGroup", null)
+                        .WithMany("Name")
+                        .HasForeignKey("GradeGroupId");
 
-                    b.HasOne("ReadIraq.Domain.Companies.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
+                    b.HasOne("ReadIraq.Domain.Grades.Grade", null)
+                        .WithMany("Name")
+                        .HasForeignKey("GradeId");
 
-                    b.Navigation("Company");
-
-                    b.Navigation("CompanyBranch");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Toolss.Tool", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.SubServices.SubService", "SubService")
-                        .WithMany("Tools")
-                        .HasForeignKey("SubServiceId");
-
-                    b.Navigation("SubService");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Toolss.ToolTranslation", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.Toolss.Tool", "Core")
-                        .WithMany("Translations")
-                        .HasForeignKey("CoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Core");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.services.ServiceTranslation", b =>
-                {
-                    b.HasOne("ReadIraq.Domain.services.Service", "Core")
-                        .WithMany("Translations")
-                        .HasForeignKey("CoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Core");
+                    b.HasOne("ReadIraq.Domain.Subjects.Subject", null)
+                        .WithMany("Name")
+                        .HasForeignKey("SubjectId");
                 });
 
             modelBuilder.Entity("ReadIraq.Domains.UserVerficationCodes.UserVerficationCode", b =>
@@ -6372,28 +3884,6 @@ namespace ReadIraq.Migrations
                     b.Navigation("AdvertisimentPositions");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.AttributeAndAttachments.AttributeChoiceAndAttachment", b =>
-                {
-                    b.Navigation("Attachments");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeAndAttachmentsForDrafts.AttributeAndAttachmentsForDraft", b =>
-                {
-                    b.Navigation("Attachments");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributeChoices.AttributeChoice", b =>
-                {
-                    b.Navigation("Translations");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.AttributesForSourceType.AttributeForSourceType", b =>
-                {
-                    b.Navigation("AttributeChoices");
-
-                    b.Navigation("Translations");
-                });
-
             modelBuilder.Entity("ReadIraq.Domain.Cities.City", b =>
                 {
                     b.Navigation("Regions");
@@ -6401,45 +3891,9 @@ namespace ReadIraq.Migrations
                     b.Navigation("Translations");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.CommissionGroups.CommissionGroup", b =>
-                {
-                    b.Navigation("Companies");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Companies.Company", b =>
-                {
-                    b.Navigation("CompanyBranches");
-
-                    b.Navigation("PointsPurchased");
-
-                    b.Navigation("Translations");
-
-                    b.Navigation("services");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.CompanyBranches.CompanyBranch", b =>
-                {
-                    b.Navigation("PointsPurchased");
-
-                    b.Navigation("Translations");
-
-                    b.Navigation("services");
-                });
-
             modelBuilder.Entity("ReadIraq.Domain.ContactUses.ContactUs", b =>
                 {
                     b.Navigation("Translations");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Drafts.Draft", b =>
-                {
-                    b.Navigation("AttributeChoiceAndAttachments");
-
-                    b.Navigation("AttributeForSourceTypeValues");
-
-                    b.Navigation("RequestForQuotationContacts");
-
-                    b.Navigation("Services");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.FrequentlyQuestions.FrequentlyQuestion", b =>
@@ -6447,19 +3901,16 @@ namespace ReadIraq.Migrations
                     b.Navigation("Translations");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.Offers.Offer", b =>
+            modelBuilder.Entity("ReadIraq.Domain.Grades.Grade", b =>
                 {
-                    b.Navigation("ServiceValueForOffers");
+                    b.Navigation("GradeSubjects");
+
+                    b.Navigation("Name");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.Partners.Partner", b =>
+            modelBuilder.Entity("ReadIraq.Domain.Grades.GradeGroup", b =>
                 {
-                    b.Navigation("Codes");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Points.Point", b =>
-                {
-                    b.Navigation("Translations");
+                    b.Navigation("Name");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.PrivacyPolicies.PrivacyPolicy", b =>
@@ -6477,48 +3928,22 @@ namespace ReadIraq.Migrations
                     b.Navigation("Translations");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.RejectReasons.RejectReason", b =>
+            modelBuilder.Entity("ReadIraq.Domain.Subjects.Subject", b =>
                 {
-                    b.Navigation("Translations");
+                    b.Navigation("Name");
                 });
 
-            modelBuilder.Entity("ReadIraq.Domain.RequestForQuotations.RequestForQuotation", b =>
+            modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherProfile", b =>
                 {
-                    b.Navigation("AttributeChoiceAndAttachments");
+                    b.Navigation("Features");
 
-                    b.Navigation("AttributeForSourceTypeValues");
+                    b.Navigation("RatingBreakdowns");
 
-                    b.Navigation("RequestForQuotationContacts");
-
-                    b.Navigation("Services");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.SourceTypes.SourceType", b =>
-                {
-                    b.Navigation("Translations");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.SubServices.SubService", b =>
-                {
-                    b.Navigation("Tools");
-
-                    b.Navigation("Translations");
+                    b.Navigation("Subjects");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.Terms.Term", b =>
                 {
-                    b.Navigation("Translations");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.Toolss.Tool", b =>
-                {
-                    b.Navigation("Translations");
-                });
-
-            modelBuilder.Entity("ReadIraq.Domain.services.Service", b =>
-                {
-                    b.Navigation("SubServices");
-
                     b.Navigation("Translations");
                 });
 #pragma warning restore 612, 618

@@ -124,11 +124,6 @@
             <param name="attachment"></param>
             <returns></returns>
         </member>
-        <member name="P:ReadIraq.Domain.AttributeChoices.Dto.AttributeChoiceTranslationDto.Language">
-            <summary>
-            Language
-            </summary>
-        </member>
         <!-- Badly formed XML comment ignored for member "M:ReadIraq.Domain.Cities.ICityManager.CheckIfCityIsExist(System.Collections.Generic.List{ReadIraq.Domain.Cities.CityTranslation})" -->
         <member name="M:ReadIraq.Domain.Cities.ICityManager.GetCitiesCounts">
             <summary>
@@ -158,45 +153,12 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="P:ReadIraq.Domain.MoneyTransfers.MoneyTransfer.OfferId">
-            <summary>
-            this is not for relationship , it's just for get amount 
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Domain.Points.Point.NumberInMonths">
-            <summary>
-            Here We Use Point Class To Buy a Feature Bundles 
-            </summary>
-        </member>
         <member name="P:ReadIraq.Domain.Regions.Dto.RegionTranslationDto.Name">
             <summary>
             Name
             </summary>
         </member>
         <member name="P:ReadIraq.Domain.Regions.Dto.RegionTranslationDto.Language">
-            <summary>
-            Language
-            </summary>
-        </member>
-        <member name="M:ReadIraq.Domain.ServiceValues.ServiceValueManager.GetFullServicesByCompanyOrRequestIdAsync(System.Int64,System.Boolean,System.Boolean)">
-            <summary>
-            Return Full Services With Subs And Tools For Company OR Request , Default Value For Request 
-            </summary>
-            <param name="id"></param>
-            <param name="forCompany"></param>
-            <returns></returns>
-        </member>
-        <member name="P:ReadIraq.Domain.SourceTypes.Dto.SourceTypeTranslationDto.Language">
-            <summary>
-            Language
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Domain.SubServices.Dto.SubServiceTranslationDto.Language">
-            <summary>
-            Language
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Domain.Toolss.Dto.ToolsTranslationDto.Language">
             <summary>
             Language
             </summary>
@@ -391,21 +353,6 @@
             </summary>
         </member>
         <member name="P:ReadIraq.Countries.Dto.CountryTranslationDto.Language">
-            <summary>
-            Language
-            </summary>
-        </member>
-        <member name="T:ReadIraq.Points.Dto.PointTranslationDto">
-            <summary>
-            Post Category Translation Dto
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Points.Dto.PointTranslationDto.Name">
-            <summary>
-            Name
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Points.Dto.PointTranslationDto.Language">
             <summary>
             Language
             </summary>
@@ -770,6 +717,16 @@
         <member name="P:ReadIraq.Localization.SourceFiles.Tokens.User">
             <summary>
               Looks up a localized string similar to User.
+            </summary>
+        </member>
+        <member name="P:ReadIraq.Localization.SourceFiles.Tokens.TeacherFeature">
+            <summary>
+              Looks up a localized string similar to Teacher Feature.
+            </summary>
+        </member>
+        <member name="P:ReadIraq.Localization.SourceFiles.Tokens.TeacherProfile">
+            <summary>
+              Looks up a localized string similar to Teacher Profile.
             </summary>
         </member>
         <member name="F:ReadIraq.ReadIraqConsts.DefaultPassPhrase">

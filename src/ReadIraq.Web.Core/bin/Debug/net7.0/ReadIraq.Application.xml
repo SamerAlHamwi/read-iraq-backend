@@ -898,56 +898,6 @@
             <param name="input"></param>
             <returns></returns>
         </member>
-        <member name="M:ReadIraq.AttributesForSourceType.ToolAppService.GetAsync(Abp.Application.Services.Dto.EntityDto{System.Int32})">
-            <summary>
-            
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ReadIraq.AttributesForSourceType.ToolAppService.GetAllAsync(ReadIraq.Domain.Toolss.Dto.PagedToolResultRequestDto)">
-            <summary>
-            
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ReadIraq.AttributesForSourceType.ToolAppService.UpdateAsync(ReadIraq.Domain.Toolss.Dto.UpdateToolDto)">
-            <summary>
-            
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ReadIraq.AttributesForSourceType.ToolAppService.DeleteAsync(Abp.Application.Services.Dto.EntityDto{System.Int32})">
-            <summary>
-            
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ReadIraq.AttributesForSourceType.ToolAppService.CreateFilteredQuery(ReadIraq.Domain.Toolss.Dto.PagedToolResultRequestDto)">
-            <summary>
-            
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ReadIraq.AttributesForSourceType.ToolAppService.ApplySorting(System.Linq.IQueryable{ReadIraq.Domain.Toolss.Tool},ReadIraq.Domain.Toolss.Dto.PagedToolResultRequestDto)">
-            <summary>
-            
-            </summary>
-            <param name="query"></param>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ReadIraq.AttributesForSourceType.ToolAppService.SwitchActivationAsync(ReadIraq.Domain.Cities.Dto.SwitchActivationInputDto)">
-            <summary>
-            Switch Activation of A Tool
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
         <member name="P:ReadIraq.Users.Dto.PagedUserResultRequestDto.UserType">
             <summary>
             Admin = 1,

@@ -115,17 +115,6 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Tenants
                 _context.UserRoles.Add(new UserRole(_tenantId, adminUser.Id, adminRole.Id));
                 _context.SaveChanges();
             }
-
-            var defaultGroup = _context.CommissionGroups.FirstOrDefault(x => x.IsDefault == true);
-            if (defaultGroup is null)
-            {
-                defaultGroup = new Domain.CommissionGroups.CommissionGroup();
-                defaultGroup.Name = 10;
-                defaultGroup.IsDefault = true;
-
-                _context.CommissionGroups.Add(defaultGroup);
-                _context.SaveChanges();
-            }
         }
         private void CheckBasicUserRoles(Role basicUserRole)
         {

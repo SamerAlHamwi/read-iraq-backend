@@ -1,14 +1,29 @@
 using Abp.Domain.Entities.Auditing;
-using System.ComponentModel.DataAnnotations;
+using ReadIraq.Domain.Translations;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ReadIraq.Domain.Grades
 {
+    [Table("Grades")]
     public class Grade : FullAuditedEntity
     {
-        [Required]
-        [StringLength(128)]
-        public string Name { get; set; }
+        public virtual ICollection<Translation> Name { get; set; }
 
         public int Priority { get; set; }
+
+        public Guid GradeGroupId { get; set; }
+
+        [ForeignKey(nameof(GradeGroupId))]
+        public virtual GradeGroup GradeGroup { get; set; }
+
+        public virtual ICollection<GradeSubject> GradeSubjects { get; set; }
+
+        public Grade()
+        {
+            Name = new HashSet<Translation>();
+            GradeSubjects = new HashSet<GradeSubject>();
+        }
     }
 }

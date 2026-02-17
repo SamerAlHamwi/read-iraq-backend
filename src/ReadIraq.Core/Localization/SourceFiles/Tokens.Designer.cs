@@ -392,5 +392,23 @@ namespace ReadIraq.Localization.SourceFiles {
                 return ResourceManager.GetString("User", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Teacher Feature.
+        /// </summary>
+        public static string TeacherFeature {
+            get {
+                return ResourceManager.GetString("TeacherFeature", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Teacher Profile.
+        /// </summary>
+        public static string TeacherProfile {
+            get {
+                return ResourceManager.GetString("TeacherProfile", resourceCulture);
+            }
+        }
     }
 }

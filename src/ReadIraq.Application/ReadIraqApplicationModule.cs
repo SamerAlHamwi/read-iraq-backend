@@ -11,41 +11,24 @@ using ReadIraq.Cities.Dto;
 using ReadIraq.ContactUsService.Dto;
 using ReadIraq.Countries;
 using ReadIraq.Countries.Dto;
-using ReadIraq.Domain.AttributeChoices;
-using ReadIraq.Domain.AttributeChoices.Dto;
-using ReadIraq.Domain.AttributesForSourceType;
-using ReadIraq.Domain.AttributesForSourceType.Dto;
 using ReadIraq.Domain.Cities;
-using ReadIraq.Domain.Cities.Dto;
-using ReadIraq.Domain.Companies;
-using ReadIraq.Domain.Companies.Dto;
-using ReadIraq.Domain.CompanyBranches;
-using ReadIraq.Domain.CompanyBranches.Dto;
 using ReadIraq.Domain.ContactUses;
 using ReadIraq.Domain.Countries;
 using ReadIraq.Domain.FrequentlyQuestions;
 using ReadIraq.Domain.FrequentlyQuestions.Dto;
 using ReadIraq.Domain.Grades;
-using ReadIraq.Domain.Points;
 using ReadIraq.Domain.PrivacyPolicies;
 using ReadIraq.Domain.PushNotifications;
 using ReadIraq.Domain.Regions;
 using ReadIraq.Domain.Regions.Dto;
-using ReadIraq.Domain.RejectReasons;
-using ReadIraq.Domain.RejectReasons.Dto;
-using ReadIraq.Domain.services;
-using ReadIraq.Domain.services.Dto;
-using ReadIraq.Domain.SourceTypes;
-using ReadIraq.Domain.SourceTypes.Dto;
-using ReadIraq.Domain.SubServices;
-using ReadIraq.Domain.SubServices.Dto;
+using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.Terms;
-using ReadIraq.Domain.Toolss;
-using ReadIraq.Domain.Toolss.Dto;
+using ReadIraq.Domain.Translations;
+using ReadIraq.Domain.Translations.Dto;
 using ReadIraq.Grades.Dto;
-using ReadIraq.Points.Dto;
 using ReadIraq.PrivacyPolicyService.Dto;
 using ReadIraq.PushNotifications.Dto;
+using ReadIraq.Teachers.Dto;
 using ReadIraq.TermService.Dto;
 
 namespace ReadIraq
@@ -95,14 +78,27 @@ namespace ReadIraq
                 configuration.CreateMap<Grade, LiteGradeDto>();
                 #endregion
 
+                #region TeacherFeature
+                configuration.CreateMap<TeacherFeature, TeacherFeatureDto>();
+                configuration.CreateMap<TeacherFeature, LiteTeacherFeatureDto>();
+                #endregion
+
+                #region TeacherProfile
+                configuration.CreateMap<TeacherProfile, TeacherProfileDto>();
+                configuration.CreateMap<TeacherProfile, LiteTeacherProfileDto>();
+                configuration.CreateMap<TeacherRatingBreakdown, TeacherRatingBreakdownDto>();
+                #endregion
+
+                #region Translation
+                configuration.CreateMap<Translation, TranslationDto>().ReverseMap();
+                #endregion
+
                 #region PushNotification
                 configuration.CreateMultiLingualMap<PushNotification, PushNotificationTranslation, PushNotificationDetailsDto>(context).TranslationMap
                 .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message));
                 configuration.CreateMultiLingualMap<PushNotification, PushNotificationTranslation, PushNotificationDto>(context).TranslationMap
                 .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message));
                 #endregion
-
-
 
 
                 #region Country
@@ -125,16 +121,6 @@ namespace ReadIraq
                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
                 #endregion
 
-                #region Point
-                // Point Translation Configuration
-                configuration.CreateMultiLingualMap<Point, PointTranslation, LitePointDto>(context).TranslationMap
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                configuration.CreateMultiLingualMap<Point, PointTranslation, PointDetailsDto>(context).TranslationMap
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                configuration.CreateMultiLingualMap<Point, PointTranslation, PointDto>(context).TranslationMap
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                #endregion
-
                 #region Region
                 // Region Translation Configuration
                 configuration.CreateMultiLingualMap<Region, RegionTranslation, LiteRegionDto>(context).TranslationMap
@@ -145,38 +131,6 @@ namespace ReadIraq
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
                 configuration.CreateMultiLingualMap<Region, RegionTranslation, RegionDto>(context).TranslationMap
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                #endregion
-
-                #region SourceTyppe
-                configuration.CreateMultiLingualMap<SourceType, SourceTypeTranslation, LiteSourceTypeDto>(context).TranslationMap
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                configuration.CreateMultiLingualMap<SourceType, SourceTypeTranslation, SourceTypeDetailsDto>(context).TranslationMap
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                configuration.CreateMultiLingualMap<SourceType, SourceTypeTranslation, SourceTypeDto>(context).TranslationMap
-                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                #endregion
-
-
-                #region AttributeForSourceType
-                configuration.CreateMultiLingualMap<AttributeForSourceType, AttributeForSourceTypeTranslation, LiteAttributeForSourceTypeDto>(context).TranslationMap
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                configuration.CreateMultiLingualMap<AttributeForSourceType, AttributeForSourceTypeTranslation, AttributeForSourceTypeDetailsDto>(context).TranslationMap
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                configuration.CreateMultiLingualMap<AttributeForSourceType, AttributeForSourceTypeTranslation, AttributeForSourceTypeDto>(context).TranslationMap
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                #endregion
-
-                #region AttributeChoices
-                configuration.CreateMultiLingualMap<AttributeChoice, AttributeChoiceTranslation, AttributeChoiceDto>(context).TranslationMap
-              .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                configuration.CreateMultiLingualMap<AttributeChoice, AttributeChoiceTranslation, LiteAttributeChoiceDto>(context).TranslationMap
-              .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-
-                configuration.CreateMultiLingualMap<AttributeChoice, AttributeChoiceTranslation, SuperLiteAttributeChoiceDto>(context).TranslationMap
-              .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                configuration.CreateMultiLingualMap<AttributeChoice, AttributeChoiceTranslation, AttributeChoiceDetailsDto>(context).TranslationMap
-              .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-
                 #endregion
 
                 #region ContactUs
@@ -194,41 +148,6 @@ namespace ReadIraq
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
                  .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
                 #endregion
-                #region Company
-                configuration.CreateMultiLingualMap<Company, CompanyTranslation, CompanyDetailsDto>(context).TranslationMap
-                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                 .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.Bio))
-                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
-                configuration.CreateMultiLingualMap<Company, CompanyTranslation, LiteCompanyDto>(context).TranslationMap
-                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                 .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.Bio))
-                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
-                configuration.CreateMultiLingualMap<Company, CompanyTranslation, CompanyDto>(context).TranslationMap
-                  .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                  .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.Bio))
-                  .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
-
-
-                #endregion
-                #region CompanyBranch
-                configuration.CreateMultiLingualMap<CompanyBranch, CompanyBranchTranslation, CompanyBranchDetailsDto>(context).TranslationMap
-                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                 .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.Bio))
-                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
-                configuration.CreateMultiLingualMap<CompanyBranch, CompanyBranchTranslation, LiteCompanyBranchDto>(context).TranslationMap
-                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                 .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.Bio))
-                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
-                configuration.CreateMultiLingualMap<CompanyBranch, CompanyBranchTranslation, CompanyBranchDto>(context).TranslationMap
-                  .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                  .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.Bio))
-                  .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
-
-
-
-
-
-                #endregion
 
                 #region Term
                 configuration.CreateMultiLingualMap<Term, TermTranslation, TermDetailsDto>(context).TranslationMap
@@ -239,32 +158,6 @@ namespace ReadIraq
                  .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
                 #endregion
 
-                #region Service
-                configuration.CreateMultiLingualMap<Service, ServiceTranslation, ServiceDetailsDto>(context).TranslationMap
-                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                configuration.CreateMultiLingualMap<Service, ServiceTranslation, LiteServiceDto>(context).TranslationMap
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                configuration.CreateMultiLingualMap<Service, ServiceTranslation, ServiceDto>(context).TranslationMap
-                  .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-
-                #endregion
-
-                #region SubService
-                configuration.CreateMultiLingualMap<SubService, SubServiceTranslation, SubServiceDetailsDto>(context).TranslationMap
-                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                configuration.CreateMultiLingualMap<SubService, SubServiceTranslation, LiteSubServiceDto>(context).TranslationMap
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                configuration.CreateMultiLingualMap<SubService, SubServiceTranslation, SubServiceDto>(context).TranslationMap
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                #endregion
-
-                #region Tool
-                configuration.CreateMultiLingualMap<Tool, ToolTranslation, ToolDetailsDto>(context).TranslationMap
-                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                configuration.CreateMultiLingualMap<Tool, ToolTranslation, LiteToolDto>(context).TranslationMap
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                #endregion
-
                 #region FrequentlyQuestion
                 configuration.CreateMultiLingualMap<FrequentlyQuestion, FrequentlyQuestionTranslation, FrequentlyQuestionDetailsDto>(context).TranslationMap
                  .ForMember(dest => dest.Question, opt => opt.MapFrom(src => src.Question))
@@ -272,13 +165,6 @@ namespace ReadIraq
                 configuration.CreateMultiLingualMap<FrequentlyQuestion, FrequentlyQuestionTranslation, LiteFrequentlyQuestionDto>(context).TranslationMap
                 .ForMember(dest => dest.Question, opt => opt.MapFrom(src => src.Question))
                  .ForMember(dest => dest.Answer, opt => opt.MapFrom(src => src.Answer));
-                #endregion
-
-                #region RejectReason
-                configuration.CreateMultiLingualMap<RejectReason, RejectReasonTranslation, RejectReasonDetailsDto>(context).TranslationMap
-                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
-                configuration.CreateMultiLingualMap<RejectReason, RejectReasonTranslation, LiteRejectReasonDto>(context).TranslationMap
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
                 #endregion
 
 

@@ -15,8 +15,6 @@ using ReadIraq.Authentication.JwtBearer;
 using ReadIraq.Authorization;
 using ReadIraq.Authorization.Roles;
 using ReadIraq.Authorization.Users;
-using ReadIraq.Domain.Companies;
-using ReadIraq.Domain.CompanyBranches;
 using ReadIraq.Domain.Mediators.Mangers;
 using ReadIraq.Domain.RegisterdPhoneNumbers;
 using ReadIraq.Domains.UserVerficationCodes;
@@ -47,8 +45,6 @@ namespace ReadIraq.Controllers
         private readonly IUserVerficationCodeManager _userVerficationCodeManager;
         private readonly IRegisterdPhoneNumberManager _registerdPhoneNumberManager;
         private readonly UserManager _userManager;
-        private readonly ICompanyManager _companyManager;
-        private readonly ICompanyBranchManager _companyBranchManager;
         private readonly IRepository<ChangedPhoneNumberForUser> _changedPhoneNumberForUserRepository;
         private readonly IMediatorManager _mediatorManager;
         private readonly TenantManager _tenantManager;
@@ -66,8 +62,6 @@ namespace ReadIraq.Controllers
             IUserVerficationCodeManager userVerficationCodeManager,
             IRegisterdPhoneNumberManager registerdPhoneNumberManager,
             UserManager userManager,
-            ICompanyManager companyManager,
-            ICompanyBranchManager companyBranchManager,
             IRepository<ChangedPhoneNumberForUser> changedPhoneNumberForUserRepository,
             IMediatorManager mediatorManager,
             TenantManager tenantManager,
@@ -84,8 +78,6 @@ namespace ReadIraq.Controllers
             _userVerficationCodeManager = userVerficationCodeManager;
             _registerdPhoneNumberManager = registerdPhoneNumberManager;
             _userManager = userManager;
-            _companyManager = companyManager;
-            _companyBranchManager = companyBranchManager;
             _changedPhoneNumberForUserRepository = changedPhoneNumberForUserRepository;
             _mediatorManager = mediatorManager;
             _tenantManager = tenantManager;
@@ -129,17 +121,7 @@ namespace ReadIraq.Controllers
             }
             int CompanyId = 0;
             int CompanyBranchId = 0;
-            switch (loginResult.User.Type)
-            {
-                case UserType.CompanyUser:
-                    CompanyId = await _companyManager.GetCompnayIdByUserId(loginResult.User.Id);
-                    break;
-                case UserType.CompanyBranchUser:
-                    CompanyBranchId = await _companyBranchManager.GetCompnayBranchIdByUserId(loginResult.User.Id);
-                    break;
-                default:
-                    break;
-            }
+           
 
             try
             {

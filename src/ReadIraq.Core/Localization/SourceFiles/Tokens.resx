@@ -169,4 +169,10 @@
   <data name="User" xml:space="preserve">
     <value>User</value>
   </data>
+  <data name="TeacherFeature" xml:space="preserve">
+    <value>Teacher Feature</value>
+  </data>
+  <data name="TeacherProfile" xml:space="preserve">
+    <value>Teacher Profile</value>
+  </data>
 </root>

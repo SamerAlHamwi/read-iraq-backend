@@ -66,6 +66,7 @@ namespace ReadIraq.Authorization
             context.CreatePermission(PermissionNames.ApkBuild_FullControl, L("ApkBuildFullControl"));
             context.CreatePermission(PermissionNames.Partner_FullControl, L("PartnerFullControl"));
             context.CreatePermission(PermissionNames.Broker_FullControl, L("BrokerFullControl"));
+            context.CreatePermission(PermissionNames.Translation_FullControl, L("TranslationFullControl"));
             context.CreatePermission(PermissionNames.GetCommissionForBranchesWithoutCompany, L("GetCommissionForBranchesWithoutCompany"));
             context.CreatePermission(PermissionNames.GetDiscountPercentage, L("GetDiscountPercentage"));
             context.CreatePermission(PermissionNames.GetEmailSetting, L("GetEmailSetting"));

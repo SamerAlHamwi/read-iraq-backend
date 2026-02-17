@@ -70,6 +70,7 @@
         public const string ApkBuild_FullControl = "ApkBuild.FullControl";
         public const string Partner_FullControl = "Partner.FullControl";
         public const string Broker_FullControl = "Broker.FullControl";
+        public const string Translation_FullControl = "Translation.FullControl";
 
         public const string GetCommissionForBranchesWithoutCompany = "GetCommissionForBranchesWithoutCompany";
         public const string GetDiscountPercentage = "GetDiscountPercentage";
