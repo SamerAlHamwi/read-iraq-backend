@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReadIraq.EntityFrameworkCore;
 
@@ -11,9 +12,11 @@ using ReadIraq.EntityFrameworkCore;
 namespace ReadIraq.Migrations
 {
     [DbContext(typeof(ReadIraqDbContext))]
-    partial class ReadIraqDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260217081030_Added_TeacherProfile_And_Related_Table")]
+    partial class Added_TeacherProfile_And_Related_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

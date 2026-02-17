@@ -1,4 +1,4 @@
-using Abp.Domain.Entities;
+using Abp.Domain.Entities.Auditing;
 using ReadIraq.Domain.Subjects;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ReadIraq.Domain.Teachers
 {
     [Table("TeacherSubjects")]
-    public class TeacherSubject : Entity
+    public class TeacherSubject : FullAuditedEntity<Guid>
     {
         public Guid TeacherProfileId { get; set; }
 

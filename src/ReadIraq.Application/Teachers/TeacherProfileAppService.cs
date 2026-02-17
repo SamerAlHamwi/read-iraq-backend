@@ -18,14 +18,14 @@ namespace ReadIraq.Teachers
     public class TeacherProfileAppService : ReadIraqAsyncCrudAppService<TeacherProfile, TeacherProfileDto, Guid, LiteTeacherProfileDto, PagedTeacherProfileResultRequestDto, CreateTeacherProfileDto, UpdateTeacherProfileDto>, ITeacherProfileAppService
     {
         private readonly ITeacherProfileManager _teacherProfileManager;
-        private readonly IRepository<TeacherFeatureMap> _featureMapRepository;
-        private readonly IRepository<TeacherSubject> _teacherSubjectRepository;
+        private readonly IRepository<TeacherFeatureMap, Guid> _featureMapRepository;
+        private readonly IRepository<TeacherSubject, Guid> _teacherSubjectRepository;
 
         public TeacherProfileAppService(
             IRepository<TeacherProfile, Guid> repository,
             ITeacherProfileManager teacherProfileManager,
-            IRepository<TeacherFeatureMap> featureMapRepository,
-            IRepository<TeacherSubject> teacherSubjectRepository)
+            IRepository<TeacherFeatureMap, Guid> featureMapRepository,
+            IRepository<TeacherSubject, Guid> teacherSubjectRepository)
             : base(repository)
         {
             _teacherProfileManager = teacherProfileManager;

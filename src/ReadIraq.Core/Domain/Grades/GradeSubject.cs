@@ -1,12 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using Abp.Domain.Entities;
+using Abp.Domain.Entities.Auditing;
 using ReadIraq.Domain.Subjects;
 
 namespace ReadIraq.Domain.Grades
 {
     [Table("GradeSubjects")]
-    public class GradeSubject : Entity
+    public class GradeSubject : FullAuditedEntity
     {
         public int GradeId { get; set; }
 

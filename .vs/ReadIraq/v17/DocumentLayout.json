@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260217080150_Added_TeacherProfile_And_Related_Tables.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260217080150_Added_TeacherProfile_And_Related_Tables.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260217081030_Added_TeacherProfile_And_Related_Table.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260217081030_Added_TeacherProfile_And_Related_Table.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,14 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "20260217080150_Added_TeacherProfile_And_Related_Tables.cs",
-              "DocumentMoniker": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260217080150_Added_TeacherProfile_And_Related_Tables.cs",
-              "RelativeDocumentMoniker": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260217080150_Added_TeacherProfile_And_Related_Tables.cs",
-              "ToolTip": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260217080150_Added_TeacherProfile_And_Related_Tables.cs",
-              "RelativeToolTip": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260217080150_Added_TeacherProfile_And_Related_Tables.cs",
+              "Title": "20260217081030_Added_TeacherProfile_And_Related_Table.cs",
+              "DocumentMoniker": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260217081030_Added_TeacherProfile_And_Related_Table.cs",
+              "RelativeDocumentMoniker": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260217081030_Added_TeacherProfile_And_Related_Table.cs",
+              "ToolTip": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260217081030_Added_TeacherProfile_And_Related_Table.cs",
+              "RelativeToolTip": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260217081030_Added_TeacherProfile_And_Related_Table.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-17T08:01:50.653Z",
+              "WhenOpened": "2026-02-17T08:10:31.135Z",
               "EditorCaption": ""
             }
           ]
