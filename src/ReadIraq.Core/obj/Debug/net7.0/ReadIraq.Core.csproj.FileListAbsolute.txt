@@ -13,10 +13,10 @@ C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ReadIraq.
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ReadIraq.Core.AssemblyInfoInputs.cache
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ReadIraq.Core.AssemblyInfo.cs
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ReadIraq.Core.csproj.CoreCompileInputs.cache
+C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ReadIraq.Core.sourcelink.json
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ar\ReadIraq.Core.resources.dll
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ReadIraq.Core.dll
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\refint\ReadIraq.Core.dll
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ReadIraq.Core.xml
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ReadIraq.Core.pdb
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ref\ReadIraq.Core.dll
-C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Core\obj\Debug\net7.0\ReadIraq.Core.sourcelink.json
