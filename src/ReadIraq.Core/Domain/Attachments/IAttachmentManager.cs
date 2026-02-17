@@ -1,4 +1,4 @@
-﻿using Abp.Domain.Services;
+using Abp.Domain.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static ReadIraq.Enums.Enum;
@@ -75,7 +75,7 @@ namespace ReadIraq.Domain.Attachments
         /// </summary>
         /// <param name="refType">Type of related Entity</param>
         /// <param name="fileType">Type of Attachment (file type)</param>
-        void CheckAttachmentRefType(AttachmentRefType refType, AttachmentType fileType);
+        void CheckAttachmentRefType(AttachmentRefType refType, MediaType fileType);
 
         /// <summary>
         /// Get list of attachments that are related to specific Entity Id and Type.

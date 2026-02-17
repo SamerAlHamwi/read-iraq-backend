@@ -1,4 +1,4 @@
-﻿using Abp.Application.Services;
+using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Entities;
@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using ReadIraq.Attachments.Dto;
 using ReadIraq.Domain.Attachments;
 using ReadIraq.FileUploadService;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -59,6 +60,8 @@ namespace ReadIraq.Attachments
             {
                 var itemDto = MapToEntityDto(item);
                 itemDto.Url = _attachmentManager.GetUrl(item);
+                itemDto.StorageKey = item.StorageKey;
+                itemDto.CreatedAt = item.CreationTime;
 
                 listDto.Add(itemDto);
             }
@@ -70,12 +73,14 @@ namespace ReadIraq.Attachments
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<AttachmentDto> GetAsync(EntityDto input)
+        public async Task<AttachmentDto> GetAsync(EntityDto<long> input)
         {
             var entity = await GetEntityByIdAsync(input.Id);
 
             var entityDto = MapToEntityDto(entity);
             entityDto.Url = _attachmentManager.GetUrl(entity);
+            entityDto.StorageKey = entity.StorageKey;
+            entityDto.CreatedAt = entity.CreationTime;
             return entityDto;
         }
         /// <summary>
@@ -97,12 +102,17 @@ namespace ReadIraq.Attachments
             var uploadedFileInfo = await _fileUploadService.SaveAttachmentAsync(input.File);
             var attachment = ObjectMapper.Map<Attachment>(input);
             attachment.Type = uploadedFileInfo.Type;
-            attachment.RelativePath = uploadedFileInfo.RelativePath;
+            attachment.StorageKey = uploadedFileInfo.RelativePath;
             attachment.LowResolutionPhotoRelativePath = uploadedFileInfo.LowResolutionPhotoRelativePath;
+            attachment.FileName = input.File?.FileName;
+            attachment.Size = input.File?.Length ?? 0;
+            attachment.Url = _attachmentManager.GetUrl(attachment);
             await _repository.InsertAndGetIdAsync(attachment);
             var entityDto = MapToEntityDto(attachment);
             entityDto.Url = _attachmentManager.GetUrl(attachment);
             entityDto.LowResolutionPhotosUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+            entityDto.StorageKey = attachment.StorageKey;
+            entityDto.CreatedAt = attachment.CreationTime;
             return entityDto;
         }
         /// <summary>
@@ -111,16 +121,16 @@ namespace ReadIraq.Attachments
         /// <param name="input"></param>
         /// <returns></returns>
         [RemoteService(IsEnabled = false)]
-        public async Task DeleteAsync(EntityDto input)
+        public async Task DeleteAsync(EntityDto<long> input)
         {
             var entity = await GetEntityByIdAsync(input.Id);
 
             await _repository.DeleteAsync(entity);
 
-            _fileUploadService.DeleteAttachment(entity.RelativePath);
+            _fileUploadService.DeleteAttachment(entity.StorageKey);
         }
 
-        private async Task<Attachment> GetEntityByIdAsync(int id)
+        private async Task<Attachment> GetEntityByIdAsync(long id)
         {
             var attachment = await _repository.FirstOrDefaultAsync(x => x.Id == id);
             if (attachment == null)
@@ -151,12 +161,17 @@ namespace ReadIraq.Attachments
                 var uploadedFileInfo = await _fileUploadService.SaveAttachmentAsync(File);
                 var attachment = ObjectMapper.Map<Attachment>(input);
                 attachment.Type = uploadedFileInfo.Type;
-                attachment.RelativePath = uploadedFileInfo.RelativePath;
+                attachment.StorageKey = uploadedFileInfo.RelativePath;
                 attachment.LowResolutionPhotoRelativePath = uploadedFileInfo.LowResolutionPhotoRelativePath;
+                attachment.FileName = File?.FileName;
+                attachment.Size = File?.Length ?? 0;
+                attachment.Url = _attachmentManager.GetUrl(attachment);
                 await _repository.InsertAndGetIdAsync(attachment);
                 var entityDto = MapToEntityDto(attachment);
                 entityDto.Url = _attachmentManager.GetUrl(attachment);
                 entityDto.LowResolutionPhotosUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                entityDto.StorageKey = attachment.StorageKey;
+                entityDto.CreatedAt = attachment.CreationTime;
                 attachmentDtos.Add(entityDto);
             }
             return attachmentDtos;

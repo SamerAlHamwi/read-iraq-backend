@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using ReadIraq.Advertisiments.Dto;
 using ReadIraq.Domain.Advertisiments;
 using ReadIraq.Domain.Attachments;
@@ -20,7 +20,7 @@ namespace ReadIraq.Advertisiments.Mapper
             CreateMap<Advertisiment, CreateAdvertisimentDto>();
             CreateMap<Advertisiment, LiteAdvertisimentDto>();
             CreateMap<Advertisiment, AdvertisimentDetailsDto>();
-            CreateMap<Attachment, string>().ConvertUsing(source => source.RelativePath ?? string.Empty);
+            CreateMap<Attachment, string>().ConvertUsing(source => source.StorageKey ?? string.Empty);
             CreateMap<CreateAdvertisimentPositionDto, AdvertisimentPosition>();
             CreateMap<AdvertisimentPosition, AdvertisimentPositionDto>();
             CreateMap<AddAdvertisimentPositionDto, AdvertisimentPosition>();

@@ -1,4 +1,4 @@
-﻿using Abp.Dependency;
+using Abp.Dependency;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using static ReadIraq.Enums.Enum;
@@ -11,7 +11,7 @@ namespace ReadIraq.FileUploadService
         /// Save file to Attachments folder (wwwroot\Attachments\).
         /// </summary>
         /// <param name="file">uploaded file</param>
-        /// <returns>AttachmentType and Path of saved file relative to wwwroot folder</returns>
+        /// <returns>MediaType and storage key relative to wwwroot folder</returns>
         Task<UploadedFileInfo> SaveAttachmentAsync(IFormFile file);
         Task<UploadedApk> SaveApk(IFormFile file);
 
@@ -40,7 +40,7 @@ namespace ReadIraq.FileUploadService
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        AttachmentType GetAndCheckFileType(IFormFile file);
+        MediaType GetAndCheckFileType(IFormFile file);
         /// <summary>
         /// Generate Path To Save
         /// </summary>
@@ -57,18 +57,18 @@ namespace ReadIraq.FileUploadService
     public class UploadedFileInfo
     {
         /// <summary>
-        /// AttachmentType
+        /// MediaType
         /// </summary>
-        public AttachmentType Type { get; set; }
+        public MediaType Type { get; set; }
         /// <summary>
-        /// RelativePath
+        /// StorageKey
         /// </summary>
-        public string RelativePath { get; set; }
+        public string RelativePath { get; set; } // kept name for backward compatibility
         public string LowResolutionPhotoRelativePath { get; set; }
     }
     public class UploadedApk
     {
-        public AttachmentType Type { get; set; }
+        public MediaType Type { get; set; }
         public string RelativePath { get; set; }
     }
     /// <summary>

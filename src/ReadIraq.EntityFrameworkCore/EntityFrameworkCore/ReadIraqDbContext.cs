@@ -9,15 +9,19 @@ using ReadIraq.Domain.ApkBuilds;
 using ReadIraq.Domain.AskForHelps;
 using ReadIraq.Domain.Attachments;
 using ReadIraq.Domain.Cities;
+using ReadIraq.Domain.Comments;
 using ReadIraq.Domain.ContactUses;
 using ReadIraq.Domain.Countries;
+using ReadIraq.Domain.Follows;
 using ReadIraq.Domain.FrequentlyQuestions;
+using ReadIraq.Domain.LessonSessions;
 using ReadIraq.Domain.Mediators;
 using ReadIraq.Domain.PrivacyPolicies;
 using ReadIraq.Domain.PushNotifications;
 using ReadIraq.Domain.Regions;
 using ReadIraq.Domain.RegisterdPhoneNumbers;
 using ReadIraq.Domain.Reviews;
+using ReadIraq.Domain.SavedItems;
 using ReadIraq.Domain.Terms;
 using ReadIraq.Domains.UserVerficationCodes;
 using ReadIraq.MultiTenancy;
@@ -39,6 +43,11 @@ namespace ReadIraq.EntityFrameworkCore
         public virtual DbSet<Region> Regions { get; set; }
         public virtual DbSet<RegionTranslation> RegionTranslations { get; set; }
         public virtual DbSet<Attachment> Attachments { get; set; }
+        public virtual DbSet<LessonSession> LessonSessions { get; set; }
+        public virtual DbSet<LessonSessionAttachment> LessonSessionAttachments { get; set; }
+        public virtual DbSet<SessionComment> SessionComments { get; set; }
+        public virtual DbSet<UserFollowTeacher> UserFollowTeachers { get; set; }
+        public virtual DbSet<UserSavedItem> UserSavedItems { get; set; }
         public virtual DbSet<PushNotification> PushNotifications { get; set; }
         public virtual DbSet<UserVerficationCode> UserVerficationCodes { get; set; }
         public virtual DbSet<RegisterdPhoneNumber> RegisterdPhoneNumbers { get; set; }
@@ -76,6 +85,30 @@ namespace ReadIraq.EntityFrameworkCore
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<LessonSessionAttachment>(b =>
+            {
+                b.HasKey(x => new { x.LessonSessionId, x.AttachmentId });
+                b.HasQueryFilter(x => !x.IsDeleted);
+            });
+
+            modelBuilder.Entity<SessionComment>(b =>
+            {
+                b.HasOne(x => x.ParentComment)
+                    .WithMany(x => x.Replies)
+                    .HasForeignKey(x => x.ParentCommentId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<UserFollowTeacher>(b =>
+            {
+                b.HasIndex(x => new { x.UserId, x.TeacherProfileId }).IsUnique();
+            });
+
+            modelBuilder.Entity<UserSavedItem>(b =>
+            {
+                b.HasIndex(x => new { x.UserId, x.ItemType, x.ItemId }).IsUnique();
+            });
 
             modelBuilder.Entity<GradeSubject>(b =>
             {

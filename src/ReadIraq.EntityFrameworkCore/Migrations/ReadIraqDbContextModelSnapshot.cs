@@ -1860,6 +1860,13 @@ namespace ReadIraq.Migrations
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -1872,23 +1879,26 @@ namespace ReadIraq.Migrations
                     b.Property<string>("LowResolutionPhotoRelativePath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<long?>("RefId")
                         .HasColumnType("bigint");
 
                     b.Property<byte>("RefType")
                         .HasColumnType("tinyint");
 
-                    b.Property<string>("RelativePath")
+                    b.Property<double>("Size")
+                        .HasColumnType("float");
+
+                    b.Property<string>("StorageKey")
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
+
+                    b.Property<string>("Url")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.HasKey("Id");
 
@@ -2023,6 +2033,60 @@ namespace ReadIraq.Migrations
                     b.HasIndex("CoreId");
 
                     b.ToTable("CityTranslations");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Comments.SessionComment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsByTeacher")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("LessonSessionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ParentCommentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LessonSessionId");
+
+                    b.HasIndex("ParentCommentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SessionComments");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.ContactUses.ContactUs", b =>
@@ -2192,6 +2256,49 @@ namespace ReadIraq.Migrations
                     b.HasIndex("CoreId");
 
                     b.ToTable("CountryTranslations");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Follows.UserFollowTeacher", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("TeacherProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeacherProfileId");
+
+                    b.HasIndex("UserId", "TeacherProfileId")
+                        .IsUnique();
+
+                    b.ToTable("UserFollowTeachers");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.FrequentlyQuestions.FrequentlyQuestion", b =>
@@ -2405,6 +2512,92 @@ namespace ReadIraq.Migrations
                         .IsUnique();
 
                     b.ToTable("GradeSubjects");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.LessonSessions.LessonSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DurationSeconds")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSavedByDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("LikesCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TeacherProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ThumbnailUrl")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("VideoUrl")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("ViewsCount")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeacherProfileId");
+
+                    b.ToTable("LessonSessions");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.LessonSessions.LessonSessionAttachment", b =>
+                {
+                    b.Property<Guid>("LessonSessionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("AttachmentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("LessonSessionId", "AttachmentId");
+
+                    b.HasIndex("AttachmentId");
+
+                    b.ToTable("LessonSessionAttachments");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.Mediators.Mediator", b =>
@@ -2848,6 +3041,50 @@ namespace ReadIraq.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.SavedItems.UserSavedItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte>("ItemType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "ItemType", "ItemId")
+                        .IsUnique();
+
+                    b.ToTable("UserSavedItems");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.Subjects.Subject", b =>
@@ -3692,6 +3929,32 @@ namespace ReadIraq.Migrations
                     b.Navigation("Core");
                 });
 
+            modelBuilder.Entity("ReadIraq.Domain.Comments.SessionComment", b =>
+                {
+                    b.HasOne("ReadIraq.Domain.LessonSessions.LessonSession", "LessonSession")
+                        .WithMany()
+                        .HasForeignKey("LessonSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ReadIraq.Domain.Comments.SessionComment", "ParentComment")
+                        .WithMany("Replies")
+                        .HasForeignKey("ParentCommentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ReadIraq.Authorization.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LessonSession");
+
+                    b.Navigation("ParentComment");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ReadIraq.Domain.ContactUses.ContactUsTranslation", b =>
                 {
                     b.HasOne("ReadIraq.Domain.ContactUses.ContactUs", "Core")
@@ -3712,6 +3975,25 @@ namespace ReadIraq.Migrations
                         .IsRequired();
 
                     b.Navigation("Core");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Follows.UserFollowTeacher", b =>
+                {
+                    b.HasOne("ReadIraq.Domain.Teachers.TeacherProfile", "TeacherProfile")
+                        .WithMany()
+                        .HasForeignKey("TeacherProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ReadIraq.Authorization.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TeacherProfile");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.FrequentlyQuestions.FrequentlyQuestionTranslation", b =>
@@ -3753,6 +4035,36 @@ namespace ReadIraq.Migrations
                     b.Navigation("Grade");
 
                     b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.LessonSessions.LessonSession", b =>
+                {
+                    b.HasOne("ReadIraq.Domain.Teachers.TeacherProfile", "TeacherProfile")
+                        .WithMany()
+                        .HasForeignKey("TeacherProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TeacherProfile");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.LessonSessions.LessonSessionAttachment", b =>
+                {
+                    b.HasOne("ReadIraq.Domain.Attachments.Attachment", "Attachment")
+                        .WithMany()
+                        .HasForeignKey("AttachmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ReadIraq.Domain.LessonSessions.LessonSession", "LessonSession")
+                        .WithMany("Attachments")
+                        .HasForeignKey("LessonSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Attachment");
+
+                    b.Navigation("LessonSession");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.Mediators.Mediator", b =>
@@ -3809,6 +4121,17 @@ namespace ReadIraq.Migrations
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.Reviews.Review", b =>
+                {
+                    b.HasOne("ReadIraq.Authorization.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.SavedItems.UserSavedItem", b =>
                 {
                     b.HasOne("ReadIraq.Authorization.Users.User", "User")
                         .WithMany()
@@ -4052,6 +4375,11 @@ namespace ReadIraq.Migrations
                     b.Navigation("Translations");
                 });
 
+            modelBuilder.Entity("ReadIraq.Domain.Comments.SessionComment", b =>
+                {
+                    b.Navigation("Replies");
+                });
+
             modelBuilder.Entity("ReadIraq.Domain.ContactUses.ContactUs", b =>
                 {
                     b.Navigation("Translations");
@@ -4072,6 +4400,11 @@ namespace ReadIraq.Migrations
             modelBuilder.Entity("ReadIraq.Domain.Grades.GradeGroup", b =>
                 {
                     b.Navigation("Name");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.LessonSessions.LessonSession", b =>
+                {
+                    b.Navigation("Attachments");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.PrivacyPolicies.PrivacyPolicy", b =>

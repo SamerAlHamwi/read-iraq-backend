@@ -1,4 +1,4 @@
-﻿using Abp.AutoMapper;
+using Abp.AutoMapper;
 using Abp.Runtime.Validation;
 using Microsoft.AspNetCore.Http;
 using ReadIraq.Domain.Attachments;
@@ -28,6 +28,8 @@ namespace ReadIraq.Attachments.Dto
         ///Tool = 13
         /// </summary>
         public byte RefType { get; set; }
+
+        public string Description { get; set; }
 
         /// <summary>
         /// Accepted File Types: 1- Pdf, 2- Word, 3- Jpeg, 4- Png, 5- Jpg

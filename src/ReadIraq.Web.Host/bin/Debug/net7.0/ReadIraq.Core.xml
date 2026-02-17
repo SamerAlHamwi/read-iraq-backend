@@ -21,9 +21,34 @@
             It's shown in the web page.
             </summary>
         </member>
-        <member name="P:ReadIraq.Domain.Attachments.Attachment.RelativePath">
+        <member name="P:ReadIraq.Domain.Attachments.Attachment.FileName">
             <summary>
-            Path of the attachment file relative to configured dir
+            Original/display name of the file.
+            </summary>
+        </member>
+        <member name="P:ReadIraq.Domain.Attachments.Attachment.Description">
+            <summary>
+            Optional description for the media.
+            </summary>
+        </member>
+        <member name="P:ReadIraq.Domain.Attachments.Attachment.Type">
+            <summary>
+            Media type (video/pdf/image/audio/other).
+            </summary>
+        </member>
+        <member name="P:ReadIraq.Domain.Attachments.Attachment.StorageKey">
+            <summary>
+            Storage key used to locate/delete the file in storage (local or external).
+            </summary>
+        </member>
+        <member name="P:ReadIraq.Domain.Attachments.Attachment.Url">
+            <summary>
+            Public URL to access the file.
+            </summary>
+        </member>
+        <member name="P:ReadIraq.Domain.Attachments.Attachment.Size">
+            <summary>
+            File size in bytes.
             </summary>
         </member>
         <member name="M:ReadIraq.Domain.Attachments.AttachmentManager.GetListByIdsAsync(System.Collections.Generic.List{System.Int64})">
@@ -96,7 +121,7 @@
             <param name="refId">Id of related entity</param>
             <param name="refType">Type of related Entity</param>
         </member>
-        <member name="M:ReadIraq.Domain.Attachments.IAttachmentManager.CheckAttachmentRefType(ReadIraq.Enums.Enum.AttachmentRefType,ReadIraq.Enums.Enum.AttachmentType)">
+        <member name="M:ReadIraq.Domain.Attachments.IAttachmentManager.CheckAttachmentRefType(ReadIraq.Enums.Enum.AttachmentRefType,ReadIraq.Enums.Enum.MediaType)">
             <summary>
             Checks if file type is compatible with related entity type.
             </summary>
@@ -153,6 +178,16 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="P:ReadIraq.Domain.LessonSessions.LessonSession.TeacherProfileId">
+            <summary>
+            Presenter/teacher profile id.
+            </summary>
+        </member>
+        <member name="P:ReadIraq.Domain.LessonSessions.LessonSession.Order">
+            <summary>
+            Ordering inside module/collection.
+            </summary>
+        </member>
         <member name="P:ReadIraq.Domain.Regions.Dto.RegionTranslationDto.Name">
             <summary>
             Name
@@ -186,26 +221,6 @@
         <member name="T:ReadIraq.Attachments.Dto.AttachmentDto">
             <summary>
             AttachmentDto
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Attachments.Dto.AttachmentDto.RefType">
-            <summary>
-            Post = 1
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Attachments.Dto.AttachmentDto.Type">
-            <summary>
-            Attachment Type:
-            1- Pdf,
-            2- Word,
-            3- Jpeg,
-            4- Png,
-            5- Jpg
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Attachments.Dto.AttachmentDto.Url">
-            <summary>
-            Attachment Url
             </summary>
         </member>
         <member name="T:ReadIraq.Attachments.Dto.PagedAttachmentResultRequestDto">
@@ -360,6 +375,11 @@
         <member name="P:ReadIraq.PushNotifications.Dto.PagedPushNotificationResultRequestDto.Destination">
             <summary>
              All User = 0, HealthCareAdmin = 1, Doctor = 2,Receptionist = 3, Patient = 4
+            </summary>
+        </member>
+        <member name="T:ReadIraq.Enums.Enum.MediaType">
+            <summary>
+            Generic media type classification for attachments.
             </summary>
         </member>
         <member name="T:ReadIraq.Localization.SourceFiles.Exceptions">

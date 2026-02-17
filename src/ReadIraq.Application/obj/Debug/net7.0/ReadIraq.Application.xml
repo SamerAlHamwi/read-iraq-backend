@@ -132,7 +132,7 @@
             <param name="input"></param>
             <returns></returns>
         </member>
-        <member name="M:ReadIraq.Attachments.AttachmentAppService.GetAsync(Abp.Application.Services.Dto.EntityDto)">
+        <member name="M:ReadIraq.Attachments.AttachmentAppService.GetAsync(Abp.Application.Services.Dto.EntityDto{System.Int64})">
             <summary>
             Get Attachment
             </summary>
@@ -150,7 +150,7 @@
             <param name="input"></param>
             <returns></returns>
         </member>
-        <member name="M:ReadIraq.Attachments.AttachmentAppService.DeleteAsync(Abp.Application.Services.Dto.EntityDto)">
+        <member name="M:ReadIraq.Attachments.AttachmentAppService.DeleteAsync(Abp.Application.Services.Dto.EntityDto{System.Int64})">
             <summary>
             Delete
             </summary>
@@ -176,14 +176,14 @@
             <param name="input"></param>
             <returns></returns>
         </member>
-        <member name="M:ReadIraq.Attachments.IAttachmentAppService.GetAsync(Abp.Application.Services.Dto.EntityDto)">
+        <member name="M:ReadIraq.Attachments.IAttachmentAppService.GetAsync(Abp.Application.Services.Dto.EntityDto{System.Int64})">
             <summary>
             Get Attachment
             </summary>
             <param name="input"></param>
             <returns></returns>
         </member>
-        <member name="M:ReadIraq.Attachments.IAttachmentAppService.DeleteAsync(Abp.Application.Services.Dto.EntityDto)">
+        <member name="M:ReadIraq.Attachments.IAttachmentAppService.DeleteAsync(Abp.Application.Services.Dto.EntityDto{System.Int64})">
             <summary>
             Delete Attachment
             </summary>
@@ -455,7 +455,7 @@
             Save file to Attachments folder (wwwroot\Attachments\).
             </summary>
             <param name="file">uploaded file</param>
-            <returns>AttachmentType and Path of saved file relative to wwwroot folder</returns>
+            <returns>MediaType and storage key relative to wwwroot folder</returns>
         </member>
         <member name="M:ReadIraq.FileUploadService.IFileUploadService.SaveImageAsync(Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
@@ -498,12 +498,12 @@
         </member>
         <member name="P:ReadIraq.FileUploadService.UploadedFileInfo.Type">
             <summary>
-            AttachmentType
+            MediaType
             </summary>
         </member>
         <member name="P:ReadIraq.FileUploadService.UploadedFileInfo.RelativePath">
             <summary>
-            RelativePath
+            StorageKey
             </summary>
         </member>
         <member name="T:ReadIraq.FileUploadService.UploadedImageInfo">

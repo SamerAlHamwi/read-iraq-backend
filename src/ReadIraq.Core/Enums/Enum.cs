@@ -1,4 +1,4 @@
-﻿using ReadIraq.Localization.SourceFiles;
+using ReadIraq.Localization.SourceFiles;
 using System.ComponentModel.DataAnnotations;
 
 namespace ReadIraq.Enums
@@ -51,6 +51,25 @@ namespace ReadIraq.Enums
             MP4 = 6,
             MP3 = 7,
             APK = 8,
+        }
+        /// <summary>
+        /// Generic media type classification for attachments.
+        /// </summary>
+        public enum MediaType : byte
+        {
+            Video = 1,
+            Pdf = 2,
+            Image = 3,
+            Audio = 4,
+            Other = 5
+        }
+
+        public enum SavedItemType : byte
+        {
+            Session = 1,
+            Subject = 2,
+            Teacher = 3,
+            Other = 4
         }
         public enum ImageType : byte
         {

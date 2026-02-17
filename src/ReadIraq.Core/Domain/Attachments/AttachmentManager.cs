@@ -1,4 +1,4 @@
-﻿using Abp.Domain.Repositories;
+using Abp.Domain.Repositories;
 using Abp.Domain.Services;
 using Abp.UI;
 using Microsoft.EntityFrameworkCore;
@@ -62,7 +62,12 @@ namespace ReadIraq.Domain.Attachments
         public string GetUrl(Attachment attachment)
         {
             var baseUri = new Uri(_appBaseUrl);
-            return (new Uri(baseUri, attachment.RelativePath)).AbsoluteUri;
+            if (!string.IsNullOrWhiteSpace(attachment.Url))
+            {
+                return attachment.Url;
+            }
+
+            return (new Uri(baseUri, attachment.StorageKey)).AbsoluteUri;
         }
         public string GetLowResolutionPhotoUrl(Attachment attachment)
         {
@@ -106,7 +111,7 @@ namespace ReadIraq.Domain.Attachments
             }
         }
 
-        public void CheckAttachmentRefType(AttachmentRefType refType, AttachmentType fileType)
+        public void CheckAttachmentRefType(AttachmentRefType refType, MediaType fileType)
         {
             if (!AcceptedTypesFor(refType).Contains(fileType))
                 throw new UserFriendlyException(L("FileTypeIncompatibleWithRefType"),
@@ -133,7 +138,7 @@ namespace ReadIraq.Domain.Attachments
             return await _repository.GetAllListAsync(x => x.RefId == refId);
         }
 
-        private static IEnumerable<AttachmentType> AcceptedTypesFor(AttachmentRefType refType)
+        private static IEnumerable<MediaType> AcceptedTypesFor(AttachmentRefType refType)
         {
             switch (refType)
             {
@@ -167,7 +172,7 @@ namespace ReadIraq.Domain.Attachments
                     return ImagesAcceptedTypes;
             }
 
-            return new AttachmentType[] { };
+            return new MediaType[] { };
         }
 
 
@@ -213,11 +218,11 @@ namespace ReadIraq.Domain.Attachments
 
         }
 
-        private static readonly AttachmentType[] AllAcceptedTypes =
-            { AttachmentType.JPEG, AttachmentType.JPG, AttachmentType.PDF, AttachmentType.PNG, AttachmentType.WORD };
+        private static readonly MediaType[] AllAcceptedTypes =
+            { MediaType.Image, MediaType.Pdf, MediaType.Video, MediaType.Audio, MediaType.Other };
 
-        private static readonly AttachmentType[] ImagesAcceptedTypes =
-            { AttachmentType.JPEG, AttachmentType.JPG, AttachmentType.PNG };
+        private static readonly MediaType[] ImagesAcceptedTypes =
+            { MediaType.Image };
 
         public async Task CreateOrUpdateAttachmentAsync(int partnerId, string relativePath, string name)
         {
@@ -225,17 +230,17 @@ namespace ReadIraq.Domain.Attachments
                     x.RefId == partnerId && x.RefType == AttachmentRefType.QR);
             if (oldAttachment != null)
             {
-                oldAttachment.Name = name;
-                oldAttachment.RelativePath = relativePath;
+                oldAttachment.FileName = name;
+                oldAttachment.StorageKey = relativePath;
                 await _repository.UpdateAsync(oldAttachment);
             }
             else
             {
                 var attachment = new Attachment
                 {
-                    Name = name,
-                    Type = AttachmentType.PNG,
-                    RelativePath = relativePath,
+                    FileName = name,
+                    Type = MediaType.Image,
+                    StorageKey = relativePath,
                     RefId = partnerId,
                     RefType = AttachmentRefType.QR
                 };
@@ -250,7 +255,7 @@ namespace ReadIraq.Domain.Attachments
             var attachmentToInsert = new Attachment()
             {
                 RefType = refType,
-                RelativePath = attachment.RelativePath,
+                StorageKey = attachment.StorageKey,
                 Type = attachment.Type,
                 RefId = companyId,
                 LowResolutionPhotoRelativePath = attachment.LowResolutionPhotoRelativePath

@@ -1,4 +1,4 @@
-﻿using Abp.Authorization;
+using Abp.Authorization;
 using Abp.Configuration;
 using Abp.Localization;
 using Abp.Localization.Sources;
@@ -69,7 +69,7 @@ namespace ReadIraq.FileUploadService
             {
                 await file.CopyToAsync(stream);
             }
-            if (fileInfo.Type == AttachmentType.PNG || fileInfo.Type == AttachmentType.JPG || fileInfo.Type == AttachmentType.JPEG)
+            if (fileInfo.Type == MediaType.Image)
             {
                 var pathToSaveLowResolutionPhotos = GetPathToSaveAttachment(fileName, LowResolutionPhotosFolder);
                 // Load the original image from the saved file
@@ -190,15 +190,36 @@ namespace ReadIraq.FileUploadService
         /// <param name="file"></param>
         /// <returns></returns>
         [AbpAllowAnonymous]
-        public AttachmentType GetAndCheckFileType(IFormFile file)
+        public MediaType GetAndCheckFileType(IFormFile file)
         {
-            foreach (AttachmentType type in Enum.GetValues(typeof(AttachmentType)))
+            var contentType = (file?.ContentType ?? string.Empty).ToLowerInvariant();
+
+            // Images
+            if (contentType.StartsWith("image/"))
             {
-                if (file.ContentType.Contains(type.ToString().ToLower()))
-                    return type;
+                return MediaType.Image;
             }
 
-            throw new UserFriendlyException(L("TheAttachedFileTypeIsNotAcceptable"), $"FileName: {file.FileName}");
+            // PDFs
+            if (contentType.Contains("pdf"))
+            {
+                return MediaType.Pdf;
+            }
+
+            // Videos
+            if (contentType.StartsWith("video/") || contentType.Contains("mp4"))
+            {
+                return MediaType.Video;
+            }
+
+            // Audio
+            if (contentType.StartsWith("audio/") || contentType.Contains("mp3"))
+            {
+                return MediaType.Audio;
+            }
+
+            // Anything else is considered "Other"
+            return MediaType.Other;
         }
 
         private string L(string key)

@@ -1,7 +1,8 @@
-﻿using Abp.Application.Services.Dto;
+using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using ReadIraq.Domain.Attachments;
 using System.Collections.Generic;
+using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq
 {
@@ -13,6 +14,8 @@ namespace ReadIraq
     {
         public string Url { get; set; }
         public string LowResolutionPhotoUrl { get; set; }
+        public string FileName { get; set; }
+        public MediaType Type { get; set; }
     }
 
     public class EnumInfo

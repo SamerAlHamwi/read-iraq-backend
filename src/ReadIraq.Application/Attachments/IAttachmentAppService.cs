@@ -1,4 +1,4 @@
-﻿using Abp.Application.Services;
+using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using ReadIraq.Attachments.Dto;
 using System.Collections.Generic;
@@ -22,13 +22,13 @@ namespace ReadIraq.Attachments
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<AttachmentDto> GetAsync(EntityDto input);
+        Task<AttachmentDto> GetAsync(EntityDto<long> input);
         /// <summary>
         /// Delete Attachment
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task DeleteAsync(EntityDto input);
+        Task DeleteAsync(EntityDto<long> input);
         /// <summary>
         /// Upload Attachment
         /// </summary>
