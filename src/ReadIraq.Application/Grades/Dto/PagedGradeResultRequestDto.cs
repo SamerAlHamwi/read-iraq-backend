@@ -7,5 +7,6 @@ namespace ReadIraq.Grades.Dto
     {
         public string Keyword { get; set; }
         public Guid? GradeGroupId { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

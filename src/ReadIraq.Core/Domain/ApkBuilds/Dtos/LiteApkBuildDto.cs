@@ -5,7 +5,6 @@ namespace ReadIraq.Domain.ApkBuilds.Dtos
 {
     public class LiteApkBuildDto : EntityDto
     {
-        public AppType AppType { get; set; }
         public SystemType SystemType { get; set; }
         public int VersionCode { get; set; }
         public string VersionNumber { get; set; }

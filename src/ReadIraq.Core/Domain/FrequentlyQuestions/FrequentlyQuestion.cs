@@ -9,7 +9,6 @@ namespace ReadIraq.Domain.FrequentlyQuestions
     {
         public ICollection<FrequentlyQuestionTranslation> Translations { get; set; }
         public bool IsActive { get; set; }
-        public AppType App { get; set; }
 
     }
 }

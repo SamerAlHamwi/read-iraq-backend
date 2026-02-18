@@ -75,39 +75,12 @@ namespace ReadIraq.ApkBuildAppService
             };
 
         }
-        protected override IQueryable<ApkBuild> CreateFilteredQuery(PagedApkBuildResultRequestDto input)
-        {
-            var data = base.CreateFilteredQuery(input);
-            if (input.AppType.HasValue)
-                data = data.Where(x => x.AppType == input.AppType.Value);
-            if (input.SystemType.HasValue)
-                data = data.Where(x => x.SystemType == input.SystemType.Value);
-            if (input.UpdateOptions.HasValue)
-                data = data.Where(x => x.UpdateOptions == input.UpdateOptions.Value);
-            return data;
-        }
+        
         protected override IQueryable<ApkBuild> ApplySorting(IQueryable<ApkBuild> query, PagedApkBuildResultRequestDto input)
         {
             return query.OrderByDescending(r => r.CreationTime);
         }
-        public async Task<OutputApkBuildStatuesDto> CheckIfAppNeedToUpdate(InputApkBuildStatuesDto input)
-        {
-            var apk = await Repository.GetAll()
-                .Where(x => x.AppType == input.AppType && x.VersionCode == input.VersionCode && x.SystemType == input.SystemType)
-                .FirstOrDefaultAsync();
-            if (apk is not null)
-                return new OutputApkBuildStatuesDto()
-                {
-                    UpdateOptions = apk.UpdateOptions,
-                    ApkIsNotFound = false
-                };
-            else
-                return new OutputApkBuildStatuesDto()
-                {
-                    UpdateOptions = UpdateOptions.Nothing,
-                    ApkIsNotFound = true
-                };
-        }
+        
         [ApiExplorerSettings(IgnoreApi = true)]
         public override async Task<ApkBuildDetailsDto> GetAsync(EntityDto<int> input)
         {

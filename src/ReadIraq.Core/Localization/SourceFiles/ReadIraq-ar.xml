@@ -84,8 +84,11 @@
     <text name="CreateNewUser">إنشاء مستخدم جديد</text>
     <text name="SelectedByUser">مختار من قبل المستخدم</text>
     <text name="Approved">موافق عليه عليه من قبل الأدمن</text>
-
-
-
+    <text name="CommentNotFound">التعليق غير موجود</text>
+    <text name="OnlyAuthorOrAdminCanUpdateComment">يمكن للمؤلف أو المسؤول فقط تحديث هذا التعليق</text>
+    <text name="OnlyAuthorOrAdminCanDeleteComment">يمكن للمؤلف أو المسؤول فقط حذف هذا التعليق</text>
+    <text name="RatingNotFound">التقييم غير موجود</text>
+    <text name="SubscriptionPlanNotFound">خطة الاشتراك غير موجودة</text>
+    <text name="InsufficientPermissions">صلاحيات غير كافية</text>
   </texts>
 </localizationDictionary>

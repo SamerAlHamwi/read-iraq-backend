@@ -19,9 +19,12 @@ using ReadIraq.Authorization.Roles;
 using ReadIraq.Authorization.Users;
 using ReadIraq.Domain.AskForHelps;
 using ReadIraq.Domain.AskForHelps.Dto;
+using ReadIraq.Domain.Subscriptions;
+using ReadIraq.Domain.UserSessionProgresses;
 using ReadIraq.Localization.SourceFiles;
 using ReadIraq.NotificationSender;
 using ReadIraq.Roles.Dto;
+using ReadIraq.Subscriptions.Dto;
 using ReadIraq.Users.Dto;
 using System;
 using System.Collections.Generic;
@@ -43,6 +46,8 @@ namespace ReadIraq.Users
         private readonly INotificationSender _notificationSender;
         private readonly IRepository<AskForHelp> _askForHelpRepository;
         private readonly UserRegistrationManager _userRegistrationManager;
+        private readonly IRepository<Subscription, Guid> _subscriptionRepository;
+        private readonly IRepository<UserSessionProgress, Guid> _userSessionProgressRepository;
 
         public UserAppService(
             IRepository<User, long> repository,
@@ -54,7 +59,9 @@ namespace ReadIraq.Users
             LogInManager logInManager,
             INotificationSender notificationSender,
             UserRegistrationManager userRegistrationManager,
-            IRepository<AskForHelp> askForHelpRepository)
+            IRepository<AskForHelp> askForHelpRepository,
+            IRepository<Subscription, Guid> subscriptionRepository,
+            IRepository<UserSessionProgress, Guid> userSessionProgressRepository)
             : base(repository)
         {
             _userManager = userManager;
@@ -66,7 +73,10 @@ namespace ReadIraq.Users
             _notificationSender = notificationSender;
             _askForHelpRepository = askForHelpRepository;
             _userRegistrationManager = userRegistrationManager;
+            _subscriptionRepository = subscriptionRepository;
+            _userSessionProgressRepository = userSessionProgressRepository;
         }
+
         [AbpAuthorize(PermissionNames.Users_List)]
         public override async Task<PagedResultDto<UserDto>> GetAllAsync(PagedUserResultRequestDto input)
         {
@@ -75,6 +85,7 @@ namespace ReadIraq.Users
                 return await base.GetAllAsync(input);
             }
         }
+
         public async Task SetRolesForAllUsers(UserType user, string roleName)
         {
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
@@ -86,6 +97,7 @@ namespace ReadIraq.Users
                 }
             }
         }
+
         [AbpAuthorize(PermissionNames.Users_Create)]
         public override async Task<UserDto> CreateAsync(CreateUserDto input)
         {
@@ -124,6 +136,7 @@ namespace ReadIraq.Users
                 }
             }
         }
+
         [AbpAuthorize(PermissionNames.Users_Update)]
         public override async Task<UserDto> UpdateAsync(UpdateUserDto input)
         {
@@ -145,6 +158,9 @@ namespace ReadIraq.Users
                     user.Name = input.Name;
                     user.EmailAddress = input.EmailAddress;
                     user.MediatorCode = input.MediatorCode;
+                    user.GradeId = input.GradeId;
+                    user.GovernorateId = input.GovernorateId;
+                    user.Avatar = input.Avatar;
 
                     CheckErrors(await _userManager.UpdateAsync(user));
 
@@ -158,6 +174,7 @@ namespace ReadIraq.Users
                 catch (Exception ex) { throw; }
             }
         }
+
         [AbpAuthorize(PermissionNames.Users_Delete)]
         public override async Task DeleteAsync(EntityDto<long> input)
         {
@@ -174,9 +191,9 @@ namespace ReadIraq.Users
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
                 await Repository.UpdateAsync(user.Id, async (entity) =>
-            {
-                entity.IsActive = true;
-            });
+                {
+                    entity.IsActive = true;
+                });
             }
         }
 
@@ -186,11 +203,20 @@ namespace ReadIraq.Users
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
                 await Repository.UpdateAsync(user.Id, async (entity) =>
-            {
-                entity.IsActive = false;
-            });
+                {
+                    entity.IsActive = false;
+                });
             }
         }
+
+        [AbpAuthorize(PermissionNames.Pages_Users_Activation)]
+        public async Task ToggleBlock(EntityDto<long> input)
+        {
+            var user = await _userManager.GetUserByIdAsync(input.Id);
+            user.IsActive = !user.IsActive;
+            CheckErrors(await _userManager.UpdateAsync(user));
+        }
+
         [AbpAuthorize(PermissionNames.Roles_List)]
         public async Task<ListResultDto<RoleDto>> GetRoles()
         {
@@ -203,11 +229,83 @@ namespace ReadIraq.Users
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
                 await SettingManager.ChangeSettingForUserAsync(
-                AbpSession.ToUserIdentifier(),
-                LocalizationSettingNames.DefaultLanguage,
-                input.LanguageName
-            );
+                    AbpSession.ToUserIdentifier(),
+                    LocalizationSettingNames.DefaultLanguage,
+                    input.LanguageName
+                );
             }
+        }
+
+        [AbpAuthorize]
+        public async Task<UserDto> GetMe()
+        {
+            var userId = AbpSession.GetUserId();
+            var user = await Repository.GetAllIncluding(x => x.Grade, x => x.Governorate)
+                .FirstOrDefaultAsync(x => x.Id == userId);
+
+            if (user == null)
+                throw new UserFriendlyException(Exceptions.ObjectWasNotFound, Tokens.User);
+
+            return MapToEntityDto(user);
+        }
+
+        [AbpAuthorize]
+        public async Task<UserDto> UpdateMe(UpdateMeDto input)
+        {
+            var userId = AbpSession.GetUserId();
+            var user = await _userManager.GetUserByIdAsync(userId);
+
+            user.Name = input.Name;
+            user.Surname = input.Surname;
+            user.Avatar = input.Avatar;
+            user.GovernorateId = input.GovernorateId;
+            user.GradeId = input.GradeId;
+            user.RegistrationFullName = user.Name + " " + user.Surname;
+
+            CheckErrors(await _userManager.UpdateAsync(user));
+            return MapToEntityDto(user);
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Users)]
+        public async Task AssignGrade(AssignGradeDto input)
+        {
+            var user = await _userManager.GetUserByIdAsync(input.UserId);
+            user.GradeId = input.GradeId;
+            CheckErrors(await _userManager.UpdateAsync(user));
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Users)]
+        public async Task AddPoints(AddPointsDto input)
+        {
+            var user = await _userManager.GetUserByIdAsync(input.UserId);
+            user.Points += input.Points;
+            CheckErrors(await _userManager.UpdateAsync(user));
+        }
+
+        [AbpAuthorize]
+        public async Task<UserProgressDto> GetProgress(EntityDto<long> input)
+        {
+            var user = await _userManager.GetUserByIdAsync(input.Id);
+            var completedSessions = await _userSessionProgressRepository.CountAsync(x => x.UserId == input.Id && x.IsCompleted);
+
+            return new UserProgressDto
+            {
+                UserId = input.Id,
+                TotalPoints = user.Points,
+                CompletionPercentage = 0 // Needs more data from lesson structure
+            };
+        }
+
+        [AbpAuthorize]
+        public async Task<List<SubscriptionDto>> GetSubscriptions(EntityDto<long> input)
+        {
+            var subscriptions = await _subscriptionRepository.GetAll()
+                .Include(x => x.Plan)
+                .Where(x => x.UserId == input.Id)
+                .OrderByDescending(x => x.CreationTime)
+                .ToListAsync();
+
+            return ObjectMapper.Map<List<SubscriptionDto>>(subscriptions);
         }
 
         protected override User MapToEntity(CreateUserDto createInput)
@@ -234,6 +332,10 @@ namespace ReadIraq.Users
 
             var userDto = base.MapToEntityDto(user);
             userDto.RoleNames = roles.ToArray();
+            userDto.Points = user.Points;
+            userDto.Avatar = user.Avatar;
+            userDto.GradeId = user.GradeId;
+            userDto.GovernorateId = user.GovernorateId;
 
             return userDto;
         }
@@ -244,14 +346,32 @@ namespace ReadIraq.Users
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.UserName.Contains(input.Keyword) || x.Name.Contains(input.Keyword) || x.EmailAddress.Contains(input.Keyword) || x.PIN.Contains(input.Keyword))
                 .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive)
                     .WhereIf(input.UserType.HasValue, x => x.Type == input.UserType)
-                    .WhereIf(!string.IsNullOrEmpty(input.MediatorCode), x => x.MediatorCode.Contains(input.MediatorCode));
+                    .WhereIf(!string.IsNullOrEmpty(input.MediatorCode), x => x.MediatorCode.Contains(input.MediatorCode))
+                    .WhereIf(input.GradeId.HasValue, x => x.GradeId == input.GradeId.Value);
+
+            if (input.Subscribed.HasValue)
+            {
+                var now = DateTime.Now;
+                var userIdsWithActiveSubscriptions = _subscriptionRepository.GetAll()
+                    .Where(s => s.IsActive && s.ExpiresAt > now)
+                    .Select(s => s.UserId);
+
+                if (input.Subscribed.Value)
+                {
+                    data = data.Where(u => userIdsWithActiveSubscriptions.Contains(u.Id));
+                }
+                else
+                {
+                    data = data.Where(u => !userIdsWithActiveSubscriptions.Contains(u.Id));
+                }
+            }
 
             return data;
         }
 
         protected override async Task<User> GetEntityByIdAsync(long id)
         {
-            var user = await Repository.GetAllIncluding(x => x.Roles).FirstOrDefaultAsync(x => x.Id == id);
+            var user = await Repository.GetAllIncluding(x => x.Roles, x => x.Grade, x => x.Governorate).FirstOrDefaultAsync(x => x.Id == id);
 
             if (user == null)
             {

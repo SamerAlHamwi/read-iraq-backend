@@ -7,7 +7,5 @@ namespace ReadIraq.PushNotifications.Dto
     {
         public List<PushNotificationTranslationDto> Translations { get; set; }
 
-        public TopicType Destination { get; set; }
-
     }
 }

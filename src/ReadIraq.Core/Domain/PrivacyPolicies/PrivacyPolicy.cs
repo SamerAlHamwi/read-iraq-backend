@@ -10,7 +10,6 @@ namespace ReadIraq.Domain.PrivacyPolicies
         public ICollection<PrivacyPolicyTranslation> Translations { get; set; }
         public bool IsActive { get; set; }
         public bool IsForMoney { get; set; }
-        public AppType App { get; set; }
         public int OrderNo { get; set; }
     }
 }

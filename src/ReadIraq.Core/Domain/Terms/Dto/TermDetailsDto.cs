@@ -10,7 +10,6 @@ namespace ReadIraq.TermService.Dto
         public string Description { get; set; }
         public List<TermTranslationDto> Translations { get; set; }
         public bool IsActive { get; set; }
-        public AppType App { get; set; }
 
     }
 }

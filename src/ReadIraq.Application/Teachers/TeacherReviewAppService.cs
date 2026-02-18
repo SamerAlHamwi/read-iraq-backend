@@ -9,6 +9,7 @@ using ReadIraq.CrudAppServiceBase;
 using ReadIraq.Domain.Teachers;
 using ReadIraq.Teachers.Dto;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,15 +33,53 @@ namespace ReadIraq.Teachers
 
         public override async Task<TeacherReviewDto> CreateAsync(CreateTeacherReviewDto input)
         {
-            CheckCreatePermission();
+            var userId = AbpSession.GetUserId();
+
+            // Check if user already reviewed this teacher
+            var existingReview = await Repository.FirstOrDefaultAsync(x => x.TeacherProfileId == input.TeacherProfileId && x.UserId == userId);
+
+            if (existingReview != null)
+            {
+                // Update existing instead of creating new? Or throw error?
+                // Usually "rate + review" updates the old one if it exists.
+                existingReview.Rating = input.Rating;
+                existingReview.ReviewText = input.ReviewText;
+                await Repository.UpdateAsync(existingReview);
+                await CurrentUnitOfWork.SaveChangesAsync();
+                return MapToEntityDto(existingReview);
+            }
 
             var entity = MapToEntity(input);
-            entity.UserId = AbpSession.GetUserId();
+            entity.UserId = userId;
 
             await Repository.InsertAsync(entity);
             await CurrentUnitOfWork.SaveChangesAsync();
 
             return MapToEntityDto(entity);
+        }
+
+        public async Task<List<TeacherRatingBreakdownDto>> GetRatingBreakdownAsync(Guid teacherProfileId)
+        {
+            var breakdown = await Repository.GetAll()
+                .Where(x => x.TeacherProfileId == teacherProfileId)
+                .GroupBy(x => x.Rating)
+                .Select(g => new TeacherRatingBreakdownDto
+                {
+                    Rating = g.Key,
+                    Count = g.Count()
+                })
+                .ToListAsync();
+
+            // Ensure all ratings 1-5 are present
+            for (int i = 1; i <= 5; i++)
+            {
+                if (!breakdown.Any(b => b.Rating == i))
+                {
+                    breakdown.Add(new TeacherRatingBreakdownDto { Rating = i, Count = 0 });
+                }
+            }
+
+            return breakdown.OrderByDescending(b => b.Rating).ToList();
         }
 
         protected override TeacherReviewDto MapToEntityDto(TeacherReview entity)

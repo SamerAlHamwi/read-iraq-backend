@@ -106,6 +106,5 @@ namespace ReadIraq.Domain.Attachments
         /// <returns></returns>
         Task<Attachment> CreateAttachment(Attachment attachment);
         Task CopyNewAttachmentForCompany(long attachmentId, int companyId, AttachmentRefType refType);
-        Task DeleteAllRefIdForCompanyAsync(int companyId);
     }
 }

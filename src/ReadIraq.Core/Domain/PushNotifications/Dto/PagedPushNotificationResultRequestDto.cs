@@ -11,7 +11,5 @@ namespace ReadIraq.PushNotifications.Dto
         ///  All User = 0, HealthCareAdmin = 1, Doctor = 2,Receptionist = 3, Patient = 4
         /// </summary>
 
-        public TopicType? Destination { get; set; }
-
     }
 }

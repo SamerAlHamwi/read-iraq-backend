@@ -35,8 +35,16 @@ namespace ReadIraq.Teachers
 
         protected override IQueryable<TeacherProfile> CreateFilteredQuery(PagedTeacherProfileResultRequestDto input)
         {
-            return base.CreateFilteredQuery(input)
-                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.Name.Contains(input.Keyword) || x.Specialization.Contains(input.Keyword));
+            var query = base.CreateFilteredQuery(input)
+                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.Name.Contains(input.Keyword) || x.Specialization.Contains(input.Keyword))
+                .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive.Value);
+
+            if (input.SubjectId.HasValue)
+            {
+                query = query.Where(x => x.Subjects.Any(s => s.SubjectId == input.SubjectId.Value));
+            }
+
+            return query;
         }
 
         public override async Task<TeacherProfileDto> GetAsync(EntityDto<Guid> input)
@@ -46,6 +54,11 @@ namespace ReadIraq.Teachers
                 .Include(x => x.Subjects)
                 .Include(x => x.RatingBreakdowns)
                 .FirstOrDefaultAsync(x => x.Id == input.Id);
+
+            if (entity == null)
+            {
+                throw new Abp.UI.UserFriendlyException("Teacher not found");
+            }
 
             var dto = MapToEntityDto(entity);
             dto.FeatureIds = entity.Features.Select(f => f.TeacherFeatureId).ToList();
@@ -58,6 +71,7 @@ namespace ReadIraq.Teachers
             CheckCreatePermission();
 
             var entity = MapToEntity(input);
+            entity.IsActive = true;
 
             if (input.FeatureIds != null)
             {
@@ -84,28 +98,19 @@ namespace ReadIraq.Teachers
             return dto;
         }
 
-        public override async Task<TeacherProfileDto> UpdateAsync(UpdateTeacherProfileDto input)
+        public async Task AssignSubjectsAsync(AssignSubjectsInput input)
         {
             CheckUpdatePermission();
 
             var entity = await Repository.GetAll()
-                .Include(x => x.Features)
                 .Include(x => x.Subjects)
-                .FirstOrDefaultAsync(x => x.Id == input.Id);
+                .FirstOrDefaultAsync(x => x.Id == input.TeacherProfileId);
 
-            MapToEntity(input, entity);
-
-            // Update Features
-            entity.Features.Clear();
-            if (input.FeatureIds != null)
+            if (entity == null)
             {
-                foreach (var featureId in input.FeatureIds)
-                {
-                    entity.Features.Add(new TeacherFeatureMap { TeacherFeatureId = featureId, TeacherProfileId = entity.Id });
-                }
+                throw new Abp.UI.UserFriendlyException("Teacher not found");
             }
 
-            // Update Subjects
             entity.Subjects.Clear();
             if (input.SubjectIds != null)
             {
@@ -116,11 +121,27 @@ namespace ReadIraq.Teachers
             }
 
             await CurrentUnitOfWork.SaveChangesAsync();
+        }
 
-            var dto = MapToEntityDto(entity);
-            dto.FeatureIds = input.FeatureIds;
-            dto.SubjectIds = input.SubjectIds;
-            return dto;
+        public async Task<TeacherStatsDto> GetStatsAsync(EntityDto<Guid> input)
+        {
+            var entity = await Repository.GetAsync(input.Id);
+
+            // Placeholder for actual stats calculation
+            return new TeacherStatsDto
+            {
+                StudentsCount = entity.StudentsCount,
+                WatchTimeMinutes = 0, // Need logic
+                QuizAttemptsCount = 0, // Need logic
+                AverageQuizScore = 0 // Need logic
+            };
+        }
+
+        public async Task ToggleActiveAsync(EntityDto<Guid> input)
+        {
+            var entity = await Repository.GetAsync(input.Id);
+            entity.IsActive = !entity.IsActive;
+            await Repository.UpdateAsync(entity);
         }
     }
 }

@@ -14,7 +14,6 @@ namespace ReadIraq.Countries.Dto
         [StringLength(5)]
         public string DialCode { get; set; }
         public List<CountryTranslationDto> Translations { get; set; }
-        public ServiceType Type { get; set; }
 
     }
 }

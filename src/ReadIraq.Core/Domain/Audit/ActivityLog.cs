@@ -8,7 +8,7 @@ namespace ReadIraq.Domain.Audit
     [Table("ActivityLogs")]
     public class ActivityLog : CreationAuditedEntity<Guid>
     {
-        public long ActorId { get; set; }
+        public long? ActorId { get; set; }
         [ForeignKey(nameof(ActorId))]
         public virtual User Actor { get; set; }
 

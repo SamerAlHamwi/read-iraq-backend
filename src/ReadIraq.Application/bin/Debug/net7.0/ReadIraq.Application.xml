@@ -900,10 +900,9 @@
         </member>
         <member name="P:ReadIraq.Users.Dto.PagedUserResultRequestDto.UserType">
             <summary>
-            Admin = 1,
-            BasicUser = 2,
-            CompanyUser = 3,
-            CustomerService = 4
+            SuperAdmin = 1,
+            Student = 2,
+            Teacher = 3
             </summary>
         </member>
         <member name="M:ReadIraq.Users.UserAppService.GetCurrentFcmTokenAsync">

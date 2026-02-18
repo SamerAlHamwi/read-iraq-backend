@@ -85,8 +85,6 @@ namespace ReadIraq.FrequentlyQuestionService
                 data = data.Where(x => x.Translations.Any(x => x.Question.ToLower().Contains(keyword)
                 || x.Answer.ToLower().Contains(keyword)));
             }
-            if (input.App.HasValue)
-                data = data.Where(x => x.App == input.App.Value || x.App == AppType.Both);
             if (input.IsActive.HasValue)
                 data = data.Where(x => x.IsActive == input.IsActive.Value);
             return data;

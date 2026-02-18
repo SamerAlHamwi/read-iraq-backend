@@ -7,7 +7,6 @@ namespace ReadIraq.Countries.Dto
     {
         public string Keyword { get; set; }
         public bool? IsActive { get; set; }
-        public ServiceType? Type { get; set; }
 
     }
 }

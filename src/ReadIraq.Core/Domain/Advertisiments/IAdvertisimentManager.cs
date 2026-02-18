@@ -10,7 +10,6 @@ namespace ReadIraq.Domain.Advertisiments
         Task<Advertisiment> GetEntityAsync(int Id);
         Task<Advertisiment> InsertAsync(Advertisiment advertisiment);
         Task AddPositionToAdvertisimentAsync(AdvertisimentPosition advertisimentPosition);
-        Task RemovePositionFromAdvertisiment(AdvertisimentPosition position);
         Task<List<AdvertisimentPosition>> GetAdvertisimentPositionsAsync(int advertisimentId);
 
 

@@ -9,8 +9,6 @@ namespace ReadIraq.Domain.FrequentlyQuestions.Dto
     {
         [Required]
         public List<FrequentlyQuestionTranslationDto> Translations { get; set; }
-        [Required]
-        public AppType App { get; set; }
 
         public void AddValidationErrors(CustomValidationContext context)
         {

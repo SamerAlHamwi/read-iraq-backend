@@ -83,17 +83,12 @@ namespace ReadIraq.PrivacyPolicyService
                 || x.Description.ToLower().Contains(keyword)));
             }
             data = data.Where(x => x.IsForMoney == input.IsForMoney);
-            if (input.App.HasValue)
-                data = data.Where(x => x.App == input.App.Value);
             if (input.IsActive.HasValue)
                 data = data.Where(x => x.IsActive == input.IsActive.Value);
             return data;
 
         }
-        protected override IQueryable<PrivacyPolicy> ApplySorting(IQueryable<PrivacyPolicy> query, PagedPrivacyPolicyResultRequestDto input)
-        {
-            return query.OrderBy(r => r.App).ThenBy(x => x.OrderNo);
-        }
+        
         [HttpPut]
         [AbpAuthorize(PermissionNames.PrivacyPolicy_FullControl)]
         public async Task<PrivacyPolicyDetailsDto> SwitchActivationAsync(SwitchActivationInputDto input)
@@ -101,49 +96,6 @@ namespace ReadIraq.PrivacyPolicyService
             CheckUpdatePermission();
             var entity = await Repository.GetAsync(input.Id);
             entity.IsActive = input.IsActive;
-            entity.LastModificationTime = DateTime.UtcNow;
-            await Repository.UpdateAsync(entity);
-            await UnitOfWorkManager.Current.SaveChangesAsync();
-            return MapToEntityDto(entity);
-        }
-
-        [HttpPut]
-        [AbpAuthorize(PermissionNames.PrivacyPolicy_FullControl)]
-        public async Task<PrivacyPolicyDetailsDto> MoveOrderNoAsync(MoveOrderNoDto input)
-        {
-            CheckUpdatePermission();
-
-            var entity = await Repository.GetAsync(input.Id);
-            if (input.IsUp)
-            {
-                if (entity.OrderNo == 1)
-                {
-                    throw new UserFriendlyException(string.Format(Exceptions.IncompatibleValue, Tokens.PrivacyPolicy));
-                }
-
-                var prevRecord = Repository.GetAllList(x => x.App == entity.App && x.OrderNo < entity.OrderNo).OrderByDescending(x => x.OrderNo).FirstOrDefault();
-                prevRecord.OrderNo++;
-                prevRecord.LastModificationTime = DateTime.UtcNow;
-                await Repository.UpdateAsync(prevRecord);
-
-                entity.OrderNo--;
-            }
-            else
-            {
-                var maxOrderNo = Repository.GetAllList(x => x.App == entity.App).Max(x => x.OrderNo);
-                if (entity.OrderNo == maxOrderNo)
-                {
-                    throw new UserFriendlyException(string.Format(Exceptions.IncompatibleValue, Tokens.PrivacyPolicy));
-                }
-
-                var nextRecord = Repository.GetAllList(x => x.App == entity.App && x.OrderNo > entity.OrderNo).OrderBy(x => x.OrderNo).FirstOrDefault();
-                nextRecord.OrderNo--;
-                nextRecord.LastModificationTime = DateTime.UtcNow;
-                await Repository.UpdateAsync(nextRecord);
-
-                entity.OrderNo++;
-            }
-
             entity.LastModificationTime = DateTime.UtcNow;
             await Repository.UpdateAsync(entity);
             await UnitOfWorkManager.Current.SaveChangesAsync();

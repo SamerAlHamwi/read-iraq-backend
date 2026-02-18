@@ -8,7 +8,6 @@ namespace ReadIraq.PrivacyPolicyService.Dto
         public bool IsForMoney { get; set; } = false;
         public string Keyword { get; set; }
         public bool? IsActive { get; set; }
-        public AppType? App { get; set; }
         public int OrderNo { get; set; }
     }
 }

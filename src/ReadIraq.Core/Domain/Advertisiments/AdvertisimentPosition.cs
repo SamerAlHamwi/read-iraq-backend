@@ -10,6 +10,5 @@ namespace ReadIraq.Domain.Advertisiments
         [ForeignKey(nameof(AdvertisimentId))]
         public Advertisiment Advertisiment { get; set; }
         public PositionForAdvertisiment Position { get; set; }
-        public Screen Screen { get; set; }
     }
 }

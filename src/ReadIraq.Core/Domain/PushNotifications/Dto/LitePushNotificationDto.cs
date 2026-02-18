@@ -9,7 +9,6 @@ namespace ReadIraq.PushNotifications.Dto
     {
         public List<PushNotificationTranslationDto> Translations { get; set; }
         [JsonIgnore]
-        public TopicType Destination { get; set; }
         public string DestinationText { get; set; }
         public string ArTitle { get; set; }
         public string EnTitle { get; set; }

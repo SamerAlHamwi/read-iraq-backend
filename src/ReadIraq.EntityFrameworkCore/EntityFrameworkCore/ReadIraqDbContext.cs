@@ -36,6 +36,7 @@ using ReadIraq.Domain.Quizzes;
 using ReadIraq.Domain.Notifications;
 using ReadIraq.Domain.Audit;
 using ReadIraq.Domain.Settings;
+using ReadIraq.Domain.Gifts;
 using System;
 
 namespace ReadIraq.EntityFrameworkCore
@@ -91,6 +92,7 @@ namespace ReadIraq.EntityFrameworkCore
         public virtual DbSet<SubscriptionFeature> SubscriptionFeatures { get; set; }
         public virtual DbSet<SubscriptionFeatureMap> SubscriptionFeaturesMap { get; set; }
         public virtual DbSet<Subscription> Subscriptions { get; set; }
+        public virtual DbSet<Gift> Gifts { get; set; }
 
         public virtual DbSet<Quiz> Quizzes { get; set; }
         public virtual DbSet<Question> Questions { get; set; }
@@ -119,6 +121,11 @@ namespace ReadIraq.EntityFrameworkCore
                     .WithMany(x => x.Replies)
                     .HasForeignKey(x => x.ParentCommentId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                b.HasOne(x => x.LessonSession)
+                    .WithMany()
+                    .HasForeignKey(x => x.LessonSessionId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<UserFollowTeacher>(b =>
@@ -194,11 +201,17 @@ namespace ReadIraq.EntityFrameworkCore
             modelBuilder.Entity<Enrollment>(b =>
             {
                 b.HasIndex(e => new { e.UserId, e.SubjectId }).IsUnique();
+                b.Property(e => e.ProgressPercent).HasPrecision(18, 2);
             });
 
             modelBuilder.Entity<UserSessionProgress>(b =>
             {
                 b.HasIndex(e => new { e.UserId, e.SessionId }).IsUnique();
+
+                b.HasOne(x => x.Session)
+                    .WithMany()
+                    .HasForeignKey(x => x.SessionId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<SubscriptionFeatureMap>(b =>
@@ -206,9 +219,36 @@ namespace ReadIraq.EntityFrameworkCore
                 b.HasIndex(e => new { e.PlanId, e.FeatureId }).IsUnique();
             });
 
+            modelBuilder.Entity<SubscriptionPlan>(b =>
+            {
+                b.Property(e => e.Price).HasPrecision(18, 2);
+                b.Property(e => e.PriceBeforeDiscount).HasPrecision(18, 2);
+            });
+
+            modelBuilder.Entity<ActivityLog>(b =>
+            {
+                b.HasOne(x => x.Actor)
+                    .WithMany()
+                    .HasForeignKey(x => x.ActorId)
+                    .IsRequired(false);
+            });
+
             modelBuilder.Entity<AppSetting>(b =>
             {
                 b.HasIndex(e => e.Key).IsUnique();
+            });
+
+            modelBuilder.Entity<Gift>(b =>
+            {
+                b.HasOne(x => x.TargetUser)
+                    .WithMany()
+                    .HasForeignKey(x => x.TargetUserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                b.HasOne(x => x.AdminUser)
+                    .WithMany()
+                    .HasForeignKey(x => x.AdminUserId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

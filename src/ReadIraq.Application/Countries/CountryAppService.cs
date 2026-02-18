@@ -145,8 +145,6 @@ namespace ReadIraq.Countries
                 data = data.Where(x => x.Translations.Where(x => x.Name.Contains(input.Keyword)).Any() || x.DialCode.Contains(input.Keyword));
             if (input.IsActive.HasValue)
                 data = data.Where(x => x.IsActive == input.IsActive.Value);
-            if (input.Type.HasValue)
-                data = data.Where(x => x.Type == input.Type.Value);
 
             return data;
         }

@@ -11,7 +11,6 @@ namespace ReadIraq.PrivacyPolicyService.Dto
         public List<PrivacyPolicyTranslationDto> Translations { get; set; }
         public bool IsForMoney { get; set; }
         public bool IsActive { get; set; }
-        public AppType App { get; set; }
         public int OrderNo { get; set; }
     }
 }

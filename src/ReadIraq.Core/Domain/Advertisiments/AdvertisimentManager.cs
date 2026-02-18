@@ -31,10 +31,6 @@ namespace ReadIraq.Domain.Advertisiments
 
         public async Task AddPositionToAdvertisimentAsync(AdvertisimentPosition advertisimentPosition)
         {
-            if (await _advertisimentPositionRepository.GetAll().Where(x => x.AdvertisimentId == advertisimentPosition.AdvertisimentId && x.Screen == advertisimentPosition.Screen && x.Position == advertisimentPosition.Position).AnyAsync())
-            {
-                throw new UserFriendlyException(string.Format(L(Exceptions.ThisPositionIsAlreadyExist)));
-            }
             await _advertisimentPositionRepository.InsertAsync(advertisimentPosition);
         }
 
@@ -63,18 +59,6 @@ namespace ReadIraq.Domain.Advertisiments
         public async Task<Advertisiment> InsertAsync(Advertisiment advertisiment)
         {
             return await _advertisimentrepository.InsertAsync(advertisiment);
-        }
-
-
-
-        public async Task RemovePositionFromAdvertisiment(AdvertisimentPosition advertisimentPosition)
-        {
-            var Position = await _advertisimentPositionRepository.GetAll().Where(x => x.AdvertisimentId == advertisimentPosition.AdvertisimentId && x.Screen == advertisimentPosition.Screen && x.Position == advertisimentPosition.Position).FirstOrDefaultAsync();
-            if (Position == null)
-            {
-                throw new UserFriendlyException(string.Format(L(Exceptions.ObjectWasNotFound)));
-            }
-            await _advertisimentPositionRepository.HardDeleteAsync(Position);
         }
 
     }

@@ -32,6 +32,9 @@ namespace ReadIraq.Authorization.Users
         [ForeignKey(nameof(GovernorateId))]
         public virtual City Governorate { get; set; }
 
+        public string Avatar { get; set; }
+        public int Points { get; set; }
+
         public static string CreateRandomPassword()
         {
             return Guid.NewGuid().ToString("N").Truncate(16);

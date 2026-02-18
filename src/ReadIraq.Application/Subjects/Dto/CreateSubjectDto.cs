@@ -19,5 +19,7 @@ namespace ReadIraq.Subjects.Dto
 
         [Required]
         public SubjectLevel Level { get; set; }
+
+        public List<int> GradeIds { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using ReadIraq.Domain.Translations;
 using System;
@@ -8,7 +9,7 @@ using static ReadIraq.Enums.Enum;
 namespace ReadIraq.Domain.Subjects
 {
     [Table("Subjects")]
-    public class Subject : FullAuditedEntity<Guid>
+    public class Subject : FullAuditedEntity<Guid>, IPassivable
     {
         public virtual ICollection<Translation> Name { get; set; }
         public string Description { get; set; }
@@ -16,12 +17,14 @@ namespace ReadIraq.Domain.Subjects
         public SubjectLevel Level { get; set; }
         public int StudentsCount { get; set; }
         public int TeachersCount { get; set; }
+        public bool IsActive { get; set; }
 
         public Subject()
         {
             Name = new HashSet<Translation>();
             StudentsCount = 0;
             TeachersCount = 0;
+            IsActive = true;
         }
     }
 }

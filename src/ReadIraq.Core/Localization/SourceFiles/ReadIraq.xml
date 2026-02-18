@@ -199,5 +199,11 @@
     <text name="YourUpdatedHasApproved">Your Request to Update Your Company Information has been Approved.</text>
     <text name="SelectedByUser">Selected By User</text>
     <text name="Approved">Approved By Admin</text>
+    <text name="CommentNotFound">Comment not found</text>
+    <text name="OnlyAuthorOrAdminCanUpdateComment">Only author or admin can update this comment</text>
+    <text name="OnlyAuthorOrAdminCanDeleteComment">Only author or admin can delete this comment</text>
+    <text name="RatingNotFound">Rating not found</text>
+    <text name="SubscriptionPlanNotFound">Subscription plan not found</text>
+    <text name="InsufficientPermissions">Insufficient permissions</text>
   </texts>
 </localizationDictionary>

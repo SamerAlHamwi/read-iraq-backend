@@ -1,18 +1,16 @@
-using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using ReadIraq.CrudAppServiceBase;
 using ReadIraq.LessonSessions.Dto;
 using System;
 using System.Threading.Tasks;
 
 namespace ReadIraq.LessonSessions
 {
-    public interface ILessonSessionAppService : IApplicationService
+    public interface ILessonSessionAppService : IReadIraqAsyncCrudAppService<LessonSessionDto, Guid, LiteLessonSessionDto,
+        PagedLessonSessionResultRequestDto, CreateLessonSessionDto, UpdateLessonSessionDto>
     {
-        Task<LessonSessionDto> GetAsync(EntityDto<Guid> input);
-        Task<PagedResultDto<LiteLessonSessionDto>> GetAllAsync(PagedLessonSessionResultRequestDto input);
-        Task<LessonSessionDto> CreateAsync(CreateLessonSessionDto input);
-        Task<LessonSessionDto> UpdateAsync(UpdateLessonSessionDto input);
-        Task DeleteAsync(EntityDto<Guid> input);
+        Task MarkAsCompleteAsync(EntityDto<Guid> input);
+        Task ReportIssueAsync(ReportSessionIssueInput input);
+        // Comments logic could be here or in a separate CommentAppService
     }
 }
-

@@ -9,7 +9,5 @@ namespace ReadIraq.Domain.Terms
     {
         public ICollection<TermTranslation> Translations { get; set; }
         public bool IsActive { get; set; }
-        public AppType App { get; set; }
-
     }
 }

@@ -15,5 +15,8 @@ namespace ReadIraq.Users.Dto
         /// </summary>
         public UserType? UserType { get; set; }
         public string MediatorCode { get; set; }
+
+        public int? GradeId { get; set; }
+        public bool? Subscribed { get; set; }
     }
 }

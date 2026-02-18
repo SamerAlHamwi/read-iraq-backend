@@ -35,7 +35,8 @@ namespace ReadIraq.Grades
             return base.CreateFilteredQuery(input)
                 .Include(x => x.Name)
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.Name.Any(t => t.Name.Contains(input.Keyword)))
-                .WhereIf(input.GradeGroupId != null && input.GradeGroupId != Guid.Empty, x => x.GradeGroupId == input.GradeGroupId);
+                .WhereIf(input.GradeGroupId != null && input.GradeGroupId != Guid.Empty, x => x.GradeGroupId == input.GradeGroupId)
+                .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive.Value);
         }
 
         protected override IQueryable<Grade> ApplySorting(IQueryable<Grade> query, PagedGradeResultRequestDto input)
@@ -103,6 +104,23 @@ namespace ReadIraq.Grades
             var dto = MapToEntityDto(entity);
             dto.SubjectIds = input.SubjectIds;
             return dto;
+        }
+
+        public async Task Reorder(ReorderGradesDto input)
+        {
+            var ids = input.Orders.Select(x => x.Id).ToList();
+            var grades = await Repository.GetAll().Where(x => ids.Contains(x.Id)).ToListAsync();
+
+            foreach (var order in input.Orders)
+            {
+                var grade = grades.FirstOrDefault(x => x.Id == order.Id);
+                if (grade != null)
+                {
+                    grade.Priority = order.Priority;
+                }
+            }
+
+            await CurrentUnitOfWork.SaveChangesAsync();
         }
     }
 }

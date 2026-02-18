@@ -20,7 +20,7 @@ namespace ReadIraq.Authorization.Roles
 
             roleManagementConfig.StaticRoles.Add(
                 new StaticRoleDefinition(
-                    StaticRoleNames.Tenants.Admin,
+                    StaticRoleNames.Tenants.SuperAdmin,
                     MultiTenancySides.Tenant
                 )
             );

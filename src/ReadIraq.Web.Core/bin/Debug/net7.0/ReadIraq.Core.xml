@@ -149,6 +149,11 @@
             <param name="attachment"></param>
             <returns></returns>
         </member>
+        <member name="P:ReadIraq.Domain.Audit.ActivityLog.Metadata">
+            <summary>
+            Metadata, stored as JSON string.
+            </summary>
+        </member>
         <!-- Badly formed XML comment ignored for member "M:ReadIraq.Domain.Cities.ICityManager.CheckIfCityIsExist(System.Collections.Generic.List{ReadIraq.Domain.Cities.CityTranslation})" -->
         <member name="M:ReadIraq.Domain.Cities.ICityManager.GetCitiesCounts">
             <summary>
@@ -188,6 +193,26 @@
             Ordering inside module/collection.
             </summary>
         </member>
+        <member name="P:ReadIraq.Domain.Notifications.AppNotification.Data">
+            <summary>
+            Metadata/Deep link info, stored as JSON string.
+            </summary>
+        </member>
+        <member name="P:ReadIraq.Domain.Quizzes.Question.Options">
+            <summary>
+            Options for MCQ, stored as JSON string.
+            </summary>
+        </member>
+        <member name="P:ReadIraq.Domain.Quizzes.Question.CorrectAnswer">
+            <summary>
+            Correct answer(s), stored as JSON string.
+            </summary>
+        </member>
+        <member name="P:ReadIraq.Domain.Quizzes.QuizAttempt.Answers">
+            <summary>
+            User answers, stored as JSON string.
+            </summary>
+        </member>
         <member name="P:ReadIraq.Domain.Regions.Dto.RegionTranslationDto.Name">
             <summary>
             Name
@@ -198,6 +223,11 @@
             Language
             </summary>
         </member>
+        <member name="P:ReadIraq.Domain.Settings.AppSetting.Value">
+            <summary>
+            Value, stored as JSON string.
+            </summary>
+        </member>
         <member name="T:ReadIraq.Advertisiments.Dto.PagedAdvertisimentResultRequestDto">
             <summary>
             Paged Post Category Result Request Dto
@@ -206,11 +236,6 @@
         <member name="P:ReadIraq.Advertisiments.Dto.PagedAdvertisimentResultRequestDto.Keyword">
             <summary>
             Keyword
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Advertisiments.Dto.PagedAdvertisimentResultRequestDto.Screen">
-            <summary>
-            Screen Value: Home=1, Properties=2, Vehicles=3,Wanted=4
             </summary>
         </member>
         <member name="P:ReadIraq.Advertisiments.Dto.PagedAdvertisimentResultRequestDto.Position">
@@ -370,11 +395,6 @@
         <member name="P:ReadIraq.Countries.Dto.CountryTranslationDto.Language">
             <summary>
             Language
-            </summary>
-        </member>
-        <member name="P:ReadIraq.PushNotifications.Dto.PagedPushNotificationResultRequestDto.Destination">
-            <summary>
-             All User = 0, HealthCareAdmin = 1, Doctor = 2,Receptionist = 3, Patient = 4
             </summary>
         </member>
         <member name="T:ReadIraq.Enums.Enum.MediaType">

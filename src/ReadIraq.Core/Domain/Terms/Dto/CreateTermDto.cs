@@ -9,9 +9,6 @@ namespace ReadIraq.TermService.Dto
     {
         [Required]
         public List<TermTranslationDto> Translations { get; set; }
-        [Required]
-        public AppType App { get; set; }
-
 
         public void AddValidationErrors(CustomValidationContext context)
         {

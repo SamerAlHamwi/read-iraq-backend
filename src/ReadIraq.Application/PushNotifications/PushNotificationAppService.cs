@@ -58,57 +58,6 @@ namespace ReadIraq.PushNotifications
             _mapper = mapper;
         }
 
-        [ApiExplorerSettings(IgnoreApi = false)]
-        public override async Task<PushNotificationDetailsDto> CreateAsync(CreatePushNotificationDto input)
-        {
-
-            CheckCreatePermission();
-            var pushNotification = ObjectMapper.Map<PushNotification>(input);
-            pushNotification.CreationTime = DateTime.UtcNow;
-            await Repository.InsertAsync(pushNotification);
-            UnitOfWorkManager.Current.SaveChanges();
-            var arMessage = pushNotification.Translations.Where(x => x.Language == "ar").Select(x => x.Message).FirstOrDefault();
-            var enMessage = pushNotification.Translations.Where(x => x.Language == "en").Select(x => x.Message).FirstOrDefault();
-            var data = new TypedMessageNotificationData(NotificationType.PushNotification, arMessage, enMessage, "");
-            var userIds = await GetUserIdsNotificationDestination(input.Destination);
-            await _notificationService.NotifyUsersAsync(data, userIds, true);
-            return MapToEntityDto(pushNotification);
-
-
-        }
-
-        [ApiExplorerSettings(IgnoreApi = false)]
-        public override async Task<PagedResultDto<LitePushNotificationDto>> GetAllAsync(PagedPushNotificationResultRequestDto input)
-        {
-            var lang = await _settingManager.GetSettingValueForUserAsync(LocalizationSettingNames.DefaultLanguage, _session.TenantId, (long)AbpSession.UserId);
-
-            var isArabic = lang.ToUpper().Contains("AR");
-
-            var result = await base.GetAllAsync(input);
-            foreach (var item in result.Items)
-            {
-                //   item.DestinationText = item.Destination.ToString();
-                item.DestinationText = _localizationSource.GetString(item.Destination.ToString(), isArabic ?
-                          CultureInfo.GetCultureInfo("ar-SY") :
-                          CultureInfo.GetCultureInfo("en"));
-                item.ArTitle = _localizationSource.GetString(NotificationType.PushNotification.ToString(), CultureInfo.GetCultureInfo("ar"));
-                item.EnTitle = _localizationSource.GetString(NotificationType.PushNotification.ToString(), CultureInfo.GetCultureInfo("en"));
-
-            }
-            return result;
-        }
-
-        protected override IQueryable<PushNotification> CreateFilteredQuery(PagedPushNotificationResultRequestDto input)
-        {
-            var data = base.CreateFilteredQuery(input);
-            data = data.Where(x => !x.IsDeleted);
-            if (!input.Keyword.IsNullOrEmpty())
-                data = data.Where(x => x.Translations.Where(x => x.Message.Contains(input.Keyword)).Any());
-            if (input.Destination is not null)
-                data = data.Where(x => x.Destination == input.Destination);
-            data = data.Include(x => x.Translations);
-            return data;
-        }
         /// <summary>
         /// Sorting Filtered Posts
         /// </summary>
@@ -119,25 +68,7 @@ namespace ReadIraq.PushNotifications
         {
             return query.OrderBy(r => r.CreationTime);
         }
-        private async Task<long[]> GetUserIdsNotificationDestination(TopicType topic)
-        {
 
-            long[] UserIds = new long[] { };
-            switch (topic)
-            {
-                case TopicType.All:
-                    UserIds = _userManager.Users.Where(x => !x.IsDeleted).Select(x => x.Id).ToArray();
-                    break;
-                case TopicType.Admin:
-                    UserIds = _userManager.Users.Where(x => x.Type == UserType.Admin).Select(x => x.Id).ToArray();
-                    break;
-                case TopicType.BasicUser:
-                    UserIds = _userManager.Users.Where(x => x.Type == UserType.BasicUser).Select(x => x.Id).ToArray();
-                    break;
-            }
-            return UserIds;
-
-        }
         [ApiExplorerSettings(IgnoreApi = true)]
         public override async Task<PushNotificationDetailsDto> UpdateAsync(UpdatePushNotificationDto input)
         {

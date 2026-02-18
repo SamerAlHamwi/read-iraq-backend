@@ -7,7 +7,6 @@ namespace ReadIraq.Domain.FrequentlyQuestions.Dto
     {
         public string Keyword { get; set; }
         public bool? IsActive { get; set; }
-        public AppType? App { get; set; }
 
     }
 }

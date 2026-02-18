@@ -45,13 +45,6 @@ namespace ReadIraq.Domain.Attachments
         public async Task<Attachment> GetAndCheckAsync(long id, AttachmentRefType refType, bool IsForDraft = false)
         {
             var attachment = await GetByIdAsync(id);
-            if (IsForDraft)
-            {
-                if (attachment.RefType != AttachmentRefType.Draft && attachment.RefType != AttachmentRefType.RequestForQuotation)
-                    throw new UserFriendlyException(L("InvalidAttachmentRefType"),
-                     $"Id: {id}, RefType: {attachment.RefType} and should be {(byte)refType}");
-                return attachment;
-            }
             if (attachment.RefType != refType)
                 throw new UserFriendlyException(L("InvalidAttachmentRefType"),
                     $"Id: {id}, RefType: {attachment.RefType} and should be {(byte)refType}");
@@ -79,10 +72,6 @@ namespace ReadIraq.Domain.Attachments
             if (attachment.RefId != null && !IsForDraft)
                 throw new UserFriendlyException(L("AttachmentAlreadyRelatedToEntity"),
                     $"Id: {attachment.Id}, RefType: {attachment.RefType}");
-            if (IsForDraft && !IsForRequest)
-                attachment.RefType = AttachmentRefType.Draft;
-            if (IsForDraft && IsForRequest)
-                attachment.RefType = AttachmentRefType.RequestForQuotation;
             attachment.RefId = refId;
             await _repository.UpdateAsync(attachment);
         }
@@ -146,30 +135,6 @@ namespace ReadIraq.Domain.Attachments
                     return AllAcceptedTypes;
                 case AttachmentRefType.Advertisiment:
                     return ImagesAcceptedTypes;
-                case AttachmentRefType.QR:
-                    return ImagesAcceptedTypes;
-                case AttachmentRefType.RequestForQuotation:
-                    return ImagesAcceptedTypes;
-                case AttachmentRefType.SourceTypeIcon:
-                    return ImagesAcceptedTypes;
-                case AttachmentRefType.ContactUs:
-                    return ImagesAcceptedTypes;
-                case AttachmentRefType.Service:
-                    return ImagesAcceptedTypes;
-                case AttachmentRefType.CompanyProfile:
-                    return ImagesAcceptedTypes;
-                case AttachmentRefType.CompanyOwnerIdentity:
-                    return AllAcceptedTypes;
-                case AttachmentRefType.CompanyCommercialRegister:
-                    return AllAcceptedTypes;
-                case AttachmentRefType.AdditionalAttachment:
-                    return AllAcceptedTypes;
-                case AttachmentRefType.SubService:
-                    return ImagesAcceptedTypes;
-                case AttachmentRefType.Tool:
-                    return ImagesAcceptedTypes;
-                case AttachmentRefType.FinishedRequestByCompany:
-                    return ImagesAcceptedTypes;
             }
 
             return new MediaType[] { };
@@ -226,27 +191,18 @@ namespace ReadIraq.Domain.Attachments
 
         public async Task CreateOrUpdateAttachmentAsync(int partnerId, string relativePath, string name)
         {
-            var oldAttachment = await _repository.FirstOrDefaultAsync(x =>
-                    x.RefId == partnerId && x.RefType == AttachmentRefType.QR);
-            if (oldAttachment != null)
-            {
-                oldAttachment.FileName = name;
-                oldAttachment.StorageKey = relativePath;
-                await _repository.UpdateAsync(oldAttachment);
-            }
-            else
-            {
+            
                 var attachment = new Attachment
                 {
                     FileName = name,
                     Type = MediaType.Image,
                     StorageKey = relativePath,
                     RefId = partnerId,
-                    RefType = AttachmentRefType.QR
+                    RefType = AttachmentRefType.Profile
                 };
 
                 await _repository.InsertAsync(attachment);
-            }
+            
         }
 
         public async Task CopyNewAttachmentForCompany(long attachmentId, int companyId, AttachmentRefType refType)
@@ -264,18 +220,7 @@ namespace ReadIraq.Domain.Attachments
             await UnitOfWorkManager.Current.SaveChangesAsync();
         }
 
-        public async Task DeleteAllRefIdForCompanyAsync(int companyId)
-        {
-            await _repository.GetAll()
-                .Where(x => x.RefId.HasValue && x.RefId == companyId &&
-                (x.RefType == AttachmentRefType.CompanyProfile ||
-                x.RefType == AttachmentRefType.CompanyOwnerIdentity ||
-                x.RefType == AttachmentRefType.CompanyCommercialRegister ||
-                x.RefType == AttachmentRefType.AdditionalAttachment))
-             .ExecuteUpdateAsync(s => s.SetProperty(x => x.IsDeleted, true)
-             .SetProperty(x => x.RefId, 0));
-            await UnitOfWorkManager.Current.SaveChangesAsync();
-        }
+       
         public async Task UpdteAllRefIdAsync(int companyId, List<long> attachmentIds)
         {
             await _repository.GetAll()

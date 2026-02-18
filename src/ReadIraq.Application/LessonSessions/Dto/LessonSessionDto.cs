@@ -14,13 +14,18 @@ namespace ReadIraq.LessonSessions.Dto
         public string ThumbnailUrl { get; set; }
         public string VideoUrl { get; set; }
         public Guid TeacherProfileId { get; set; }
+        public Guid SubjectId { get; set; }
         public int DurationSeconds { get; set; }
         public int Order { get; set; }
         public bool IsSavedByDefault { get; set; }
         public int ViewsCount { get; set; }
         public int LikesCount { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsFree { get; set; }
+        public List<long> AttachmentIds { get; set; }
 
-        public List<long> AttachmentIds { get; set; } = new List<long>();
+        // Progress fields for current user
+        public bool IsCompleted { get; set; }
+        public int WatchedSeconds { get; set; }
     }
 }
-

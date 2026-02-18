@@ -1,3 +1,9 @@
+C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.csproj.AssemblyReference.cache
+C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.AssemblyInfoInputs.cache
+C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.AssemblyInfo.cs
+C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.csproj.CoreCompileInputs.cache
+C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.sourcelink.json
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\bin\Debug\net7.0\ReadIraq.Web.Core.deps.json
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\bin\Debug\net7.0\ReadIraq.Web.Core.dll
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\bin\Debug\net7.0\ReadIraq.Web.Core.pdb
@@ -307,12 +313,6 @@ C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\bin\Debug\net7.0\ReadI
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\bin\Debug\net7.0\ReadIraq.Core.pdb
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\bin\Debug\net7.0\ReadIraq.Core.xml
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\bin\Debug\net7.0\ar\ReadIraq.Core.resources.dll
-C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.csproj.AssemblyReference.cache
-C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.AssemblyInfoInputs.cache
-C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.AssemblyInfo.cs
-C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.csproj.CoreCompileInputs.cache
-C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.sourcelink.json
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.4DC9E216.Up2Date
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\ReadIraq.Web.Core.dll
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Web.Core\obj\Debug\net7.0\refint\ReadIraq.Web.Core.dll

@@ -4,7 +4,6 @@ namespace ReadIraq.Domain.ApkBuilds.Dtos
 {
     public class InputApkBuildStatuesDto
     {
-        public AppType AppType { get; set; }
         public SystemType SystemType { get; set; }
         public int VersionCode { get; set; }
 

@@ -43,5 +43,13 @@ namespace ReadIraq.Users.Dto
 
         public string RegistrationFullName { get; set; }
 
+        public int? GradeId { get; set; }
+        public string GradeName { get; set; }
+
+        public int? GovernorateId { get; set; }
+        public string GovernorateName { get; set; }
+
+        public string Avatar { get; set; }
+        public int Points { get; set; }
     }
 }

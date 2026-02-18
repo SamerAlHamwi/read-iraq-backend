@@ -5,6 +5,7 @@ using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
 using Microsoft.EntityFrameworkCore;
+using ReadIraq.Authorization;
 using ReadIraq.CrudAppServiceBase;
 using ReadIraq.Domain.Subscriptions;
 using ReadIraq.Subscriptions.Dto;
@@ -37,7 +38,30 @@ namespace ReadIraq.Subscriptions
                     .ThenInclude(x => x.Feature)
                 .FirstOrDefaultAsync(x => x.Id == input.Id);
 
+            if (entity == null)
+            {
+                throw new Abp.UI.UserFriendlyException(L("SubscriptionPlanNotFound"));
+            }
+
             return MapToEntityDto(entity);
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Users)] // Admin only
+        public override Task<SubscriptionPlanDto> CreateAsync(CreateSubscriptionPlanDto input)
+        {
+            return base.CreateAsync(input);
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Users)] // Admin only
+        public override Task<SubscriptionPlanDto> UpdateAsync(UpdateSubscriptionPlanDto input)
+        {
+            return base.UpdateAsync(input);
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Users)] // Admin only
+        public override Task DeleteAsync(EntityDto<Guid> input)
+        {
+            return base.DeleteAsync(input);
         }
     }
 }

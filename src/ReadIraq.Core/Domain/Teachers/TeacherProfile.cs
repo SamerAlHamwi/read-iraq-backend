@@ -1,3 +1,4 @@
+using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using ReadIraq.Authorization.Users;
 using System;
@@ -8,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ReadIraq.Domain.Teachers
 {
     [Table("TeacherProfiles")]
-    public class TeacherProfile : FullAuditedEntity<Guid>
+    public class TeacherProfile : FullAuditedEntity<Guid>, IPassivable
     {
         public long UserId { get; set; }
 
@@ -34,6 +35,7 @@ namespace ReadIraq.Domain.Teachers
         public decimal AverageRating { get; set; }
 
         public int ReviewsCount { get; set; }
+        public bool IsActive { get; set; }
 
         public virtual ICollection<TeacherFeatureMap> Features { get; set; }
         public virtual ICollection<TeacherSubject> Subjects { get; set; }
@@ -44,6 +46,7 @@ namespace ReadIraq.Domain.Teachers
             Features = new HashSet<TeacherFeatureMap>();
             Subjects = new HashSet<TeacherSubject>();
             RatingBreakdowns = new HashSet<TeacherRatingBreakdown>();
+            IsActive = true;
         }
     }
 }

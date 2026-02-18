@@ -79,12 +79,6 @@ namespace ClinicSystem.Advertisiments
             await _advertisimentManager.AddPositionToAdvertisimentAsync(advertisimentPossition);
         }
 
-        [HttpDelete]
-        public async Task DeleteAdvertisimentPosition(AddAdvertisimentPositionDto input)
-        {
-            AdvertisimentPosition position = ObjectMapper.Map<AdvertisimentPosition>(input);
-            await _advertisimentManager.RemovePositionFromAdvertisiment(position);
-        }
         [AbpAllowAnonymous]
         public override async Task<PagedResultDto<LiteAdvertisimentDto>> GetAllAsync(PagedAdvertisimentResultRequestDto input)
         {
@@ -145,10 +139,6 @@ namespace ClinicSystem.Advertisiments
         {
             var data = base.CreateFilteredQuery(input);
             data = data.Include(x => x.AdvertisimentPositions);
-            if (input.Screen.HasValue)
-            {
-                data = data.Where(x => x.AdvertisimentPositions.Where(x => x.Screen == input.Screen.Value).Any());
-            }
             if (input.Position.HasValue)
             {
                 data = data.Where(x => x.AdvertisimentPositions.Where(x => x.Position == input.Position.Value).Any());

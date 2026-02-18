@@ -21,6 +21,8 @@ namespace ReadIraq.Domain.Grades
 
         public virtual ICollection<GradeSubject> GradeSubjects { get; set; }
 
+        public bool IsActive { get; set; } = true;
+
         public Grade()
         {
             Name = new HashSet<Translation>();

@@ -43,6 +43,10 @@ namespace ReadIraq.Users.Dto
         public UserType Type { get; set; }
         public string MediatorCode { get; set; }
 
+        public int? GradeId { get; set; }
+        public int? GovernorateId { get; set; }
+        public string Avatar { get; set; }
+
         public void Normalize()
         {
             if (RoleNames == null)
@@ -50,7 +54,5 @@ namespace ReadIraq.Users.Dto
                 RoleNames = new string[0];
             }
         }
-
     }
-
 }

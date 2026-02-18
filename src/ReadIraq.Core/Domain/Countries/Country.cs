@@ -24,6 +24,5 @@ namespace ReadIraq.Countries
         public virtual ICollection<City> Cities { get; set; }
         public ICollection<CountryTranslation> Translations { get; set; }
         public bool IsActive { get; set; }
-        public ServiceType Type { get; set; }
     }
 }
