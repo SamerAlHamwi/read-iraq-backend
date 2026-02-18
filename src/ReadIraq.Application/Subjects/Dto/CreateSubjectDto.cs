@@ -15,7 +15,7 @@ namespace ReadIraq.Subjects.Dto
 
         public string Description { get; set; }
 
-        public string ImageUrl { get; set; }
+        public long AttachmentId { get; set; }
 
         [Required]
         public SubjectLevel Level { get; set; }

@@ -10,7 +10,7 @@ namespace ReadIraq.Teachers.Dto
     {
         public string Name { get; set; }
         public string Specialization { get; set; }
-        public string AvatarUrl { get; set; }
+        public LiteAttachmentDto Attachment { get; set; }
         public decimal AverageRating { get; set; }
     }
 }

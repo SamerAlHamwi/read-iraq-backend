@@ -11,8 +11,8 @@ namespace ReadIraq.LessonSessions.Dto
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public string ThumbnailUrl { get; set; }
-        public string VideoUrl { get; set; }
+        public LiteAttachmentDto Thumbnail { get; set; }
+        public LiteAttachmentDto Video { get; set; }
         public Guid TeacherProfileId { get; set; }
         public Guid SubjectId { get; set; }
         public int DurationSeconds { get; set; }
@@ -22,7 +22,7 @@ namespace ReadIraq.LessonSessions.Dto
         public int LikesCount { get; set; }
         public bool IsActive { get; set; }
         public bool IsFree { get; set; }
-        public List<long> AttachmentIds { get; set; }
+        public List<LiteAttachmentDto> Attachments { get; set; }
 
         // Progress fields for current user
         public bool IsCompleted { get; set; }

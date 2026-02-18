@@ -16,6 +16,8 @@ using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.LessonSessions;
 using ReadIraq.Teachers.Dto;
 using ReadIraq.LessonSessions.Dto;
+using ReadIraq.Domain.Attachments;
+using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Subjects
 {
@@ -26,19 +28,22 @@ namespace ReadIraq.Subjects
         private readonly IRepository<GradeSubject> _gradeSubjectRepository;
         private readonly IRepository<TeacherSubject, Guid> _teacherSubjectRepository;
         private readonly IRepository<LessonSession, Guid> _lessonSessionRepository;
+        private readonly IAttachmentManager _attachmentManager;
 
         public SubjectAppService(
             IRepository<Subject, Guid> repository,
             ISubjectManager subjectManager,
             IRepository<GradeSubject> gradeSubjectRepository,
             IRepository<TeacherSubject, Guid> teacherSubjectRepository,
-            IRepository<LessonSession, Guid> lessonSessionRepository)
+            IRepository<LessonSession, Guid> lessonSessionRepository,
+            IAttachmentManager attachmentManager)
             : base(repository)
         {
             _subjectManager = subjectManager;
             _gradeSubjectRepository = gradeSubjectRepository;
             _teacherSubjectRepository = teacherSubjectRepository;
             _lessonSessionRepository = lessonSessionRepository;
+            _attachmentManager = attachmentManager;
         }
 
         protected override IQueryable<Subject> CreateFilteredQuery(PagedSubjectResultRequestDto input)
@@ -60,6 +65,24 @@ namespace ReadIraq.Subjects
             return query;
         }
 
+        public override async Task<PagedResultDto<LiteSubjectDto>> GetAllAsync(PagedSubjectResultRequestDto input)
+        {
+            var result = await base.GetAllAsync(input);
+
+            foreach (var item in result.Items)
+            {
+                var attachment = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.Subject);
+                if (attachment != null)
+                {
+                    item.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                    item.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                    item.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                }
+            }
+
+            return result;
+        }
+
         public override async Task<SubjectDto> GetAsync(EntityDto<Guid> input)
         {
             var entity = await Repository.GetAll()
@@ -71,7 +94,16 @@ namespace ReadIraq.Subjects
                 throw new Abp.UI.UserFriendlyException("Subject not found");
             }
 
-            return MapToEntityDto(entity);
+            var dto = MapToEntityDto(entity);
+            var attachment = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.Subject);
+            if (attachment != null)
+            {
+                dto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                dto.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                dto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+            }
+
+            return dto;
         }
 
         public override async Task<SubjectDto> CreateAsync(CreateSubjectDto input)
@@ -92,7 +124,12 @@ namespace ReadIraq.Subjects
                 }
             }
 
-            return MapToEntityDto(entity);
+            if (input.AttachmentId > 0)
+            {
+                await _attachmentManager.CheckAndUpdateRefIdAsync(input.AttachmentId, AttachmentRefType.Subject, entity.Id.ToString());
+            }
+
+            return await GetAsync(new EntityDto<Guid>(entity.Id));
         }
 
         public override async Task<SubjectDto> UpdateAsync(UpdateSubjectDto input)
@@ -123,9 +160,19 @@ namespace ReadIraq.Subjects
                 }
             }
 
+            if (input.AttachmentId > 0)
+            {
+                var oldAttachment = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.Subject);
+                if (oldAttachment != null && oldAttachment.Id != input.AttachmentId)
+                {
+                    await _attachmentManager.DeleteRefIdAsync(oldAttachment);
+                }
+                await _attachmentManager.CheckAndUpdateRefIdAsync(input.AttachmentId, AttachmentRefType.Subject, entity.Id.ToString());
+            }
+
             await CurrentUnitOfWork.SaveChangesAsync();
 
-            return MapToEntityDto(entity);
+            return await GetAsync(new EntityDto<Guid>(entity.Id));
         }
 
         public async Task ToggleActiveAsync(EntityDto<Guid> input)
@@ -142,22 +189,11 @@ namespace ReadIraq.Subjects
                 .Select(ts => ts.TeacherProfileId)
                 .ToListAsync();
 
-            // Note: This would normally use a TeacherProfile repository, but for simplicity:
-            // I'll assume we have a way to get lite teacher profiles.
-            // In a real scenario, I'd inject TeacherProfile repository.
-            // For now, returning empty or just the count logic if preferred.
-            // But user asked for "أساتذة المادة" (Subject Teachers).
-
-            return new ListResultDto<LiteTeacherProfileDto>(); // Implementation omitted for brevity or need more info
+            return new ListResultDto<LiteTeacherProfileDto>();
         }
 
         public async Task<PagedResultDto<LiteLessonSessionDto>> GetSessionsAsync(Guid subjectId, PagedAndSortedResultRequestDto input)
         {
-            // Implementation depends on how Sessions are linked to Subjects.
-            // Assuming LessonSession has SubjectId or via some mapping.
-            // Looking at LessonSession.cs, it doesn't have SubjectId.
-            // Maybe it's linked via Teacher? Or there's a Module/Course entity?
-
             return new PagedResultDto<LiteLessonSessionDto>();
         }
     }

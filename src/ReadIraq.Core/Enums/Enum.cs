@@ -26,7 +26,11 @@ namespace ReadIraq.Enums
         {
             Profile = 1,
             Advertisiment = 2,
-
+            Subject = 3,
+            LessonSessionThumbnail = 4,
+            LessonSessionVideo = 5,
+            TeacherProfile = 6,
+            LessonSessionOther = 7
         }
         public enum AttachmentType : byte
         {

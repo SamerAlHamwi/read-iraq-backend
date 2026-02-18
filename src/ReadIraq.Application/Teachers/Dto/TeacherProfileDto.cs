@@ -13,7 +13,7 @@ namespace ReadIraq.Teachers.Dto
         public string Name { get; set; }
         public string Bio { get; set; }
         public string Specialization { get; set; }
-        public string AvatarUrl { get; set; }
+        public LiteAttachmentDto Attachment { get; set; }
         public string Color { get; set; }
         public int StudentsCount { get; set; }
         public decimal AverageRating { get; set; }

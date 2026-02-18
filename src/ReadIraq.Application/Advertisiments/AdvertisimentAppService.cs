@@ -53,7 +53,7 @@ namespace ClinicSystem.Advertisiments
             MapToEntity(input, Advertisiment);
             Advertisiment.LastModificationTime = DateTime.UtcNow;
             await Repository.UpdateAsync(Advertisiment);
-            var oldAttachments = await _attachmentManager.GetByRefAsync(input.Id, AttachmentRefType.Advertisiment);
+            var oldAttachments = await _attachmentManager.GetByRefAsync(input.Id.ToString(), AttachmentRefType.Advertisiment);
             /*var attachmentsToDelete = oldAttachments.Where(x => !input.AttachmentIds.Contains(x.Id));
             var attachmentIdsToAdd = input.AttachmentIds.Except(oldAttachments.Select(x => x.Id).ToList());*/
             /* foreach (var attachment in attachmentsToDelete)
@@ -90,7 +90,7 @@ namespace ClinicSystem.Advertisiments
                 var user = await _userManager.GetUserByIdAsync((long)item.CreatorUserId);
                 item.CreatorUserName = user.FullName;
 
-                var attachment = await _attachmentManager.GetElementByRefAsync(item.Id, AttachmentRefType.Advertisiment);
+                var attachment = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.Advertisiment);
                 if (attachment != null)
                 {
                     item.Attachment = new LiteAttachmentDto
@@ -115,7 +115,7 @@ namespace ClinicSystem.Advertisiments
             advertisiment.AdvertisimentPositions = ObjectMapper.Map<List<AdvertisimentPosition>>(input.AdvertisimentPositions);
             var advertismentId = await Repository.InsertAndGetIdAsync(advertisiment);
             await UnitOfWorkManager.Current.SaveChangesAsync();
-            await _attachmentManager.CheckAndUpdateRefIdAsync(input.AttachmentId, AttachmentRefType.Advertisiment, advertismentId);
+            await _attachmentManager.CheckAndUpdateRefIdAsync(input.AttachmentId, AttachmentRefType.Advertisiment, advertismentId.ToString());
             return MapToEntityDto(advertisiment);
 
         }
@@ -170,7 +170,7 @@ namespace ClinicSystem.Advertisiments
             advertisimentDto.CreatorUserName = user.FullName;
             advertisimentDto.AdvertisimentPositions = ObjectMapper.Map<List<AdvertisimentPositionDto>>(await _advertisimentManager.GetAdvertisimentPositionsAsync(input.Id));
 
-            var attachment = await _attachmentManager.GetElementByRefAsync(advertisimentDto.Id, AttachmentRefType.Advertisiment);
+            var attachment = await _attachmentManager.GetElementByRefAsync(advertisimentDto.Id.ToString(), AttachmentRefType.Advertisiment);
             if (attachment != null)
             {
                 advertisimentDto.Attachment = new LiteAttachmentDto
@@ -192,5 +192,3 @@ namespace ClinicSystem.Advertisiments
 
     }
 }
-
-

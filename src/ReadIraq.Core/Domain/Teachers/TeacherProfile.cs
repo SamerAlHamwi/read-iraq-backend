@@ -24,8 +24,6 @@ namespace ReadIraq.Domain.Teachers
 
         public string Specialization { get; set; }
 
-        public string AvatarUrl { get; set; }
-
         [StringLength(7)]
         public string Color { get; set; }
 

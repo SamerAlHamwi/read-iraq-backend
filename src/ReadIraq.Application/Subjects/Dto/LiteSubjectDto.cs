@@ -11,6 +11,6 @@ namespace ReadIraq.Subjects.Dto
     public class LiteSubjectDto : EntityDto<Guid>
     {
         public List<TranslationDto> Name { get; set; }
-        public string ImageUrl { get; set; }
+        public LiteAttachmentDto Attachment { get; set; }
     }
 }

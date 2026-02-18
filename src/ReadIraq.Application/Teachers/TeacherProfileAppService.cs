@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ReadIraq.Domain.Attachments;
+using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Teachers
 {
@@ -20,17 +22,20 @@ namespace ReadIraq.Teachers
         private readonly ITeacherProfileManager _teacherProfileManager;
         private readonly IRepository<TeacherFeatureMap, Guid> _featureMapRepository;
         private readonly IRepository<TeacherSubject, Guid> _teacherSubjectRepository;
+        private readonly IAttachmentManager _attachmentManager;
 
         public TeacherProfileAppService(
             IRepository<TeacherProfile, Guid> repository,
             ITeacherProfileManager teacherProfileManager,
             IRepository<TeacherFeatureMap, Guid> featureMapRepository,
-            IRepository<TeacherSubject, Guid> teacherSubjectRepository)
+            IRepository<TeacherSubject, Guid> teacherSubjectRepository,
+            IAttachmentManager attachmentManager)
             : base(repository)
         {
             _teacherProfileManager = teacherProfileManager;
             _featureMapRepository = featureMapRepository;
             _teacherSubjectRepository = teacherSubjectRepository;
+            _attachmentManager = attachmentManager;
         }
 
         protected override IQueryable<TeacherProfile> CreateFilteredQuery(PagedTeacherProfileResultRequestDto input)
@@ -45,6 +50,24 @@ namespace ReadIraq.Teachers
             }
 
             return query;
+        }
+
+        public override async Task<PagedResultDto<LiteTeacherProfileDto>> GetAllAsync(PagedTeacherProfileResultRequestDto input)
+        {
+            var result = await base.GetAllAsync(input);
+
+            foreach (var item in result.Items)
+            {
+                var attachment = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.TeacherProfile);
+                if (attachment != null)
+                {
+                    item.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                    item.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                    item.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                }
+            }
+
+            return result;
         }
 
         public override async Task<TeacherProfileDto> GetAsync(EntityDto<Guid> input)
@@ -63,6 +86,15 @@ namespace ReadIraq.Teachers
             var dto = MapToEntityDto(entity);
             dto.FeatureIds = entity.Features.Select(f => f.TeacherFeatureId).ToList();
             dto.SubjectIds = entity.Subjects.Select(s => s.SubjectId).ToList();
+
+            var attachment = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.TeacherProfile);
+            if (attachment != null)
+            {
+                dto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                dto.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                dto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+            }
+
             return dto;
         }
 
@@ -92,10 +124,44 @@ namespace ReadIraq.Teachers
             await Repository.InsertAsync(entity);
             await CurrentUnitOfWork.SaveChangesAsync();
 
-            var dto = MapToEntityDto(entity);
-            dto.FeatureIds = input.FeatureIds;
-            dto.SubjectIds = input.SubjectIds;
-            return dto;
+            if (input.AttachmentId > 0)
+            {
+                await _attachmentManager.CheckAndUpdateRefIdAsync(input.AttachmentId, AttachmentRefType.TeacherProfile, entity.Id.ToString());
+            }
+
+            return await GetAsync(new EntityDto<Guid>(entity.Id));
+        }
+
+        public override async Task<TeacherProfileDto> UpdateAsync(UpdateTeacherProfileDto input)
+        {
+            CheckUpdatePermission();
+
+            var entity = await Repository.GetAll()
+                .Include(x => x.Features)
+                .Include(x => x.Subjects)
+                .FirstOrDefaultAsync(x => x.Id == input.Id);
+
+            if (entity == null)
+            {
+                throw new Abp.UI.UserFriendlyException("Teacher not found");
+            }
+
+            MapToEntity(input, entity);
+
+            if (input.AttachmentId > 0)
+            {
+                var oldAttachment = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.TeacherProfile);
+                if (oldAttachment != null && oldAttachment.Id != input.AttachmentId)
+                {
+                    await _attachmentManager.DeleteRefIdAsync(oldAttachment);
+                }
+                await _attachmentManager.CheckAndUpdateRefIdAsync(input.AttachmentId, AttachmentRefType.TeacherProfile, entity.Id.ToString());
+            }
+
+            await Repository.UpdateAsync(entity);
+            await CurrentUnitOfWork.SaveChangesAsync();
+
+            return await GetAsync(new EntityDto<Guid>(entity.Id));
         }
 
         public async Task AssignSubjectsAsync(AssignSubjectsInput input)
@@ -127,13 +193,12 @@ namespace ReadIraq.Teachers
         {
             var entity = await Repository.GetAsync(input.Id);
 
-            // Placeholder for actual stats calculation
             return new TeacherStatsDto
             {
                 StudentsCount = entity.StudentsCount,
-                WatchTimeMinutes = 0, // Need logic
-                QuizAttemptsCount = 0, // Need logic
-                AverageQuizScore = 0 // Need logic
+                WatchTimeMinutes = 0,
+                QuizAttemptsCount = 0,
+                AverageQuizScore = 0
             };
         }
 

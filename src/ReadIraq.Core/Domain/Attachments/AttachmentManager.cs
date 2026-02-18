@@ -67,7 +67,7 @@ namespace ReadIraq.Domain.Attachments
             var baseUri = new Uri(_appBaseUrl);
             return (new Uri(baseUri, attachment.LowResolutionPhotoRelativePath)).AbsoluteUri;
         }
-        public async Task UpdateRefIdAsync(Attachment attachment, long refId, bool IsForDraft = false, bool IsForRequest = true)
+        public async Task UpdateRefIdAsync(Attachment attachment, string refId, bool IsForDraft = false, bool IsForRequest = true)
         {
             if (attachment.RefId != null && !IsForDraft)
                 throw new UserFriendlyException(L("AttachmentAlreadyRelatedToEntity"),
@@ -76,7 +76,7 @@ namespace ReadIraq.Domain.Attachments
             await _repository.UpdateAsync(attachment);
         }
 
-        public async Task<Attachment> CheckAndUpdateRefIdAsync(long id, AttachmentRefType refType, long refId, bool IsForDraft = false, bool IsForRequest = true)
+        public async Task<Attachment> CheckAndUpdateRefIdAsync(long id, AttachmentRefType refType, string refId, bool IsForDraft = false, bool IsForRequest = true)
         {
             //Check if type is correct and update refId
             var attachment = await GetAndCheckAsync(id, refType, IsForDraft);
@@ -91,7 +91,7 @@ namespace ReadIraq.Domain.Attachments
             await _repository.UpdateAsync(attachment);
         }
 
-        public async Task DeleteAllRefIdAsync(long refId, AttachmentRefType refType)
+        public async Task DeleteAllRefIdAsync(string refId, AttachmentRefType refType)
         {
             foreach (var attachment in await GetByRefAsync(refId, refType))
             {
@@ -107,22 +107,19 @@ namespace ReadIraq.Domain.Attachments
                     $"Type:{fileType.ToString()}, RefType:{refType.ToString()}");
         }
 
-        public async Task<List<Attachment>> GetByRefAsync(long refId, AttachmentRefType refType)
+        public async Task<List<Attachment>> GetByRefAsync(string refId, AttachmentRefType refType)
         {
-            var refTypeString = ((byte)refType).ToString();
             return await _repository.GetAllListAsync(x => x.RefId == refId && x.RefType == refType);
         }
-        public async Task<List<Attachment>> GetByRefAsync(List<long> refIds, AttachmentRefType refType)
+        public async Task<List<Attachment>> GetByRefAsync(List<string> refIds, AttachmentRefType refType)
         {
-            var refTypeString = ((byte)refType).ToString();
-            return await _repository.GetAllListAsync(x => refIds.Contains(x.Id) && x.RefType == refType);
+            return await _repository.GetAllListAsync(x => refIds.Contains(x.RefId) && x.RefType == refType);
         }
         public async Task<List<Attachment>> GetByRefTypeAsync(AttachmentRefType refType)
         {
-            var refTypeString = ((byte)refType).ToString();
             return await _repository.GetAllListAsync(x => x.RefType == refType);
         }
-        public async Task<List<Attachment>> GetByRefIdAsync(long refId)
+        public async Task<List<Attachment>> GetByRefIdAsync(string refId)
         {
             return await _repository.GetAllListAsync(x => x.RefId == refId);
         }
@@ -133,8 +130,18 @@ namespace ReadIraq.Domain.Attachments
             {
                 case AttachmentRefType.Profile:
                     return AllAcceptedTypes;
+                case AttachmentRefType.TeacherProfile:
+                    return ImagesAcceptedTypes;
                 case AttachmentRefType.Advertisiment:
                     return ImagesAcceptedTypes;
+                case AttachmentRefType.Subject:
+                    return ImagesAcceptedTypes;
+                case AttachmentRefType.LessonSessionThumbnail:
+                    return ImagesAcceptedTypes;
+                case AttachmentRefType.LessonSessionVideo:
+                    return VideosAcceptedTypes;
+                case AttachmentRefType.LessonSessionOther:
+                    return AllAcceptedTypes;
             }
 
             return new MediaType[] { };
@@ -176,9 +183,8 @@ namespace ReadIraq.Domain.Attachments
 #pragma warning restore CS0168 // Variable is declared but never used
         }
 
-        public async Task<Attachment> GetElementByRefAsync(long refId, AttachmentRefType refType)
+        public async Task<Attachment> GetElementByRefAsync(string refId, AttachmentRefType refType)
         {
-            var refTypeString = ((byte)refType).ToString();
             return await _repository.FirstOrDefaultAsync(x => x.RefId == refId && x.RefType == refType);
 
         }
@@ -189,7 +195,10 @@ namespace ReadIraq.Domain.Attachments
         private static readonly MediaType[] ImagesAcceptedTypes =
             { MediaType.Image };
 
-        public async Task CreateOrUpdateAttachmentAsync(int partnerId, string relativePath, string name)
+        private static readonly MediaType[] VideosAcceptedTypes =
+            { MediaType.Video };
+
+        public async Task CreateOrUpdateAttachmentAsync(string partnerId, string relativePath, string name)
         {
             
                 var attachment = new Attachment
@@ -205,7 +214,7 @@ namespace ReadIraq.Domain.Attachments
             
         }
 
-        public async Task CopyNewAttachmentForCompany(long attachmentId, int companyId, AttachmentRefType refType)
+        public async Task CopyNewAttachmentForCompany(long attachmentId, string companyId, AttachmentRefType refType)
         {
             var attachment = await GetAndCheckAsync(attachmentId, refType);
             var attachmentToInsert = new Attachment()
@@ -221,7 +230,7 @@ namespace ReadIraq.Domain.Attachments
         }
 
        
-        public async Task UpdteAllRefIdAsync(int companyId, List<long> attachmentIds)
+        public async Task UpdteAllRefIdAsync(string companyId, List<long> attachmentIds)
         {
             await _repository.GetAll()
                 .Where(x => attachmentIds.Contains(x.Id))

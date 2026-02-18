@@ -13,7 +13,6 @@ namespace ReadIraq.Domain.Subjects
     {
         public virtual ICollection<Translation> Name { get; set; }
         public string Description { get; set; }
-        public string ImageUrl { get; set; }
         public SubjectLevel Level { get; set; }
         public int StudentsCount { get; set; }
         public int TeachersCount { get; set; }

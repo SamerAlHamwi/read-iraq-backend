@@ -19,12 +19,6 @@ namespace ReadIraq.Domain.LessonSessions
 
         public string Description { get; set; }
 
-        [StringLength(2000)]
-        public string ThumbnailUrl { get; set; }
-
-        [StringLength(2000)]
-        public string VideoUrl { get; set; }
-
         public Guid SubjectId { get; set; }
 
         [ForeignKey(nameof(SubjectId))]

@@ -9,8 +9,8 @@ namespace ReadIraq.LessonSessions.Dto
     public class LiteLessonSessionDto : EntityDto<Guid>
     {
         public string Title { get; set; }
-        public string ThumbnailUrl { get; set; }
-        public string VideoUrl { get; set; }
+        public LiteAttachmentDto Thumbnail { get; set; }
+        public LiteAttachmentDto Video { get; set; }
         public Guid TeacherProfileId { get; set; }
         public int DurationSeconds { get; set; }
         public int Order { get; set; }
@@ -19,4 +19,3 @@ namespace ReadIraq.LessonSessions.Dto
         public int LikesCount { get; set; }
     }
 }
-

@@ -45,7 +45,7 @@ namespace ReadIraq.Domain.Attachments
         public string LowResolutionPhotoRelativePath { get; set; }
 
 
-        public long? RefId { get; set; }
+        public string RefId { get; set; }
 
         public AttachmentRefType RefType { get; set; }
         public int? AttributeChoiceAndAttachmentId { get; set; }
@@ -58,6 +58,3 @@ namespace ReadIraq.Domain.Attachments
 
 
 }
-
-
-

@@ -16,11 +16,9 @@ namespace ReadIraq.LessonSessions.Dto
 
         public string Description { get; set; }
 
-        [StringLength(2000)]
-        public string ThumbnailUrl { get; set; }
+        public long ThumbnailAttachmentId { get; set; }
 
-        [StringLength(2000)]
-        public string VideoUrl { get; set; }
+        public long VideoAttachmentId { get; set; }
 
         public Guid TeacherProfileId { get; set; }
 
@@ -33,4 +31,3 @@ namespace ReadIraq.LessonSessions.Dto
         public List<long> AttachmentIds { get; set; } = new List<long>();
     }
 }
-

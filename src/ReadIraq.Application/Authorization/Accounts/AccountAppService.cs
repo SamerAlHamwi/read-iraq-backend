@@ -241,7 +241,7 @@ namespace ReadIraq.Authorization.Accounts
 
                 var result = ObjectMapper.Map<UserDetailDto>(user);
 
-                var attachment = await _attachmentManager.GetElementByRefAsync(user.Id, AttachmentRefType.Profile);
+                var attachment = await _attachmentManager.GetElementByRefAsync(user.Id.ToString(), AttachmentRefType.Profile);
                 if (attachment != null)
                 {
                     result.ProfilePhoto = new LiteAttachmentDto
@@ -268,11 +268,11 @@ namespace ReadIraq.Authorization.Accounts
 
             if (input.ProfilePhoto > 0)
             {
-                await _attachmentManager.CheckAndUpdateRefIdAsync((long)input.ProfilePhoto, AttachmentRefType.Profile, user.Id);
+                await _attachmentManager.CheckAndUpdateRefIdAsync((long)input.ProfilePhoto, AttachmentRefType.Profile, user.Id.ToString());
             }
             else if (input.ProfilePhoto == 0)
             {
-                var oldAttachment = await _attachmentManager.GetElementByRefAsync(user.Id, AttachmentRefType.Profile);
+                var oldAttachment = await _attachmentManager.GetElementByRefAsync(user.Id.ToString(), AttachmentRefType.Profile);
                 if (oldAttachment != null) await _attachmentManager.DeleteRefIdAsync(oldAttachment);
             }
 
@@ -283,13 +283,13 @@ namespace ReadIraq.Authorization.Accounts
         [HttpPost]
         public async Task AddOrEditUserProfilePhoto(AddUserProfilePhotoDto input)
         {
-            var oldAttachment = await _attachmentManager.GetElementByRefAsync(AbpSession.GetUserId(), AttachmentRefType.Profile);
+            var oldAttachment = await _attachmentManager.GetElementByRefAsync(AbpSession.GetUserId().ToString(), AttachmentRefType.Profile);
             if (oldAttachment != null)
             {
                 await _attachmentManager.DeleteRefIdAsync(oldAttachment);
             }
             var attachment = await _attachmentManager.GetByIdAsync(input.PhotoId);
-            await _attachmentManager.UpdateRefIdAsync(attachment, AbpSession.GetUserId());
+            await _attachmentManager.UpdateRefIdAsync(attachment, AbpSession.GetUserId().ToString());
         }
 
         [AbpAuthorize]

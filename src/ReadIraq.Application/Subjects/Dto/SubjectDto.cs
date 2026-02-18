@@ -13,7 +13,7 @@ namespace ReadIraq.Subjects.Dto
     {
         public List<TranslationDto> Name { get; set; }
         public string Description { get; set; }
-        public string ImageUrl { get; set; }
+        public LiteAttachmentDto Attachment { get; set; }
         public SubjectLevel Level { get; set; }
         public int StudentsCount { get; set; }
         public int TeachersCount { get; set; }

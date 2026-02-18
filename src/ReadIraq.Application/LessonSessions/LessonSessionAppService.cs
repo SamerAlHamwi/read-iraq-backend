@@ -11,6 +11,9 @@ using ReadIraq.LessonSessions.Dto;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ReadIraq.Domain.Attachments;
+using static ReadIraq.Enums.Enum;
+using System.Collections.Generic;
 
 namespace ReadIraq.LessonSessions
 {
@@ -20,13 +23,19 @@ namespace ReadIraq.LessonSessions
         ILessonSessionAppService
     {
         private readonly IRepository<UserSessionProgress, Guid> _progressRepository;
+        private readonly IAttachmentManager _attachmentManager;
+        private readonly IRepository<Attachment, long> _attachmentRepository;
 
         public LessonSessionAppService(
             IRepository<LessonSession, Guid> repository,
-            IRepository<UserSessionProgress, Guid> progressRepository)
+            IRepository<UserSessionProgress, Guid> progressRepository,
+            IAttachmentManager attachmentManager,
+            IRepository<Attachment, long> attachmentRepository)
             : base(repository)
         {
             _progressRepository = progressRepository;
+            _attachmentManager = attachmentManager;
+            _attachmentRepository = attachmentRepository;
         }
 
         protected override IQueryable<LessonSession> CreateFilteredQuery(PagedLessonSessionResultRequestDto input)
@@ -40,10 +49,35 @@ namespace ReadIraq.LessonSessions
                 .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive.Value);
         }
 
+        public override async Task<PagedResultDto<LiteLessonSessionDto>> GetAllAsync(PagedLessonSessionResultRequestDto input)
+        {
+            var result = await base.GetAllAsync(input);
+
+            foreach (var item in result.Items)
+            {
+                var thumbnail = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.LessonSessionThumbnail);
+                if (thumbnail != null)
+                {
+                    item.Thumbnail = ObjectMapper.Map<LiteAttachmentDto>(thumbnail);
+                    item.Thumbnail.Url = _attachmentManager.GetUrl(thumbnail);
+                    item.Thumbnail.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(thumbnail);
+                }
+
+                var video = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.LessonSessionVideo);
+                if (video != null)
+                {
+                    item.Video = ObjectMapper.Map<LiteAttachmentDto>(video);
+                    item.Video.Url = _attachmentManager.GetUrl(video);
+                }
+            }
+
+            return result;
+        }
+
         public override async Task<LessonSessionDto> GetAsync(EntityDto<Guid> input)
         {
             var entity = await Repository.GetAll()
-                .Include(x => x.Attachments)
+                .Include(x => x.Attachments).ThenInclude(x => x.Attachment)
                 .FirstOrDefaultAsync(x => x.Id == input.Id);
 
             if (entity == null)
@@ -52,7 +86,29 @@ namespace ReadIraq.LessonSessions
             }
 
             var dto = MapToEntityDto(entity);
-            dto.AttachmentIds = entity.Attachments.Select(a => a.AttachmentId).ToList();
+            dto.Attachments = new List<LiteAttachmentDto>();
+
+            foreach (var lessonAttachment in entity.Attachments)
+            {
+                var attDto = ObjectMapper.Map<LiteAttachmentDto>(lessonAttachment.Attachment);
+                attDto.Url = _attachmentManager.GetUrl(lessonAttachment.Attachment);
+                dto.Attachments.Add(attDto);
+            }
+
+            var thumbnail = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.LessonSessionThumbnail);
+            if (thumbnail != null)
+            {
+                dto.Thumbnail = ObjectMapper.Map<LiteAttachmentDto>(thumbnail);
+                dto.Thumbnail.Url = _attachmentManager.GetUrl(thumbnail);
+                dto.Thumbnail.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(thumbnail);
+            }
+
+            var video = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.LessonSessionVideo);
+            if (video != null)
+            {
+                dto.Video = ObjectMapper.Map<LiteAttachmentDto>(video);
+                dto.Video.Url = _attachmentManager.GetUrl(video);
+            }
 
             // Check progress for current user
             var userId = AbpSession.UserId;
@@ -75,6 +131,19 @@ namespace ReadIraq.LessonSessions
             entity.LikesCount = 0;
             entity.IsActive = true;
 
+            await Repository.InsertAsync(entity);
+            await CurrentUnitOfWork.SaveChangesAsync();
+
+            if (input.ThumbnailAttachmentId > 0)
+            {
+                await _attachmentManager.CheckAndUpdateRefIdAsync(input.ThumbnailAttachmentId, AttachmentRefType.LessonSessionThumbnail, entity.Id.ToString());
+            }
+
+            if (input.VideoAttachmentId > 0)
+            {
+                await _attachmentManager.CheckAndUpdateRefIdAsync(input.VideoAttachmentId, AttachmentRefType.LessonSessionVideo, entity.Id.ToString());
+            }
+
             if (input.AttachmentIds != null)
             {
                 foreach (var attachmentId in input.AttachmentIds.Distinct())
@@ -83,12 +152,9 @@ namespace ReadIraq.LessonSessions
                 }
             }
 
-            await Repository.InsertAsync(entity);
             await CurrentUnitOfWork.SaveChangesAsync();
 
-            var dto = MapToEntityDto(entity);
-            dto.AttachmentIds = entity.Attachments.Select(a => a.AttachmentId).ToList();
-            return dto;
+            return await GetAsync(new EntityDto<Guid>(entity.Id));
         }
 
         public override async Task<LessonSessionDto> UpdateAsync(UpdateLessonSessionDto input)
@@ -106,6 +172,26 @@ namespace ReadIraq.LessonSessions
 
             MapToEntity(input, entity);
 
+            if (input.ThumbnailAttachmentId > 0)
+            {
+                var oldThumbnail = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.LessonSessionThumbnail);
+                if (oldThumbnail != null && oldThumbnail.Id != input.ThumbnailAttachmentId)
+                {
+                    await _attachmentManager.DeleteRefIdAsync(oldThumbnail);
+                }
+                await _attachmentManager.CheckAndUpdateRefIdAsync(input.ThumbnailAttachmentId, AttachmentRefType.LessonSessionThumbnail, entity.Id.ToString());
+            }
+
+            if (input.VideoAttachmentId > 0)
+            {
+                var oldVideo = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.LessonSessionVideo);
+                if (oldVideo != null && oldVideo.Id != input.VideoAttachmentId)
+                {
+                    await _attachmentManager.DeleteRefIdAsync(oldVideo);
+                }
+                await _attachmentManager.CheckAndUpdateRefIdAsync(input.VideoAttachmentId, AttachmentRefType.LessonSessionVideo, entity.Id.ToString());
+            }
+
             entity.Attachments.Clear();
             if (input.AttachmentIds != null)
             {
@@ -119,11 +205,10 @@ namespace ReadIraq.LessonSessions
                 }
             }
 
+            await Repository.UpdateAsync(entity);
             await CurrentUnitOfWork.SaveChangesAsync();
 
-            var dto = MapToEntityDto(entity);
-            dto.AttachmentIds = entity.Attachments.Select(a => a.AttachmentId).ToList();
-            return dto;
+            return await GetAsync(new EntityDto<Guid>(entity.Id));
         }
 
         public async Task MarkAsCompleteAsync(EntityDto<Guid> input)
@@ -151,8 +236,6 @@ namespace ReadIraq.LessonSessions
 
         public async Task ReportIssueAsync(ReportSessionIssueInput input)
         {
-            // Logic to record report (e.g. in a Reports table or send email)
-            // For now, just a placeholder.
             await Task.CompletedTask;
         }
     }

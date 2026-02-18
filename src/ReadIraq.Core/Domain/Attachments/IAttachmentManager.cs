@@ -44,7 +44,7 @@ namespace ReadIraq.Domain.Attachments
         /// </summary>
         /// <param name="attachment">Attachment Entity</param>
         /// <param name="refId">Id of related entity</param>
-        Task UpdateRefIdAsync(Attachment attachment, long refId, bool IsForDraft = false, bool IsForRequest = true);
+        Task UpdateRefIdAsync(Attachment attachment, string refId, bool IsForDraft = false, bool IsForRequest = true);
 
         /// <summary>
         /// Check if attachment id exists, and has a specific related entity type.
@@ -54,7 +54,7 @@ namespace ReadIraq.Domain.Attachments
         /// <param name="refType">Type of related Entity</param>
         /// <param name="refId">Id of related entity</param>
         /// <returns>The Attachment after modification</returns>
-        Task<Attachment> CheckAndUpdateRefIdAsync(long id, AttachmentRefType refType, long refId, bool IsForDraft = false, bool IsForRequest = true);
+        Task<Attachment> CheckAndUpdateRefIdAsync(long id, AttachmentRefType refType, string refId, bool IsForDraft = false, bool IsForRequest = true);
 
         /// <summary>
         /// Update RefId to be null, so it can be removed by background Service.
@@ -68,7 +68,7 @@ namespace ReadIraq.Domain.Attachments
         /// </summary>
         /// <param name="refId">Id of related entity</param>
         /// <param name="refType">Type of related Entity</param>
-        Task DeleteAllRefIdAsync(long refId, AttachmentRefType refType);
+        Task DeleteAllRefIdAsync(string refId, AttachmentRefType refType);
 
         /// <summary>
         /// Checks if file type is compatible with related entity type.
@@ -83,14 +83,14 @@ namespace ReadIraq.Domain.Attachments
         /// <param name="refId">Id of related entity</param>
         /// <param name="refType">Type of related Entity</param>
         /// <returns>List of Attachment Entities</returns>
-        Task<List<Attachment>> GetByRefAsync(long refId, AttachmentRefType refType);
-        Task<List<Attachment>> GetByRefAsync(List<long> refIds, AttachmentRefType refType);
+        Task<List<Attachment>> GetByRefAsync(string refId, AttachmentRefType refType);
+        Task<List<Attachment>> GetByRefAsync(List<string> refIds, AttachmentRefType refType);
         Task<List<Attachment>> GetByRefTypeAsync(AttachmentRefType refType);
-        Task<List<Attachment>> GetByRefIdAsync(long refId);
+        Task<List<Attachment>> GetByRefIdAsync(string refId);
 
 
 
-        Task<Attachment> GetElementByRefAsync(long refId, AttachmentRefType refType);
+        Task<Attachment> GetElementByRefAsync(string refId, AttachmentRefType refType);
 
 
         /// <summary>
@@ -105,6 +105,6 @@ namespace ReadIraq.Domain.Attachments
         /// <param name="attachment"></param>
         /// <returns></returns>
         Task<Attachment> CreateAttachment(Attachment attachment);
-        Task CopyNewAttachmentForCompany(long attachmentId, int companyId, AttachmentRefType refType);
+        Task CopyNewAttachmentForCompany(long attachmentId, string companyId, AttachmentRefType refType);
     }
 }
