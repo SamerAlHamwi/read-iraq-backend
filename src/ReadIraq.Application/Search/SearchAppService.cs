@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ReadIraq.Domain.Attachments;
+using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Search
 {
@@ -18,15 +20,18 @@ namespace ReadIraq.Search
         private readonly IRepository<Subject, Guid> _subjectRepository;
         private readonly IRepository<LessonSession, Guid> _sessionRepository;
         private readonly IRepository<TeacherProfile, Guid> _teacherRepository;
+        private readonly IAttachmentManager _attachmentManager;
 
         public SearchAppService(
             IRepository<Subject, Guid> subjectRepository,
             IRepository<LessonSession, Guid> sessionRepository,
-            IRepository<TeacherProfile, Guid> teacherRepository)
+            IRepository<TeacherProfile, Guid> teacherRepository,
+            IAttachmentManager attachmentManager)
         {
             _subjectRepository = subjectRepository;
             _sessionRepository = sessionRepository;
             _teacherRepository = teacherRepository;
+            _attachmentManager = attachmentManager;
         }
 
         public async Task<SearchOutput> SearchAsync(SearchInput input)
@@ -41,7 +46,13 @@ namespace ReadIraq.Search
 
                 totalCount += await query.CountAsync();
                 var items = await query.Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
-                results.AddRange(items.Select(x => new SearchResultItem { Id = x.Id.ToString(), Title = "Subject", Description = x.Description, Type = "subject", ImageUrl = x.ImageUrl }));
+                foreach (var item in items)
+                {
+                    var searchResult = new SearchResultItem { Id = item.Id.ToString(), Title = "Subject", Description = item.Description, Type = "subject" };
+                    var attachment = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.Subject);
+                    if (attachment != null) searchResult.ImageUrl = _attachmentManager.GetUrl(attachment);
+                    results.Add(searchResult);
+                }
             }
 
             if (string.IsNullOrEmpty(input.Type) || input.Type == "session")
@@ -51,7 +62,13 @@ namespace ReadIraq.Search
 
                 totalCount += await query.CountAsync();
                 var items = await query.Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
-                results.AddRange(items.Select(x => new SearchResultItem { Id = x.Id.ToString(), Title = x.Title, Description = x.Description, Type = "session", ImageUrl = x.ThumbnailUrl }));
+                foreach (var item in items)
+                {
+                    var searchResult = new SearchResultItem { Id = item.Id.ToString(), Title = item.Title, Description = item.Description, Type = "session" };
+                    var attachment = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.LessonSessionThumbnail);
+                    if (attachment != null) searchResult.ImageUrl = _attachmentManager.GetUrl(attachment);
+                    results.Add(searchResult);
+                }
             }
 
             if (string.IsNullOrEmpty(input.Type) || input.Type == "teacher")
@@ -61,7 +78,13 @@ namespace ReadIraq.Search
 
                 totalCount += await query.CountAsync();
                 var items = await query.Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
-                results.AddRange(items.Select(x => new SearchResultItem { Id = x.Id.ToString(), Title = x.Name, Description = x.Bio, Type = "teacher", ImageUrl = x.AvatarUrl }));
+                foreach (var item in items)
+                {
+                    var searchResult = new SearchResultItem { Id = item.Id.ToString(), Title = item.Name, Description = item.Bio, Type = "teacher" };
+                    var attachment = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.TeacherProfile);
+                    if (attachment != null) searchResult.ImageUrl = _attachmentManager.GetUrl(attachment);
+                    results.Add(searchResult);
+                }
             }
 
             return new SearchOutput

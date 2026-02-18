@@ -142,10 +142,11 @@
         <member name="M:ReadIraq.Attachments.AttachmentAppService.UploadAsync(ReadIraq.Attachments.Dto.UploadAttachmentInputDto)">
             <summary>
             Profile = 1,
-            RequestForQuotation=2,
-            Advertisiment=3, 
-            QR = 4
-            SourceTypeIcon=5,
+            Advertisiment = 2,
+            Subject = 3,
+            LessonSessionThumbnail = 4,
+            LessonSessionVideo = 5,
+            TeacherProfile = 6
             </summary>     
             <param name="input"></param>
             <returns></returns>

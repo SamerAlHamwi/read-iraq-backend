@@ -90,14 +90,14 @@
             <param name="attachment">Attachment Entity</param>
             <returns>Url for the attachment</returns>
         </member>
-        <member name="M:ReadIraq.Domain.Attachments.IAttachmentManager.UpdateRefIdAsync(ReadIraq.Domain.Attachments.Attachment,System.Int64,System.Boolean,System.Boolean)">
+        <member name="M:ReadIraq.Domain.Attachments.IAttachmentManager.UpdateRefIdAsync(ReadIraq.Domain.Attachments.Attachment,System.String,System.Boolean,System.Boolean)">
             <summary>
             Update RefId to passed refId, so attachment is now related to entity.
             </summary>
             <param name="attachment">Attachment Entity</param>
             <param name="refId">Id of related entity</param>
         </member>
-        <member name="M:ReadIraq.Domain.Attachments.IAttachmentManager.CheckAndUpdateRefIdAsync(System.Int64,ReadIraq.Enums.Enum.AttachmentRefType,System.Int64,System.Boolean,System.Boolean)">
+        <member name="M:ReadIraq.Domain.Attachments.IAttachmentManager.CheckAndUpdateRefIdAsync(System.Int64,ReadIraq.Enums.Enum.AttachmentRefType,System.String,System.Boolean,System.Boolean)">
             <summary>
             Check if attachment id exists, and has a specific related entity type.
             Update RefId of the attachment to refId.
@@ -113,7 +113,7 @@
             </summary>
             <param name="attachment">Attachment Entity</param>
         </member>
-        <member name="M:ReadIraq.Domain.Attachments.IAttachmentManager.DeleteAllRefIdAsync(System.Int64,ReadIraq.Enums.Enum.AttachmentRefType)">
+        <member name="M:ReadIraq.Domain.Attachments.IAttachmentManager.DeleteAllRefIdAsync(System.String,ReadIraq.Enums.Enum.AttachmentRefType)">
             <summary>
             Update RefId of all attachments of refId and refType to be null,
             so they can be removed by background Service.
@@ -128,7 +128,7 @@
             <param name="refType">Type of related Entity</param>
             <param name="fileType">Type of Attachment (file type)</param>
         </member>
-        <member name="M:ReadIraq.Domain.Attachments.IAttachmentManager.GetByRefAsync(System.Int64,ReadIraq.Enums.Enum.AttachmentRefType)">
+        <member name="M:ReadIraq.Domain.Attachments.IAttachmentManager.GetByRefAsync(System.String,ReadIraq.Enums.Enum.AttachmentRefType)">
             <summary>
             Get list of attachments that are related to specific Entity Id and Type.
             </summary>
@@ -246,27 +246,6 @@
         <member name="T:ReadIraq.Attachments.Dto.AttachmentDto">
             <summary>
             AttachmentDto
-            </summary>
-        </member>
-        <member name="T:ReadIraq.Attachments.Dto.PagedAttachmentResultRequestDto">
-            <summary>
-            PagedAttachmentResultRequestDto
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Attachments.Dto.PagedAttachmentResultRequestDto.RefId">
-            <summary>
-            Related entity Id
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Attachments.Dto.PagedAttachmentResultRequestDto.RefType">
-            <summary>
-            Identification = 1,
-            Referral = 2,
-            AnatomyReport = 3,
-            Analysis = 4,
-            RadialImage = 5,
-            Message = 6,
-            Other = 7
             </summary>
         </member>
         <member name="T:ReadIraq.Attachments.Dto.UploadAttachmentInputDto">
