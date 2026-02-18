@@ -513,7 +513,6 @@ namespace ReadIraq.Users
             var askForHelp = new AskForHelp { UserId = AbpSession.UserId.Value, Statues = AskForHelpStatues.Waiting, Message = message };
             await _askForHelpRepository.InsertAsync(askForHelp);
             var userIds = await _userManager.Users.Where(x => x.Type == UserType.SuperAdmin).Select(x => x.Id).ToListAsync();
-            await _notificationSender.SendNotificationForCostumerServiceForAskHelp(userIds, AbpSession.UserId.Value);
             return true;
         }
         [Tags("AskForHelp")]

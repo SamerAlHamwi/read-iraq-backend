@@ -11,7 +11,8 @@ namespace ReadIraq.Quizzes.Dto
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public Guid SubjectId { get; set; }
+        public Guid? SubjectId { get; set; }
+        public Guid? SessionId { get; set; }
         public Guid? TeacherId { get; set; }
         public int DurationSeconds { get; set; }
         public int TotalMarks { get; set; }

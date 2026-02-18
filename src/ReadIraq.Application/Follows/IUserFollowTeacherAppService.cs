@@ -13,6 +13,6 @@ namespace ReadIraq.Follows
         Task<UserFollowTeacherDto> CreateAsync(CreateUserFollowTeacherDto input);
         Task<UserFollowTeacherDto> UpdateAsync(UpdateUserFollowTeacherDto input);
         Task DeleteAsync(EntityDto<Guid> input);
+        Task UnfollowAsync(long userId, Guid teacherId);
     }
 }
-

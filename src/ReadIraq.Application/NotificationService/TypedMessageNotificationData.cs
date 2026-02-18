@@ -19,7 +19,7 @@ namespace ReadIraq.NotificationService
             NotificationType = notificationType;
             ArMessage = arMessage;
             EnMessage = enMessage;
-            AdditionalValue = AdditionalValue;
+            this.AdditionalValue = AdditionalValue;
 
             Properties.Add(nameof(NotificationType), NotificationType);
             Properties.Add(nameof(AdditionalValue), AdditionalValue);
@@ -48,12 +48,6 @@ namespace ReadIraq.NotificationService
     public enum NotificationType : byte
     {
         PushNotification = 1,
-        NewRequest = 2,
-        NewOffer = 3,
-        AskForHelp = 4,
-        ApproveForCompany = 5,
-        PossibleClient = 6,
-        UpdateCompany = 7,
-
+        General = 2
     }
 }

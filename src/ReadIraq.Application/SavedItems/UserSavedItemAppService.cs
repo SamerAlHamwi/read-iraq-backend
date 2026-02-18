@@ -1,11 +1,14 @@
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
+using Abp.UI;
+using Microsoft.EntityFrameworkCore;
 using ReadIraq.CrudAppServiceBase;
 using ReadIraq.Domain.SavedItems;
 using ReadIraq.SavedItems.Dto;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ReadIraq.SavedItems
 {
@@ -19,6 +22,17 @@ namespace ReadIraq.SavedItems
         {
         }
 
+        public override async Task<UserSavedItemDto> CreateAsync(CreateUserSavedItemDto input)
+        {
+            var exists = await Repository.GetAll().AnyAsync(x => x.UserId == input.UserId && x.ItemType == input.ItemType && x.ItemId == input.ItemId);
+            if (exists)
+            {
+                throw new UserFriendlyException(L("AlreadySaved"));
+            }
+
+            return await base.CreateAsync(input);
+        }
+
         protected override IQueryable<UserSavedItem> CreateFilteredQuery(PagedUserSavedItemResultRequestDto input)
         {
             return base.CreateFilteredQuery(input)
@@ -28,4 +42,3 @@ namespace ReadIraq.SavedItems
         }
     }
 }
-
