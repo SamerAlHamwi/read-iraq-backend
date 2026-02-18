@@ -31,8 +31,6 @@ namespace ReadIraq.Authorization.Users
         private readonly MediatorManager _mediatorManager;
         private readonly IRepository<Mediator> _mediatorRepository;
 
-
-
         public UserRegistrationManager(
             TenantManager tenantManager,
             UserManager userManager,
@@ -50,6 +48,7 @@ namespace ReadIraq.Authorization.Users
 
             AbpSession = NullAbpSession.Instance;
         }
+
         public async Task<User> RegisterAsync(string name, string surname, string emailAddress, string userName, string plainPassword, bool isEmailConfirmed)
         {
             CheckForTenant();
@@ -86,14 +85,9 @@ namespace ReadIraq.Authorization.Users
 
         public async Task<User> RegisterAsync(string name, string surname, string emailAddress, string userName, string plainPassword, bool isEmailConfirmed, string phoneNumber, string dialCode, Enums.Enum.UserType userType, string registrationFullName, string mediatorCode = "")
         {
-            //CheckForTenant();
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
-                var tenant = new Tenant();
-                if (userType is (UserType.CompanyUser or UserType.CompanyBranchUser))
-                    tenant = await _tenantManager.FindByTenancyNameAsync("CompanyTenant");
-                else
-                    tenant = await _tenantManager.FindByTenancyNameAsync("Default");
+                var tenant = await _tenantManager.FindByTenancyNameAsync("Default");
 
                 var user = new User
                 {
@@ -111,6 +105,7 @@ namespace ReadIraq.Authorization.Users
                     PIN = await GenerateDefaultUniquePIN(),
                     RegistrationFullName = registrationFullName,
                 };
+
                 if (!string.IsNullOrEmpty(mediatorCode))
                 {
                     var mediator = (await _mediatorManager.GetAllMediatorsCodes()).FirstOrDefault(c => c.MediatorCode == mediatorCode);
@@ -127,26 +122,19 @@ namespace ReadIraq.Authorization.Users
 
                 user.SetNormalizedNames();
 
-                if (userType == UserType.BasicUser || userType == UserType.MediatorUser)
+                string roleName = StaticRoleNames.Tenants.Student;
+                if (userType == UserType.SuperAdmin)
                 {
-                    foreach (var defaultRole in await _roleManager.Roles.Where(r => r.Name == StaticRoleNames.Tenants.BasicUser).ToListAsync())
-                    {
-                        user.Roles.Add(new UserRole(tenant.Id, user.Id, defaultRole.Id));
-                    }
+                    roleName = StaticRoleNames.Tenants.SuperAdmin;
                 }
-                else if (userType == UserType.CompanyUser)
+                else if (userType == UserType.Teacher)
                 {
-                    foreach (var defaultRole in await _roleManager.Roles.Where(r => r.Name == StaticRoleNames.Tenants.CompanyUser).ToListAsync())
-                    {
-                        user.Roles.Add(new UserRole(tenant.Id, user.Id, defaultRole.Id));
-                    }
+                    roleName = StaticRoleNames.Tenants.Teacher;
                 }
-                else if (userType == UserType.CompanyBranchUser)
+
+                foreach (var role in await _roleManager.Roles.Where(r => r.Name == roleName).ToListAsync())
                 {
-                    foreach (var defaultRole in await _roleManager.Roles.Where(r => r.Name == StaticRoleNames.Tenants.CompanyBranchUser).ToListAsync())
-                    {
-                        user.Roles.Add(new UserRole(tenant.Id, user.Id, defaultRole.Id));
-                    }
+                    user.Roles.Add(new UserRole(tenant.Id, user.Id, role.Id));
                 }
 
                 await _userManager.InitializeOptionsAsync(tenant.Id);
@@ -157,7 +145,7 @@ namespace ReadIraq.Authorization.Users
 
         public async Task<User> RegisterUserAsync(string fullName, string dialCode, string phoneNumber, string password, int? gradeId, int? governorateId, UserType userType)
         {
-             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
+            using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
                 var tenant = await _tenantManager.FindByTenancyNameAsync("Default");
                 if (tenant == null)
@@ -186,10 +174,14 @@ namespace ReadIraq.Authorization.Users
 
                 user.SetNormalizedNames();
 
-                string roleName = StaticRoleNames.Tenants.BasicUser;
-                if (userType == UserType.Admin || userType == UserType.SuperAdmin)
+                string roleName = StaticRoleNames.Tenants.Student;
+                if (userType == UserType.SuperAdmin)
                 {
-                    roleName = StaticRoleNames.Tenants.Admin;
+                    roleName = StaticRoleNames.Tenants.SuperAdmin;
+                }
+                else if (userType == UserType.Teacher)
+                {
+                    roleName = StaticRoleNames.Tenants.Teacher;
                 }
 
                 var roles = await _roleManager.Roles.Where(r => r.Name == roleName).ToListAsync();
@@ -216,90 +208,9 @@ namespace ReadIraq.Authorization.Users
                 }
             }
         }
-        public async Task<User> RegisterAsyncForUserCompanyByAdmin(string emailAddress, string phoneNumber, string dialCode, string password, Enums.Enum.UserType userType)
-        {
-            //CheckForTenant();
-            var tenant = await _tenantManager.FindByTenancyNameAsync("CompanyTenant");
-
-            //var tenant = await GetActiveTenantAsync();
-
-            var user = new User
-            {
-                Name = " ",
-                Surname = " ",
-                DialCode = dialCode,
-                PhoneNumber = phoneNumber,
-                TenantId = tenant.Id,
-                EmailAddress = emailAddress,
-                IsActive = true,
-                UserName = phoneNumber,
-                IsEmailConfirmed = true,
-                PIN = await GenerateDefaultUniquePIN(),
-                Roles = new List<UserRole>(),
-                Type = userType
-            };
-
-            user.SetNormalizedNames();
-            foreach (var defaultRole in await _roleManager.Roles.IgnoreQueryFilters().Where(r => r.Name == StaticRoleNames.Tenants.CompanyUser).ToListAsync())
-            {
-                user.Roles.Add(new UserRole(tenant.Id, user.Id, defaultRole.Id));
-            }
-            await _userManager.InitializeOptionsAsync(tenant.Id);
-            try
-            {
-                await CreateUserByTeneant(tenant.Id, user, password);
-
-
-                return user;
-            }
-            catch (Exception ex) { throw; }
-        }
-
-        public async Task<User> RegisterAsyncForUserCompanyBranch(string phoneNumber, string dialCode, string password, string emailAddress, Enums.Enum.UserType userType)
-        {
-            //CheckForTenant();
-
-            var tenant = await _tenantManager.FindByTenancyNameAsync("CompanyTenant");
-
-
-
-            var user = new User
-            {
-                Name = " ",
-                Surname = " ",
-                DialCode = dialCode,
-                PhoneNumber = phoneNumber,
-                TenantId = tenant.Id,
-                EmailAddress = emailAddress,
-                IsActive = false,
-                UserName = phoneNumber,
-                IsEmailConfirmed = false,
-                Roles = new List<UserRole>(),
-                Type = userType,
-                PIN = await GenerateDefaultUniquePIN(),
-                IsPhoneNumberConfirmed = false,
-
-            };
-
-            user.SetNormalizedNames();
-            foreach (var defaultRole in await _roleManager.Roles.IgnoreQueryFilters().Where(r => r.Name == StaticRoleNames.Tenants.CompanyBranchUser).ToListAsync())
-            {
-                user.Roles.Add(new UserRole(tenant.Id, user.Id, defaultRole.Id));
-            }
-            await _userManager.InitializeOptionsAsync(tenant.Id);
-            try
-            {
-                await CreateUserByTeneant(tenant.Id, user, password);
-
-
-                return user;
-            }
-            catch (Exception ex) { throw; }
-        }
 
         private async Task<string> GenerateRandomEmail()
         {
-
             Random random = new Random();
             string Suffix = "@EntityFrameWorkCore.net";
             string generatedEmailAddress;
@@ -311,6 +222,7 @@ namespace ReadIraq.Authorization.Users
             while (await _userManager.Users.AnyAsync(x => x.EmailAddress == generatedEmailAddress));
             return generatedEmailAddress;
         }
+
         private void CheckForTenant()
         {
             if (!AbpSession.TenantId.HasValue)
@@ -365,12 +277,5 @@ namespace ReadIraq.Authorization.Users
                 }
             }
         }
-
-
-        /*
-        public async Task DeleteAsyncForUserCompanyBranch(User user)
-        {
-            await _userManager.DeleteAsync(user);
-        }*/
     }
 }

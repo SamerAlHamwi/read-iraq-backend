@@ -9,16 +9,9 @@ namespace ReadIraq.Authorization.Roles
 
         public static class Tenants
         {
-            public const string Admin = "Admin";
-
-            public const string BasicUser = "BasicUser";
-
-            public const string CompanyUser = "CompanyUser";
-
-            public const string CompanyBranchUser = "CompanyBranchUser";
-
-            public const string CustomerService = "CustomerService";
-
+            public const string SuperAdmin = "SuperAdmin";
+            public const string Student = "Student";
+            public const string Teacher = "Teacher";
         }
     }
 }

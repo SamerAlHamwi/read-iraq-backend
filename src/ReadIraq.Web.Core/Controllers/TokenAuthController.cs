@@ -88,40 +88,22 @@ namespace ReadIraq.Controllers
         [HttpPost]
         public async Task<AuthenticateResultModel> Authenticate([FromBody] AuthenticateModel model)
         {
-            var isForTenant = false;
-            var loginResult = new AbpLoginResult<Tenant, ReadIraq.Authorization.Users.User>(AbpLoginResultType.Success);
-            if (!model.IsForCompany && !model.IsForCompanyBranch)
-                loginResult = await GetLoginResultAsync(
+            var tenant = await _tenantManager.FindByTenancyNameAsync("Default");
+            var loginResult = await GetLoginResultAsync(
                    model.UserNameOrEmailAddress,
                    model.Password,
-                   _tenantManager.GetByIdAsync(1).Result.Name
+                   tenant.Name
                );
-            else
-            {
-                loginResult = await GetLoginResultAsync(
-                model.UserNameOrEmailAddress,
-                model.Password,
-                "CompanyTenant"
-            );
-                isForTenant = true;
-            }
-            var permissions = new List<string>();
 
-            if (loginResult.User.Type == UserType.Admin || loginResult.User.Type == UserType.CustomerService)
+            var permissions = new List<string>();
+            var roleNames = await _userManager.GetRolesAsync(loginResult.User);
+
+            foreach (var roleName in roleNames)
             {
-                var roleIds = await _roleManager.GetRoleIdsByUserIdAsync(loginResult.User.Id);
-                foreach (var roleId in roleIds)
-                {
-                    using (UnitOfWorkManager.Current.SetTenantId(1))
-                    {
-                        var grantedPermissions = await _roleManager.GetGrantedPermissionsAsync(roleId);
-                        permissions.AddRange(grantedPermissions.Select(x => x.Name).ToList());
-                    }
-                }
+                var role = await _roleManager.GetRoleByNameAsync(roleName);
+                var grantedPermissions = await _roleManager.GetGrantedPermissionsAsync(role);
+                permissions.AddRange(grantedPermissions.Select(x => x.Name).ToList());
             }
-            int CompanyId = 0;
-            int CompanyBranchId = 0;
-           
 
             try
             {
@@ -134,13 +116,11 @@ namespace ReadIraq.Controllers
                     ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds,
                     UserId = loginResult.User.Id,
                     UserType = loginResult.User.Type,
-                    CompanyId = CompanyId,
-                    CompanyBranchId = CompanyBranchId,
                     Language = await SettingManager.GetSettingValueForUserAsync(
                         LocalizationSettingNames.DefaultLanguage,
                         loginResult.Tenant.Id,
                         loginResult.User.Id),
-                    Permissions = permissions,
+                    Permissions = permissions.Distinct().ToList(),
                 };
 
                 return result;
@@ -295,35 +275,24 @@ namespace ReadIraq.Controllers
                     int randomNumber = random.Next(100, 100000);
                     input.Email = input.FullName + randomNumber.ToString() + "@EntityFrameWorkCore.net";
                 }
-                var type = UserType.BasicUser;
-                if (input.IsForCompany)
-                    type = UserType.CompanyUser;
-                if ((await _mediatorManager.CheckIfMediatorExist(input.DialCode, input.PhoneNumber)) && input.IsForCompany == false && input.IsForCompanyBranch == false)
-                    type = UserType.MediatorUser;
-                if (input.IsForCompanyBranch)
-                    type = UserType.CompanyBranchUser;
+
                 var user = await _userRegistrationManager.RegisterAsync(string.Empty,
                   string.Empty,
                   input.Email,
                   input.PhoneNumber,
                   input.Password,
-                  false,
+                  true,
                   input.PhoneNumber,
                   input.DialCode,
-                  type,
+                  input.UserType,
                   input.FullName,
                   input.MediatorCode);
-                AbpLoginResult<Tenant, ReadIraq.Authorization.Users.User> loginResult = new AbpLoginResult<Tenant, ReadIraq.Authorization.Users.User>(AbpLoginResultType.Success);
-                if (input.IsForCompany || input.IsForCompanyBranch)
-                    loginResult = await GetLoginResultAsync(
-                    input.PhoneNumber,
-                    input.Password,
-                  "CompanyTenant");
-                else
-                    loginResult = await GetLoginResultAsync(
+
+                AbpLoginResult<Tenant, ReadIraq.Authorization.Users.User> loginResult = await GetLoginResultAsync(
                   input.PhoneNumber,
                   input.Password,
-              "Default");
+                  "Default");
+
                 await _userVerficationCodeManager.AddUserVerficationCodeAsync(
                     new UserVerficationCode
                     {
@@ -331,19 +300,7 @@ namespace ReadIraq.Controllers
                         UserId = user.Id,
                         VerficationCode = registerdUser.VerficationCode
                     });
-                using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
-                {
-                    try
-                    {
-                        if (input.IsForCompany)
-                            await _userManager.SetRolesAsync(user, new string[] { StaticRoleNames.Tenants.CompanyUser });
-                        else if (input.IsForCompanyBranch)
-                            await _userManager.SetRolesAsync(user, new string[] { StaticRoleNames.Tenants.CompanyBranchUser });
-                        else
-                            await _userManager.SetRolesAsync(user, new string[] { StaticRoleNames.Tenants.BasicUser });
-                    }
-                    catch (Exception ex) { throw new Exception(ex.Message); }
-                }
+
                 return new VerifyLoginByPhoneNumberOutput
                 {
                     AccessToken = CreateAccessToken(CreateJwtClaims(loginResult.Identity)),
@@ -362,11 +319,7 @@ namespace ReadIraq.Controllers
         {
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
-                var registerdUser = new ReadIraq.Authorization.Users.User();
-                if (input.IsFromBasicApp)
-                    registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == input.PhoneNumber && x.DialCode == input.DialCode && x.TenantId == 1);
-                else
-                    registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == input.PhoneNumber && x.DialCode == input.DialCode && x.TenantId == 2);
+                var registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == input.PhoneNumber && x.DialCode == input.DialCode);
 
                 if (registerdUser is not null)
                 {
@@ -381,11 +334,7 @@ namespace ReadIraq.Controllers
         {
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
-                var registerdUser = new ReadIraq.Authorization.Users.User();
-                if (input.IsFromBasicApp)
-                    registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == input.PhoneNumber && x.DialCode == input.DialCode && x.TenantId == 1);
-                else
-                    registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == input.PhoneNumber && x.DialCode == input.DialCode && x.TenantId == 2);
+                var registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == input.PhoneNumber && x.DialCode == input.DialCode);
                 if (registerdUser is not null)
                 {
                     CheckErrors(await _userManager.ChangePasswordAsync(registerdUser, input.NewPassword));
@@ -400,11 +349,7 @@ namespace ReadIraq.Controllers
         {
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
-                var registerdUser = new ReadIraq.Authorization.Users.User();
-                if (input.IsFromBasicApp)
-                    registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.EmailAddress == input.EmailAddress && x.TenantId == 1);
-                else
-                    registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.EmailAddress == input.EmailAddress && x.TenantId == 2);
+                var registerdUser = await _userManager.Users.FirstOrDefaultAsync(x => x.EmailAddress == input.EmailAddress);
                 if (registerdUser is not null)
                 {
                     if (!registerdUser.IsEmailConfirmed)

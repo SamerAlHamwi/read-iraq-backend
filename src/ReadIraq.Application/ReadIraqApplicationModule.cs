@@ -32,6 +32,20 @@ using ReadIraq.PushNotifications.Dto;
 using ReadIraq.Subjects.Dto;
 using ReadIraq.Teachers.Dto;
 using ReadIraq.TermService.Dto;
+using ReadIraq.Domain.Enrollments;
+using ReadIraq.Enrollments.Dto;
+using ReadIraq.Domain.UserSessionProgresses;
+using ReadIraq.UserSessionProgresses.Dto;
+using ReadIraq.Domain.Subscriptions;
+using ReadIraq.Subscriptions.Dto;
+using ReadIraq.Domain.Quizzes;
+using ReadIraq.Quizzes.Dto;
+using ReadIraq.Domain.Notifications;
+using ReadIraq.Notifications.Dto;
+using ReadIraq.Domain.Audit;
+using ReadIraq.Audit.Dto;
+using ReadIraq.Domain.Settings;
+using ReadIraq.Settings.Dto;
 
 namespace ReadIraq
 {
@@ -178,7 +192,52 @@ namespace ReadIraq
                  .ForMember(dest => dest.Answer, opt => opt.MapFrom(src => src.Answer));
                 #endregion
 
+                #region Enrollment
+                configuration.CreateMap<Enrollment, EnrollmentDto>();
+                configuration.CreateMap<CreateEnrollmentDto, Enrollment>();
+                configuration.CreateMap<UpdateEnrollmentDto, Enrollment>();
+                #endregion
 
+                #region UserSessionProgress
+                configuration.CreateMap<UserSessionProgress, UserSessionProgressDto>();
+                configuration.CreateMap<CreateUserSessionProgressDto, UserSessionProgress>();
+                configuration.CreateMap<UpdateUserSessionProgressDto, UserSessionProgress>();
+                #endregion
+
+                #region Subscription
+                configuration.CreateMap<SubscriptionPlan, SubscriptionPlanDto>();
+                configuration.CreateMap<CreateSubscriptionPlanDto, SubscriptionPlan>();
+                configuration.CreateMap<UpdateSubscriptionPlanDto, SubscriptionPlan>();
+                configuration.CreateMap<SubscriptionFeature, SubscriptionFeatureDto>();
+                configuration.CreateMap<SubscriptionFeatureMap, SubscriptionFeatureMapDto>();
+                configuration.CreateMap<Subscription, SubscriptionDto>();
+                configuration.CreateMap<CreateSubscriptionDto, Subscription>();
+                configuration.CreateMap<UpdateSubscriptionDto, Subscription>();
+                #endregion
+
+                #region Quizzes
+                configuration.CreateMap<Quiz, QuizDto>();
+                configuration.CreateMap<CreateQuizDto, Quiz>();
+                configuration.CreateMap<Question, QuestionDto>();
+                configuration.CreateMap<CreateQuestionDto, Question>();
+                configuration.CreateMap<QuizAttempt, QuizAttemptDto>();
+                configuration.CreateMap<CreateQuizAttemptDto, QuizAttempt>();
+                #endregion
+
+                #region Notifications
+                configuration.CreateMap<AppNotification, AppNotificationDto>();
+                configuration.CreateMap<CreateAppNotificationDto, AppNotification>();
+                #endregion
+
+                #region Audit
+                configuration.CreateMap<ActivityLog, ActivityLogDto>();
+                configuration.CreateMap<CreateActivityLogDto, ActivityLog>();
+                #endregion
+
+                #region Settings
+                configuration.CreateMap<AppSetting, AppSettingDto>();
+                configuration.CreateMap<CreateAppSettingDto, AppSetting>();
+                #endregion
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using Abp.Runtime.Validation;
 using ReadIraq.Authorization.Users;
 using System.ComponentModel.DataAnnotations;
+using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Models.TokenAuth
 {
@@ -84,15 +85,11 @@ namespace ReadIraq.Models.TokenAuth
         [Required]
         [NoWhiteSpace(ErrorMessage = "{0} cannot contain whitespace.")]
         public string Password { get; set; }
-        public bool IsForCompany { get; set; }
+        public UserType UserType { get; set; }
         public string MediatorCode { get; set; }
-        public bool IsForCompanyBranch { get; set; }
 
         public void AddValidationErrors(CustomValidationContext context)
         {
-            if (IsForCompanyBranch && IsForCompany)
-                context.Results.Add(new ValidationResult("You Must Select Company Or Branch."));
-
         }
     }
 

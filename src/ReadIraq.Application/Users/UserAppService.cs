@@ -93,15 +93,16 @@ namespace ReadIraq.Users
             {
                 try
                 {
-
                     CheckCreatePermission();
-                    var type = _userManager.GetUserByIdAsync(AbpSession.UserId.Value).Result.Type != UserType.Admin;
-                    if ((type && input.Type == UserType.Admin) || (type && input.RoleNames.Any(x => x.Contains(StaticRoleNames.Tenants.Admin))))
+                    var currentUser = await _userManager.GetUserByIdAsync(AbpSession.UserId.Value);
+                    var isNotSuperAdmin = currentUser.Type != UserType.SuperAdmin;
+                    if ((isNotSuperAdmin && input.Type == UserType.SuperAdmin) || (isNotSuperAdmin && input.RoleNames.Any(x => x.Contains(StaticRoleNames.Tenants.SuperAdmin))))
                         throw new UserFriendlyException(Exceptions.YouCannotDoThisAction);
+
                     var user = ObjectMapper.Map<User>(input);
                     user.RegistrationFullName = user.Name + " " + user.Surname;
                     user.TenantId = AbpSession.TenantId;
-                    user.IsEmailConfirmed = false;
+                    user.IsEmailConfirmed = true;
                     user.Type = input.Type;
                     user.PIN = await _userRegistrationManager.GenerateDefaultUniquePIN();
                     await _userManager.InitializeOptionsAsync(AbpSession.TenantId);
@@ -144,7 +145,6 @@ namespace ReadIraq.Users
                     user.Name = input.Name;
                     user.EmailAddress = input.EmailAddress;
                     user.MediatorCode = input.MediatorCode;
-                    user.PIN = await _userRegistrationManager.GenerateDefaultUniquePIN();
 
                     CheckErrors(await _userManager.UpdateAsync(user));
 
@@ -244,13 +244,8 @@ namespace ReadIraq.Users
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.UserName.Contains(input.Keyword) || x.Name.Contains(input.Keyword) || x.EmailAddress.Contains(input.Keyword) || x.PIN.Contains(input.Keyword))
                 .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive)
                     .WhereIf(input.UserType.HasValue, x => x.Type == input.UserType)
-                    .WhereIf(input.GetBasicUserAndCompanyUsers, x => x.Type == UserType.BasicUser || x.Type == UserType.CompanyUser)
-                    .WhereIf(input.GetBasicUserAndBrokerUsers, x => x.Type == UserType.BasicUser || x.Type == UserType.MediatorUser)
                     .WhereIf(!string.IsNullOrEmpty(input.MediatorCode), x => x.MediatorCode.Contains(input.MediatorCode));
-            if (input.GetAdminsAndCustomerServices.HasValue && input.GetAdminsAndCustomerServices == true)
-                data = data.Where(x => x.Type == UserType.Admin || x.Type == UserType.CustomerService);
-            if (input.GetAdminsAndCustomerServices.HasValue && input.GetAdminsAndCustomerServices == false)
-                data = data.Where(x => x.Type != UserType.Admin && x.Type != UserType.CustomerService);
+
             return data;
         }
 
@@ -352,7 +347,7 @@ namespace ReadIraq.Users
                 }
 
                 var roles = await _userManager.GetRolesAsync(currentUser);
-                if (!roles.Contains(StaticRoleNames.Tenants.Admin))
+                if (!roles.Contains(StaticRoleNames.Tenants.SuperAdmin))
                 {
                     throw new UserFriendlyException("Only administrators may reset passwords.");
                 }
@@ -387,7 +382,6 @@ namespace ReadIraq.Users
                 var user = await _userManager.GetUserByIdAsync(AbpSession.UserId.Value);
                 if (user is null) { throw new UserFriendlyException(Exceptions.ObjectWasNotFound, Tokens.User); }
                 var reult = new CheckIsBrokerDto();
-                if (user.Type == UserType.MediatorUser) { reult.IsBroker = true; return reult; }
                 reult.IsBroker = false;
                 return reult;
             }
@@ -398,7 +392,7 @@ namespace ReadIraq.Users
         {
             var askForHelp = new AskForHelp { UserId = AbpSession.UserId.Value, Statues = AskForHelpStatues.Waiting, Message = message };
             await _askForHelpRepository.InsertAsync(askForHelp);
-            var userIds = await _userManager.Users.Where(x => x.Type == UserType.CustomerService || x.Type == UserType.Admin).Select(x => x.Id).ToListAsync();
+            var userIds = await _userManager.Users.Where(x => x.Type == UserType.SuperAdmin).Select(x => x.Id).ToListAsync();
             await _notificationSender.SendNotificationForCostumerServiceForAskHelp(userIds, AbpSession.UserId.Value);
             return true;
         }
@@ -429,27 +423,18 @@ namespace ReadIraq.Users
         {
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
-                var userWhoHasRoleIds = new List<long>();
-
-                var usersInAdmin = await _userManager.GetUsersInRoleAsync("Admin");
-                var usersInAdminIds = usersInAdmin.Select(x => x.Id).ToList();
-                userWhoHasRoleIds.AddRange(usersInAdminIds);
-
                 if (!input.Year.HasValue) input.Year = DateTime.Now.Year;
                 var result = await _userManager.Users
                   .GroupBy(u => 1)
                   .Select(users => new UsersStatisticalNumbersDto
                   {
                       TotalCount = users.Count(),
-                      Admins = users.Where(u => (u.Type == UserType.Admin || userWhoHasRoleIds.Contains(u.Id)) && u.IsDeleted == false).Count(),
-                      Users = users.Where(u => u.Type == UserType.BasicUser && !userWhoHasRoleIds.Contains(u.Id) && u.IsDeleted == false).Count(),
-                      ActiveUsers = users.Where(u => u.IsActive == true && u.Type == UserType.BasicUser).Count(),
-                      DeActiveUsers = users.Where(u => u.IsActive == false && u.IsDeleted == false && u.Type == UserType.BasicUser).Count(),
-                      CompanyUser = users.Where(u => u.Type == UserType.CompanyUser && u.IsDeleted == false).Count(),
-                      CompanyBranchUser = users.Where(u => u.Type == UserType.CompanyBranchUser && u.IsDeleted == false).Count(),
-                      CustomerService = users.Where(u => u.Type == UserType.CustomerService && u.IsDeleted == false).Count(),
-                      MediatorUser = users.Where(u => u.Type == UserType.MediatorUser && u.IsDeleted == false).Count(),
-                      ChartPoints = users.Where(u => u.CreationTime.Year == input.Year.Value && u.Type == UserType.BasicUser && !userWhoHasRoleIds.Contains(u.Id))
+                      SuperAdmins = users.Where(u => u.Type == UserType.SuperAdmin && u.IsDeleted == false).Count(),
+                      Students = users.Where(u => u.Type == UserType.Student && u.IsDeleted == false).Count(),
+                      Teachers = users.Where(u => u.Type == UserType.Teacher && u.IsDeleted == false).Count(),
+                      ActiveUsers = users.Where(u => u.IsActive == true).Count(),
+                      DeActiveUsers = users.Where(u => u.IsActive == false && u.IsDeleted == false).Count(),
+                      ChartPoints = users.Where(u => u.CreationTime.Year == input.Year.Value && u.Type == UserType.Student)
                                    .GroupBy(u => new { Month = u.CreationTime.Month })
                                    .Select(group => new InfoForUserChart
                                    {
@@ -466,4 +451,3 @@ namespace ReadIraq.Users
         }
     }
 }
-

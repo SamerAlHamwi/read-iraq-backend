@@ -81,7 +81,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                     EmailAddress = "admin@aspnetboilerplate.com",
                     IsEmailConfirmed = true,
                     IsActive = true,
-                    Type = UserType.Admin,
+                    Type = UserType.SuperAdmin,
                     PIN = new Random().Next(100000, 999999).ToString()
                 };
 

@@ -29,6 +29,13 @@ using ReadIraq.Domain.Grades;
 using ReadIraq.Domain.Translations;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Teachers;
+using ReadIraq.Domain.Enrollments;
+using ReadIraq.Domain.UserSessionProgresses;
+using ReadIraq.Domain.Subscriptions;
+using ReadIraq.Domain.Quizzes;
+using ReadIraq.Domain.Notifications;
+using ReadIraq.Domain.Audit;
+using ReadIraq.Domain.Settings;
 using System;
 
 namespace ReadIraq.EntityFrameworkCore
@@ -78,6 +85,20 @@ namespace ReadIraq.EntityFrameworkCore
         public virtual DbSet<TeacherRatingBreakdown> TeacherRatingBreakdowns { get; set; }
         public virtual DbSet<TeacherReview> TeacherReviews { get; set; }
 
+        public virtual DbSet<Enrollment> Enrollments { get; set; }
+        public virtual DbSet<UserSessionProgress> UserSessionProgresses { get; set; }
+        public virtual DbSet<SubscriptionPlan> SubscriptionPlans { get; set; }
+        public virtual DbSet<SubscriptionFeature> SubscriptionFeatures { get; set; }
+        public virtual DbSet<SubscriptionFeatureMap> SubscriptionFeaturesMap { get; set; }
+        public virtual DbSet<Subscription> Subscriptions { get; set; }
+
+        public virtual DbSet<Quiz> Quizzes { get; set; }
+        public virtual DbSet<Question> Questions { get; set; }
+        public virtual DbSet<QuizAttempt> QuizAttempts { get; set; }
+        public virtual DbSet<AppNotification> AppNotifications { get; set; }
+        public virtual DbSet<ActivityLog> ActivityLogs { get; set; }
+        public virtual DbSet<AppSetting> AppSettings { get; set; }
+
         public ReadIraqDbContext(DbContextOptions<ReadIraqDbContext> options)
             : base(options)
         {
@@ -103,6 +124,11 @@ namespace ReadIraq.EntityFrameworkCore
             modelBuilder.Entity<UserFollowTeacher>(b =>
             {
                 b.HasIndex(x => new { x.UserId, x.TeacherProfileId }).IsUnique();
+
+                b.HasOne(x => x.TeacherProfile)
+                    .WithMany()
+                    .HasForeignKey(x => x.TeacherProfileId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<UserSavedItem>(b =>
@@ -150,6 +176,39 @@ namespace ReadIraq.EntityFrameworkCore
             modelBuilder.Entity<TeacherRatingBreakdown>(b =>
             {
                 b.HasIndex(e => new { e.TeacherProfileId, e.Rating }).IsUnique();
+            });
+
+            modelBuilder.Entity<TeacherReview>(b =>
+            {
+                b.HasOne(x => x.TeacherProfile)
+                    .WithMany()
+                    .HasForeignKey(x => x.TeacherProfileId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                b.HasOne(x => x.User)
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Enrollment>(b =>
+            {
+                b.HasIndex(e => new { e.UserId, e.SubjectId }).IsUnique();
+            });
+
+            modelBuilder.Entity<UserSessionProgress>(b =>
+            {
+                b.HasIndex(e => new { e.UserId, e.SessionId }).IsUnique();
+            });
+
+            modelBuilder.Entity<SubscriptionFeatureMap>(b =>
+            {
+                b.HasIndex(e => new { e.PlanId, e.FeatureId }).IsUnique();
+            });
+
+            modelBuilder.Entity<AppSetting>(b =>
+            {
+                b.HasIndex(e => e.Key).IsUnique();
             });
         }
     }

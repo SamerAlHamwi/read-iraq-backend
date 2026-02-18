@@ -33,44 +33,34 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Tenants
 
         private void CreateRolesAndUsers()
         {
-            // Admin role
-
-            var adminRole = _context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.TenantId == _tenantId && r.Name == StaticRoleNames.Tenants.Admin);
-            if (adminRole == null)
+            // SuperAdmin role
+            var superAdminRole = _context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.TenantId == _tenantId && r.Name == StaticRoleNames.Tenants.SuperAdmin);
+            if (superAdminRole == null)
             {
-                adminRole = _context.Roles.Add(new Role(_tenantId, StaticRoleNames.Tenants.Admin, StaticRoleNames.Tenants.Admin) { IsStatic = true }).Entity;
-                _context.SaveChanges();
-            }
-            //var customerService = _context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.TenantId == _tenantId && r.Name == StaticRoleNames.Tenants.CustomerService);
-            //if (customerService == null)
-            //{
-            //    customerService = _context.Roles.Add(new Role(_tenantId, StaticRoleNames.Tenants.CustomerService, StaticRoleNames.Tenants.CustomerService) { IsStatic = true }).Entity;
-            //    _context.SaveChanges();
-            //}
-            var basicUserRole = _context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.TenantId == _tenantId && r.Name == StaticRoleNames.Tenants.BasicUser);
-            if (basicUserRole == null)
-            {
-                basicUserRole = _context.Roles.Add(new Role(_tenantId, StaticRoleNames.Tenants.BasicUser, StaticRoleNames.Tenants.BasicUser) { IsStatic = true }).Entity;
-                _context.SaveChanges();
-            }
-            var companyUserRole = _context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.TenantId == 2 && r.Name == StaticRoleNames.Tenants.CompanyUser);
-            if (companyUserRole == null)
-            {
-                companyUserRole = _context.Roles.Add(new Role(2, StaticRoleNames.Tenants.CompanyUser, StaticRoleNames.Tenants.CompanyUser) { IsStatic = true }).Entity;
-                _context.SaveChanges();
-            }
-            var companyBranchUserRole = _context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.TenantId == 2 && r.Name == StaticRoleNames.Tenants.CompanyBranchUser);
-            if (companyBranchUserRole == null)
-            {
-                companyBranchUserRole = _context.Roles.Add(new Role(2, StaticRoleNames.Tenants.CompanyBranchUser, StaticRoleNames.Tenants.CompanyBranchUser) { IsStatic = true }).Entity;
+                superAdminRole = _context.Roles.Add(new Role(_tenantId, StaticRoleNames.Tenants.SuperAdmin, StaticRoleNames.Tenants.SuperAdmin) { IsStatic = true }).Entity;
                 _context.SaveChanges();
             }
 
-            // Grant all permissions to admin role
+            // Student role
+            var studentRole = _context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.TenantId == _tenantId && r.Name == StaticRoleNames.Tenants.Student);
+            if (studentRole == null)
+            {
+                studentRole = _context.Roles.Add(new Role(_tenantId, StaticRoleNames.Tenants.Student, StaticRoleNames.Tenants.Student) { IsStatic = true }).Entity;
+                _context.SaveChanges();
+            }
 
+            // Teacher role
+            var teacherRole = _context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.TenantId == _tenantId && r.Name == StaticRoleNames.Tenants.Teacher);
+            if (teacherRole == null)
+            {
+                teacherRole = _context.Roles.Add(new Role(_tenantId, StaticRoleNames.Tenants.Teacher, StaticRoleNames.Tenants.Teacher) { IsStatic = true }).Entity;
+                _context.SaveChanges();
+            }
+
+            // Grant all permissions to SuperAdmin role
             var grantedPermissions = _context.Permissions.IgnoreQueryFilters()
                 .OfType<RolePermissionSetting>()
-                .Where(p => p.TenantId == _tenantId && p.RoleId == adminRole.Id)
+                .Where(p => p.TenantId == _tenantId && p.RoleId == superAdminRole.Id)
                 .Select(p => p.Name)
                 .ToList();
 
@@ -88,17 +78,16 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Tenants
                         TenantId = _tenantId,
                         Name = permission.Name,
                         IsGranted = true,
-                        RoleId = adminRole.Id
+                        RoleId = superAdminRole.Id
                     })
                 );
                 _context.SaveChanges();
             }
-            CheckBasicUserRoles(basicUserRole);
-            CheckCompanyUserRoles(companyUserRole);
-            CheckCompanyBranchUserRoles(companyBranchUserRole);
 
-            // Admin user
+            CheckStudentRoles(studentRole);
+            CheckTeacherRoles(teacherRole);
 
+            // SuperAdmin user
             var adminUser = _context.Users.IgnoreQueryFilters().FirstOrDefault(u => u.TenantId == _tenantId && u.UserName == AbpUserBase.AdminUserName);
             if (adminUser == null)
             {
@@ -106,119 +95,63 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Tenants
                 adminUser.Password = new PasswordHasher<User>(new OptionsWrapper<PasswordHasherOptions>(new PasswordHasherOptions())).HashPassword(adminUser, "x0220dIjB7");
                 adminUser.IsEmailConfirmed = true;
                 adminUser.IsActive = true;
-                adminUser.Type = UserType.Admin;
+                adminUser.Type = UserType.SuperAdmin;
                 adminUser.PIN = new Random().Next(100000, 999999).ToString();
                 _context.Users.Add(adminUser);
                 _context.SaveChanges();
 
-                // Assign Admin role to admin user
-                _context.UserRoles.Add(new UserRole(_tenantId, adminUser.Id, adminRole.Id));
+                // Assign SuperAdmin role to admin user
+                _context.UserRoles.Add(new UserRole(_tenantId, adminUser.Id, superAdminRole.Id));
                 _context.SaveChanges();
             }
         }
-        private void CheckBasicUserRoles(Role basicUserRole)
+
+        private void CheckStudentRoles(Role studentRole)
         {
-            var basicUserPermissionInDB = _context
+            var studentPermissionInDB = _context
                 .Permissions
                 .IgnoreQueryFilters()
                 .OfType<RolePermissionSetting>()
-                .Where(p => p.TenantId == _tenantId && p.RoleId == basicUserRole.Id)
+                .Where(p => p.TenantId == _tenantId && p.RoleId == studentRole.Id)
                 .Select(x => x.Name)
                 .ToList();
 
-            var allBasicUserPermissions = new List<string>
+            var allStudentPermissions = new List<string>
             {
                 PermissionNames.Pages_Users,
-                PermissionNames.Request_Create,
-                PermissionNames.Request_Delete,
-                PermissionNames.Request_Update,
-                PermissionNames.Request_List,
-                PermissionNames.Request_Get,
-                PermissionNames.Request_ChangeStatus,
-                PermissionNames.Offer_Take,
-                PermissionNames.Offer_List,
-                PermissionNames.Offer_ChangeStatus,
-                PermissionNames.CompanyBranch_List,
-                PermissionNames.Company_List,
-                PermissionNames.Company_Get,
-                PermissionNames.CompanyBranch_Get
+                // Add student specific permissions here
             };
 
             GrantPermissionToRole(
-                role: basicUserRole,
-                alreadyIncludedPermissions: basicUserPermissionInDB,
-                actualPermissions: allBasicUserPermissions
+                role: studentRole,
+                alreadyIncludedPermissions: studentPermissionInDB,
+                actualPermissions: allStudentPermissions
             );
         }
-        private void CheckCompanyBranchUserRoles(Role companyBranchUserRole)
+
+        private void CheckTeacherRoles(Role teacherRole)
         {
-            var companyBranchRoleInDb = _context
+            var teacherPermissionInDB = _context
                 .Permissions
                 .IgnoreQueryFilters()
                 .OfType<RolePermissionSetting>()
-                .Where(p => p.TenantId == 2 && p.RoleId == companyBranchUserRole.Id)
+                .Where(p => p.TenantId == _tenantId && p.RoleId == teacherRole.Id)
                 .Select(x => x.Name)
                 .ToList();
 
-            var allBasicUserPermissions = new List<string>
+            var allTeacherPermissions = new List<string>
             {
                 PermissionNames.Pages_Users,
-                PermissionNames.CompanyBranch_Create,
-                PermissionNames.CompanyBranch_Update,
-                PermissionNames.CompanyBranch_Get,
-                PermissionNames.CompanyBranch_Delete,
-                PermissionNames.Request_List,
-                PermissionNames.Request_Get,
-                PermissionNames.Offer_Create,
-                PermissionNames.Offer_Update,
-                PermissionNames.Company_Get,
-                PermissionNames.CompanyBranch_List
+                // Add teacher specific permissions here
             };
 
             GrantPermissionToRole(
-                role: companyBranchUserRole,
-                alreadyIncludedPermissions: companyBranchRoleInDb,
-                actualPermissions: allBasicUserPermissions,
-                2
+                role: teacherRole,
+                alreadyIncludedPermissions: teacherPermissionInDB,
+                actualPermissions: allTeacherPermissions
             );
         }
-        private void CheckCompanyUserRoles(Role companyUserRole)
-        {
-            var companyRoleInDb = _context
-                .Permissions
-                .IgnoreQueryFilters()
-                .OfType<RolePermissionSetting>()
-                .Where(p => p.TenantId == 2 && p.RoleId == companyUserRole.Id)
-                .Select(x => x.Name)
-                .ToList();
 
-            var allBasicUserPermissions = new List<string>
-            {
-                PermissionNames.Pages_Users,
-                PermissionNames.Company_Create,
-                PermissionNames.Company_List,
-                PermissionNames.Company_Update,
-                PermissionNames.Company_Delete,
-                PermissionNames.Company_Including,
-                PermissionNames.Company_Get,
-                PermissionNames.CompanyBranch_Create,
-                PermissionNames.CompanyBranch_Update,
-                PermissionNames.CompanyBranch_List,
-                PermissionNames.CompanyBranch_Get,
-                PermissionNames.CompanyBranch_Delete,
-                PermissionNames.Request_List,
-                PermissionNames.Request_Get,
-                PermissionNames.Offer_Create,
-                PermissionNames.Offer_Update,
-            };
-
-            GrantPermissionToRole(
-                role: companyUserRole,
-                alreadyIncludedPermissions: companyRoleInDb,
-                actualPermissions: allBasicUserPermissions,
-                2
-            );
-        }
         private void GrantPermissionToRole(Role role, List<string> alreadyIncludedPermissions, List<string> actualPermissions, int tenantId = 0)
         {
             var permissionsNotIncluded = PermissionFinder

@@ -296,7 +296,7 @@ namespace ReadIraq.Authorization.Accounts
         public async Task DeleteAccount()
         {
             var user = await _userManager.GetUserByIdAsync(AbpSession.GetUserId());
-            if (user.Type == UserType.Admin || user.Type == UserType.SuperAdmin)
+            if (user.Type == UserType.SuperAdmin)
             {
                 throw new UserFriendlyException(403, L(nameof(Exceptions.YouCannotDoThisAction)));
             }
