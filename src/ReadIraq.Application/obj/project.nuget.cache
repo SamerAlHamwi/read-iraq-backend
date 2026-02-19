@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tCLPaBTAEtc=",
+  "dgSpecHash": "/hkHPTiEQ84=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\ReadIraq.Application.csproj",
+  "projectFilePath": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.Application\\ReadIraq.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Tech\\.nuget\\packages\\abp\\8.4.0\\abp.8.4.0.nupkg.sha512",
     "C:\\Users\\Tech\\.nuget\\packages\\abp.automapper\\8.4.0\\abp.automapper.8.4.0.nupkg.sha512",

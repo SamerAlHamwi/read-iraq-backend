@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "D1XdW0g3lxQ=",
+  "dgSpecHash": "L8sfrb0i8vM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Core\\ReadIraq.Web.Core.csproj",
+  "projectFilePath": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.Web.Core\\ReadIraq.Web.Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Tech\\.nuget\\packages\\abp\\8.4.0\\abp.8.4.0.nupkg.sha512",
     "C:\\Users\\Tech\\.nuget\\packages\\abp.aspnetcore\\8.4.0\\abp.aspnetcore.8.4.0.nupkg.sha512",

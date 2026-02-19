@@ -3,6 +3,7 @@ using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
+using Abp.Runtime.Session;
 using Microsoft.EntityFrameworkCore;
 using ReadIraq.CrudAppServiceBase;
 using ReadIraq.Domain.Subjects;
@@ -28,6 +29,7 @@ namespace ReadIraq.Subjects
         private readonly IRepository<GradeSubject> _gradeSubjectRepository;
         private readonly IRepository<TeacherSubject, Guid> _teacherSubjectRepository;
         private readonly IRepository<LessonSession, Guid> _lessonSessionRepository;
+        private readonly IRepository<UserPreferredTeacher, Guid> _userPreferredTeacherRepository;
         private readonly IAttachmentManager _attachmentManager;
 
         public SubjectAppService(
@@ -36,6 +38,7 @@ namespace ReadIraq.Subjects
             IRepository<GradeSubject> gradeSubjectRepository,
             IRepository<TeacherSubject, Guid> teacherSubjectRepository,
             IRepository<LessonSession, Guid> lessonSessionRepository,
+            IRepository<UserPreferredTeacher, Guid> userPreferredTeacherRepository,
             IAttachmentManager attachmentManager)
             : base(repository)
         {
@@ -43,6 +46,7 @@ namespace ReadIraq.Subjects
             _gradeSubjectRepository = gradeSubjectRepository;
             _teacherSubjectRepository = teacherSubjectRepository;
             _lessonSessionRepository = lessonSessionRepository;
+            _userPreferredTeacherRepository = userPreferredTeacherRepository;
             _attachmentManager = attachmentManager;
         }
 
@@ -182,14 +186,105 @@ namespace ReadIraq.Subjects
             await Repository.UpdateAsync(entity);
         }
 
-        public async Task<ListResultDto<LiteTeacherProfileDto>> GetTeachersAsync(EntityDto<Guid> input)
+        public async Task<List<SubjectTeachersDto>> GetTeachersBySubjectsAsync(List<Guid> subjectIds)
         {
-            var teacherIds = await _teacherSubjectRepository.GetAll()
-                .Where(ts => ts.SubjectId == input.Id)
-                .Select(ts => ts.TeacherProfileId)
+            var subjects = await Repository.GetAll()
+                .Include(x => x.Name)
+                .Where(x => subjectIds.Contains(x.Id))
                 .ToListAsync();
 
-            return new ListResultDto<LiteTeacherProfileDto>();
+            var result = new List<SubjectTeachersDto>();
+
+            foreach (var subject in subjects)
+            {
+                var teachers = await _teacherSubjectRepository.GetAll()
+                    .Include(ts => ts.TeacherProfile)
+                    .Where(ts => ts.SubjectId == subject.Id && ts.TeacherProfile.IsActive)
+                    .Select(ts => ts.TeacherProfile)
+                    .ToListAsync();
+
+                var teacherDtos = ObjectMapper.Map<List<LiteTeacherProfileDto>>(teachers);
+
+                foreach (var teacherDto in teacherDtos)
+                {
+                    var attachment = await _attachmentManager.GetElementByRefAsync(teacherDto.Id.ToString(), AttachmentRefType.TeacherProfile);
+                    if (attachment != null)
+                    {
+                        teacherDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                        teacherDto.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                        teacherDto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                    }
+                }
+
+                result.Add(new SubjectTeachersDto
+                {
+                    SubjectId = subject.Id,
+                    Name = ObjectMapper.Map<List<ReadIraq.Domain.Translations.Dto.TranslationDto>>(subject.Name),
+                    Teachers = teacherDtos
+                });
+            }
+
+            return result;
+        }
+
+        public async Task<List<LiteTeacherProfileDto>> GetTeachersBySubjectWithPriorityAsync(Guid subjectId)
+        {
+            var userId = AbpSession.GetUserId();
+
+            var preferredTeacherIds = await _userPreferredTeacherRepository.GetAll()
+                .Where(x => x.UserId == userId && x.SubjectId == subjectId)
+                .Select(x => x.TeacherProfileId)
+                .ToListAsync();
+
+            var allTeachers = await _teacherSubjectRepository.GetAll()
+                .Include(ts => ts.TeacherProfile)
+                .Where(ts => ts.SubjectId == subjectId && ts.TeacherProfile.IsActive)
+                .Select(ts => ts.TeacherProfile)
+                .ToListAsync();
+
+            var prioritizedTeachers = allTeachers
+                .OrderByDescending(t => preferredTeacherIds.Contains(t.Id))
+                .ThenByDescending(t => t.AverageRating)
+                .ToList();
+
+            var teacherDtos = ObjectMapper.Map<List<LiteTeacherProfileDto>>(prioritizedTeachers);
+
+            foreach (var teacherDto in teacherDtos)
+            {
+                var attachment = await _attachmentManager.GetElementByRefAsync(teacherDto.Id.ToString(), AttachmentRefType.TeacherProfile);
+                if (attachment != null)
+                {
+                    teacherDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                    teacherDto.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                    teacherDto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                }
+            }
+
+            return teacherDtos;
+        }
+
+        public async Task<ListResultDto<LiteTeacherProfileDto>> GetTeachersAsync(EntityDto<Guid> input)
+        {
+             var teachers = await _teacherSubjectRepository.GetAll()
+                    .Include(ts => ts.TeacherProfile)
+                    .Where(ts => ts.SubjectId == input.Id && ts.TeacherProfile.IsActive)
+                    .Select(ts => ts.TeacherProfile)
+                    .ToListAsync();
+
+            var teacherDtos = ObjectMapper.Map<List<LiteTeacherProfileDto>>(teachers);
+
+            foreach (var teacherDto in teacherDtos)
+            {
+                var attachment = await _attachmentManager.GetElementByRefAsync(teacherDto.Id.ToString(), AttachmentRefType.TeacherProfile);
+                if (attachment != null)
+                {
+                    teacherDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                    teacherDto.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                    teacherDto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                }
+            }
+
+            return new ListResultDto<LiteTeacherProfileDto>(teacherDtos);
         }
 
         public async Task<PagedResultDto<LiteLessonSessionDto>> GetSessionsAsync(Guid subjectId, PagedAndSortedResultRequestDto input)

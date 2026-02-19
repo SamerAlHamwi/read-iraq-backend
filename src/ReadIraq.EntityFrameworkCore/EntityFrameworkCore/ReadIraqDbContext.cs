@@ -60,7 +60,6 @@ namespace ReadIraq.EntityFrameworkCore
         public virtual DbSet<UserVerficationCode> UserVerficationCodes { get; set; }
         public virtual DbSet<RegisterdPhoneNumber> RegisterdPhoneNumbers { get; set; }
         public virtual DbSet<Advertisiment> Advertisiments { get; set; }
-        public virtual DbSet<AdvertisimentPosition> AdvertisimentPositions { get; set; }
         public virtual DbSet<ContactUs> ContactUs { get; set; }
         public virtual DbSet<PrivacyPolicy> PrivacyPolicies { get; set; }
         public virtual DbSet<PrivacyPolicyTranslation> PrivacyPolicyTranslations { get; set; }
@@ -85,6 +84,7 @@ namespace ReadIraq.EntityFrameworkCore
         public virtual DbSet<TeacherSubject> TeacherSubjects { get; set; }
         public virtual DbSet<TeacherRatingBreakdown> TeacherRatingBreakdowns { get; set; }
         public virtual DbSet<TeacherReview> TeacherReviews { get; set; }
+        public virtual DbSet<UserPreferredTeacher> UserPreferredTeachers { get; set; }
 
         public virtual DbSet<Enrollment> Enrollments { get; set; }
         public virtual DbSet<UserSessionProgress> UserSessionProgresses { get; set; }
@@ -122,7 +122,7 @@ namespace ReadIraq.EntityFrameworkCore
                     .HasForeignKey(x => x.ParentCommentId)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                b.HasOne(x => x.LessonSession)
+                modelBuilder.Entity<SessionComment>().HasOne(x => x.LessonSession)
                     .WithMany()
                     .HasForeignKey(x => x.LessonSessionId)
                     .OnDelete(DeleteBehavior.NoAction);
@@ -195,6 +195,21 @@ namespace ReadIraq.EntityFrameworkCore
                 b.HasOne(x => x.User)
                     .WithMany()
                     .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<UserPreferredTeacher>(b =>
+            {
+                b.HasIndex(e => new { e.UserId, e.SubjectId, e.TeacherProfileId }).IsUnique();
+
+                b.HasOne(x => x.TeacherProfile)
+                    .WithMany()
+                    .HasForeignKey(x => x.TeacherProfileId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                b.HasOne(x => x.Subject)
+                    .WithMany()
+                    .HasForeignKey(x => x.SubjectId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 

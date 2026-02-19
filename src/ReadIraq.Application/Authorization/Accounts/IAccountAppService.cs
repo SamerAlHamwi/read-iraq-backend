@@ -15,5 +15,7 @@ namespace ReadIraq.Authorization.Accounts
         Task UpdateProfile(UpdateProfileDto input);
         Task AddOrEditUserProfilePhoto(AddUserProfilePhotoDto input);
         Task DeleteAccount();
+        Task SetUserPreferredSubjects(SetPreferredSubjectsInput input);
+        Task SetUserPreferredTeacherSubjects(SetPreferredTeacherSubjectsInput input);
     }
 }

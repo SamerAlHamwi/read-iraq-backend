@@ -1,5 +1,4 @@
 ﻿using Abp.Domain.Services;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ReadIraq.Domain.Advertisiments
@@ -9,9 +8,5 @@ namespace ReadIraq.Domain.Advertisiments
         Task<Advertisiment> CheckAdvertisiment(int Id);
         Task<Advertisiment> GetEntityAsync(int Id);
         Task<Advertisiment> InsertAsync(Advertisiment advertisiment);
-        Task AddPositionToAdvertisimentAsync(AdvertisimentPosition advertisimentPosition);
-        Task<List<AdvertisimentPosition>> GetAdvertisimentPositionsAsync(int advertisimentId);
-
-
     }
 }

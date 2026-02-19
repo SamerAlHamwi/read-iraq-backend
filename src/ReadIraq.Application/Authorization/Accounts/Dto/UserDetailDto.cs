@@ -15,6 +15,7 @@ namespace ReadIraq.Authorization.Accounts.Dto
         public string PhoneNumber { get; set; }
         public UserType Type { get; set; }
         public bool IsEmailConfirmed { get; set; }
+        public bool IsPhoneNumberConfirmed { get; set; }
         public bool IsActive { get; set; }
         public string PIN { get; set; }
         public GradeDto Grade { get; set; }

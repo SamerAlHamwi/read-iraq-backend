@@ -21,9 +21,11 @@ using ReadIraq.Authorization.Users;
 using ReadIraq.Domain.Attachments;
 using ReadIraq.Domain.Cities;
 using ReadIraq.Domain.Grades;
+using ReadIraq.Domain.Enrollments;
 using ReadIraq.Domain.RegisterdPhoneNumbers;
 using ReadIraq.Domains.UserVerficationCodes;
 using ReadIraq.Localization.SourceFiles;
+using ReadIraq.Domain.Teachers;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -45,6 +47,8 @@ namespace ReadIraq.Authorization.Accounts
         private readonly IRepository<User, long> _userRepository;
         private readonly IRepository<Grade, int> _gradeRepository;
         private readonly IRepository<City, int> _cityRepository;
+        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly IRepository<UserPreferredTeacher, Guid> _userPreferredTeacherRepository;
         private readonly ITokenAuthManager _tokenAuthManager;
         private readonly UserClaimsPrincipalFactory _claimsPrincipalFactory;
 
@@ -58,6 +62,8 @@ namespace ReadIraq.Authorization.Accounts
             IRepository<User, long> userRepository,
             IRepository<Grade, int> gradeRepository,
             IRepository<City, int> cityRepository,
+            IRepository<Enrollment, Guid> enrollmentRepository,
+            IRepository<UserPreferredTeacher, Guid> userPreferredTeacherRepository,
             ITokenAuthManager tokenAuthManager,
             UserClaimsPrincipalFactory claimsPrincipalFactory
             )
@@ -71,6 +77,8 @@ namespace ReadIraq.Authorization.Accounts
             _userRepository = userRepository;
             _gradeRepository = gradeRepository;
             _cityRepository = cityRepository;
+            _enrollmentRepository = enrollmentRepository;
+            _userPreferredTeacherRepository = userPreferredTeacherRepository;
             _tokenAuthManager = tokenAuthManager;
             _claimsPrincipalFactory = claimsPrincipalFactory;
         }
@@ -289,6 +297,58 @@ namespace ReadIraq.Authorization.Accounts
                 throw new UserFriendlyException(403, L(nameof(Exceptions.YouCannotDoThisAction)));
             }
             await _userManager.DeleteAsync(user);
+        }
+
+        [AbpAllowAnonymous]
+        [HttpPost]
+        public async Task SetUserPreferredSubjects(SetPreferredSubjectsInput input)
+        {
+            using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
+            {
+                var existingEnrollments = await _enrollmentRepository.GetAllListAsync(x => x.UserId == input.UserId);
+                foreach (var enrollment in existingEnrollments)
+                {
+                    await _enrollmentRepository.DeleteAsync(enrollment);
+                }
+
+                foreach (var subjectId in input.SubjectIds)
+                {
+                    await _enrollmentRepository.InsertAsync(new Enrollment
+                    {
+                        UserId = input.UserId,
+                        SubjectId = subjectId,
+                        ProgressPercent = 0,
+                        CreationTime = DateTime.UtcNow
+                    });
+                }
+            }
+        }
+
+        [AbpAllowAnonymous]
+        [HttpPost]
+        public async Task SetUserPreferredTeacherSubjects(SetPreferredTeacherSubjectsInput input)
+        {
+            using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
+            {
+                var existingPreferredTeachers = await _userPreferredTeacherRepository.GetAllListAsync(x => x.UserId == input.UserId);
+                foreach (var item in existingPreferredTeachers)
+                {
+                    await _userPreferredTeacherRepository.DeleteAsync(item);
+                }
+
+                foreach (var item in input.TeacherSubjects)
+                {
+                    foreach (var teacherId in item.TeachersId)
+                    {
+                        await _userPreferredTeacherRepository.InsertAsync(new UserPreferredTeacher
+                        {
+                            UserId = input.UserId,
+                            SubjectId = item.SubjectId,
+                            TeacherProfileId = teacherId
+                        });
+                    }
+                }
+            }
         }
     }
 }

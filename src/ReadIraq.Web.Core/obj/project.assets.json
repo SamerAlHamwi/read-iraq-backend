@@ -8240,11 +8240,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Core\\ReadIraq.Web.Core.csproj",
+      "projectUniqueName": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.Web.Core\\ReadIraq.Web.Core.csproj",
       "projectName": "ReadIraq.Web.Core",
-      "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Core\\ReadIraq.Web.Core.csproj",
+      "projectPath": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.Web.Core\\ReadIraq.Web.Core.csproj",
       "packagesPath": "C:\\Users\\Tech\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Web.Core\\obj\\",
+      "outputPath": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.Web.Core\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -8265,11 +8265,11 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\ReadIraq.Application.csproj": {
-              "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\ReadIraq.Application.csproj"
+            "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.Application\\ReadIraq.Application.csproj": {
+              "projectPath": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.Application\\ReadIraq.Application.csproj"
             },
-            "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj": {
-              "projectPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj"
+            "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj": {
+              "projectPath": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj"
             }
           }
         }

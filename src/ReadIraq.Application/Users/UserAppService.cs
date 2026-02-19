@@ -21,11 +21,15 @@ using ReadIraq.Domain.AskForHelps;
 using ReadIraq.Domain.AskForHelps.Dto;
 using ReadIraq.Domain.Subscriptions;
 using ReadIraq.Domain.UserSessionProgresses;
+using ReadIraq.Domain.Enrollments;
+using ReadIraq.Domain.Attachments;
 using ReadIraq.Localization.SourceFiles;
 using ReadIraq.NotificationSender;
 using ReadIraq.Roles.Dto;
 using ReadIraq.Subscriptions.Dto;
 using ReadIraq.Users.Dto;
+using ReadIraq.Subjects.Dto;
+using ReadIraq.Grades.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +52,8 @@ namespace ReadIraq.Users
         private readonly UserRegistrationManager _userRegistrationManager;
         private readonly IRepository<Subscription, Guid> _subscriptionRepository;
         private readonly IRepository<UserSessionProgress, Guid> _userSessionProgressRepository;
+        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly IAttachmentManager _attachmentManager;
 
         public UserAppService(
             IRepository<User, long> repository,
@@ -61,7 +67,9 @@ namespace ReadIraq.Users
             UserRegistrationManager userRegistrationManager,
             IRepository<AskForHelp> askForHelpRepository,
             IRepository<Subscription, Guid> subscriptionRepository,
-            IRepository<UserSessionProgress, Guid> userSessionProgressRepository)
+            IRepository<UserSessionProgress, Guid> userSessionProgressRepository,
+            IRepository<Enrollment, Guid> enrollmentRepository,
+            IAttachmentManager attachmentManager)
             : base(repository)
         {
             _userManager = userManager;
@@ -75,6 +83,8 @@ namespace ReadIraq.Users
             _userRegistrationManager = userRegistrationManager;
             _subscriptionRepository = subscriptionRepository;
             _userSessionProgressRepository = userSessionProgressRepository;
+            _enrollmentRepository = enrollmentRepository;
+            _attachmentManager = attachmentManager;
         }
 
         [AbpAuthorize(PermissionNames.Users_List)]
@@ -285,15 +295,44 @@ namespace ReadIraq.Users
         [AbpAuthorize]
         public async Task<UserProgressDto> GetProgress(EntityDto<long> input)
         {
-            var user = await _userManager.GetUserByIdAsync(input.Id);
-            var completedSessions = await _userSessionProgressRepository.CountAsync(x => x.UserId == input.Id && x.IsCompleted);
+            var user = await Repository.GetAllIncluding(x => x.Grade)
+                .FirstOrDefaultAsync(x => x.Id == input.Id);
 
-            return new UserProgressDto
+            if (user == null) throw new UserFriendlyException("User not found");
+
+            var enrollments = await _enrollmentRepository.GetAll()
+                .Include(x => x.Subject).ThenInclude(x => x.Name)
+                .Where(x => x.UserId == input.Id)
+                .ToListAsync();
+
+            var result = new UserProgressDto
             {
                 UserId = input.Id,
                 TotalPoints = user.Points,
-                CompletionPercentage = 0 // Needs more data from lesson structure
+                Grade = ObjectMapper.Map<GradeDto>(user.Grade),
+                SubjectProgresses = new List<SubjectProgressDto>()
             };
+
+            foreach (var enrollment in enrollments)
+            {
+                var subjectDto = ObjectMapper.Map<LiteSubjectDto>(enrollment.Subject);
+
+                var attachment = await _attachmentManager.GetElementByRefAsync(subjectDto.Id.ToString(), AttachmentRefType.Subject);
+                if (attachment != null)
+                {
+                    subjectDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                    subjectDto.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                    subjectDto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                }
+
+                result.SubjectProgresses.Add(new SubjectProgressDto
+                {
+                    Subject = subjectDto,
+                    ProgressPercentage = enrollment.ProgressPercent
+                });
+            }
+
+            return result;
         }
 
         [AbpAuthorize]
