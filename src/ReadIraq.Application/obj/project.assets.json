@@ -297,11 +297,11 @@
           }
         }
       },
-      "FirebaseAdmin/3.0.0": {
+      "FirebaseAdmin/3.4.0": {
         "type": "package",
         "dependencies": {
           "Google.Api.Gax.Rest": "4.8.0",
-          "Google.Apis.Auth": "1.67.0",
+          "Google.Apis.Auth": "1.68.0",
           "System.Collections.Immutable": "8.0.0"
         },
         "compile": {
@@ -1058,7 +1058,7 @@
           }
         }
       },
-      "NSwag.Annotations/14.0.3": {
+      "NSwag.Annotations/14.6.3": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/NSwag.Annotations.dll": {
@@ -1071,7 +1071,7 @@
           }
         }
       },
-      "SixLabors.ImageSharp/3.0.1": {
+      "SixLabors.ImageSharp/3.1.12": {
         "type": "package",
         "compile": {
           "lib/net6.0/SixLabors.ImageSharp.dll": {
@@ -2282,7 +2282,7 @@
           "Abp.ZeroCore.EntityFrameworkCore": "8.4.0",
           "Castle.Windsor.MsDependencyInjection": "4.1.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.12",
-          "NSwag.Annotations": "14.0.3"
+          "NSwag.Annotations": "14.6.3"
         },
         "compile": {
           "bin/placeholder/ReadIraq.Core.dll": {}
@@ -2578,15 +2578,15 @@
         "lib/net6.0/Castle.Windsor.MsDependencyInjection.pdb"
       ]
     },
-    "FirebaseAdmin/3.0.0": {
-      "sha512": "6aNnm+RzH3ZQEprwDfJui83edH0M3ydbqx0zOCdc1ZaVyDuXB5bYhuh6dVPCHEhb8zeL+ZNySpx0cZDWJk8/vw==",
+    "FirebaseAdmin/3.4.0": {
+      "sha512": "sQyVEOYRe4HSSmRCJQhKr33DxZk10lpDE2otdTgNkqPn4BRul2JG7TCQC7N7X0wO9ShnPLbVS4xuSUHlaPBbug==",
       "type": "package",
-      "path": "firebaseadmin/3.0.0",
+      "path": "firebaseadmin/3.4.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
-        "firebaseadmin.3.0.0.nupkg.sha512",
+        "firebaseadmin.3.4.0.nupkg.sha512",
         "firebaseadmin.nuspec",
         "lib/net462/FirebaseAdmin.dll",
         "lib/net462/FirebaseAdmin.xml",
@@ -3668,10 +3668,10 @@
         "nito.disposables.nuspec"
       ]
     },
-    "NSwag.Annotations/14.0.3": {
-      "sha512": "FOK/EvGfnNcVTRPaZXsngmZJl0uOB51/8M5xSdDYqVLhrqxmSOsL/SIISVecRy/9nbg5dmVsHS20of6papLk5w==",
+    "NSwag.Annotations/14.6.3": {
+      "sha512": "ZAmmjFF6ieW7D7bS7ViIcFZ6Sq77NxAZbvIOypsB8EVRnZMdcr+Rn/sVaVDwPi3YtZJBydSAMNsYDdluhy0ayA==",
       "type": "package",
-      "path": "nswag.annotations/14.0.3",
+      "path": "nswag.annotations/14.6.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3680,14 +3680,14 @@
         "lib/net462/NSwag.Annotations.xml",
         "lib/netstandard2.0/NSwag.Annotations.dll",
         "lib/netstandard2.0/NSwag.Annotations.xml",
-        "nswag.annotations.14.0.3.nupkg.sha512",
+        "nswag.annotations.14.6.3.nupkg.sha512",
         "nswag.annotations.nuspec"
       ]
     },
-    "SixLabors.ImageSharp/3.0.1": {
-      "sha512": "o0v/J6SJwp3RFrzR29beGx0cK7xcMRgOyIuw8ZNLQyNnBhiyL/vIQKn7cfycthcWUPG3XezUjFwBWzkcUUDFbg==",
+    "SixLabors.ImageSharp/3.1.12": {
+      "sha512": "iAg6zifihXEFS/t7fiHhZBGAdCp3FavsF4i2ZIDp0JfeYeDVzvmlbY1CNhhIKimaIzrzSi5M/NBFcWvZT2rB/A==",
       "type": "package",
-      "path": "sixlabors.imagesharp/3.0.1",
+      "path": "sixlabors.imagesharp/3.1.12",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3696,7 +3696,7 @@
         "lib/net6.0/SixLabors.ImageSharp.dll",
         "lib/net6.0/SixLabors.ImageSharp.xml",
         "sixlabors.imagesharp.128.png",
-        "sixlabors.imagesharp.3.0.1.nupkg.sha512",
+        "sixlabors.imagesharp.3.1.12.nupkg.sha512",
         "sixlabors.imagesharp.nuspec"
       ]
     },
@@ -7025,19 +7025,20 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
-      "FirebaseAdmin >= 3.0.0",
+      "FirebaseAdmin >= 3.4.0",
       "Google.Apis.Auth >= 1.68.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 7.0.12",
-      "NSwag.Annotations >= 14.0.3",
+      "NSwag.Annotations >= 14.6.3",
       "ReadIraq.Core >= 1.0.0",
       "ReadIraq.EntityFrameworkCore >= 1.0.0",
-      "SixLabors.ImageSharp >= 3.0.1",
+      "SixLabors.ImageSharp >= 3.1.12",
       "Stripe.net >= 43.3.0",
       "Twilio >= 6.14.1"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Tech\\.nuget\\packages\\": {}
+    "C:\\Users\\Tech\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
@@ -7048,8 +7049,12 @@
       "packagesPath": "C:\\Users\\Tech\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
         "C:\\Users\\Tech\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -7081,7 +7086,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net7.0": {
@@ -7089,7 +7095,7 @@
         "dependencies": {
           "FirebaseAdmin": {
             "target": "Package",
-            "version": "[3.0.0, )"
+            "version": "[3.4.0, )"
           },
           "Google.Apis.Auth": {
             "target": "Package",
@@ -7101,11 +7107,11 @@
           },
           "NSwag.Annotations": {
             "target": "Package",
-            "version": "[14.0.3, )"
+            "version": "[14.6.3, )"
           },
           "SixLabors.ImageSharp": {
             "target": "Package",
-            "version": "[3.0.1, )"
+            "version": "[3.1.12, )"
           },
           "Stripe.net": {
             "target": "Package",
@@ -7133,80 +7139,8 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311\\RuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-2cmq-823j-5qj8",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    },
-    {
-      "code": "NU1902",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-5x7m-6737-26cr",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    },
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-63p8-c4ww-9cg7",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    },
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-65x7-c272-7g7r",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    },
-    {
-      "code": "NU1902",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-g85r-6x2q-45w7",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    },
-    {
-      "code": "NU1902",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-qxrv-gp6x-rc23",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    },
-    {
-      "code": "NU1902",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-rxmq-m78w-7wmc",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    }
-  ]
+  }
 }

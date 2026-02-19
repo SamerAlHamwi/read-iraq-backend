@@ -77,12 +77,14 @@ namespace ReadIraq.Authorization.Accounts
 
         [AbpAllowAnonymous]
         [HttpPost]
-        [DontWrapResult]
-        public async Task<object> RegisterUser(RegisterUserInput input)
+        public async Task<RegisterUserOutput> RegisterUser(RegisterUserInput input)
         {
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
-                var existingUser = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == input.Phone && u.DialCode == input.DialCode);
+                var dialCode = input.DialCode.Trim();
+                var phone = input.Phone.Trim();
+
+                var existingUser = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phone && u.DialCode == dialCode);
                 if (existingUser != null)
                 {
                     throw new UserFriendlyException(409, L(nameof(Exceptions.ObjectIsAlreadyExist), L(nameof(Tokens.PhoneNumber))));
@@ -100,39 +102,38 @@ namespace ReadIraq.Authorization.Accounts
 
                 var user = await _userRegistrationManager.RegisterUserAsync(
                     input.FullName,
-                    input.DialCode,
-                    input.Phone,
+                    dialCode,
+                    phone,
                     input.Password,
                     input.GradeId,
                     input.GovernorateId,
                     input.UserType
                 );
 
-                await _registerdPhoneNumberManager.UpdateVerificationCodeAsync(input.DialCode, input.Phone);
-                var registeredPhone = await _registerdPhoneNumberManager.GetRegisteredPhoneNumberAsync(input.DialCode, input.Phone);
+                var registeredPhone = await _registerdPhoneNumberManager.UpdateVerificationCodeAsync(dialCode, phone);
+                await UnitOfWorkManager.Current.SaveChangesAsync();
 
-                return new
+                return new RegisterUserOutput
                 {
-                    success = true,
-                    data = new
-                    {
-                        userId = user.Id.ToString(),
-                        phone = $"{user.DialCode}{user.PhoneNumber}",
-                        otpSent = true,
-                        message = $"OTP {registeredPhone?.VerficationCode} sent to phone"
-                    }
+                    UserId = user.Id.ToString(),
+                    Phone = $"{user.DialCode}{user.PhoneNumber}",
+                    OtpSent = true,
+                    VerificationCode = registeredPhone.VerficationCode,
+                    Message = $"OTP {registeredPhone.VerficationCode} sent to phone"
                 };
             }
         }
 
         [AbpAllowAnonymous]
         [HttpPost]
-        [DontWrapResult]
-        public async Task<object> VerifySignUpWithPhoneNumber(VerifySignUpInput input)
+        public async Task<VerifySignUpOutput> VerifySignUpWithPhoneNumber(VerifySignUpInput input)
         {
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
-                if (!await _registerdPhoneNumberManager.CheckVerificationCodeIsValidAsync(input.DialCode, input.Phone, input.Otp))
+                var dialCode = input.DialCode.Trim();
+                var phone = input.Phone.Trim();
+
+                if (!await _registerdPhoneNumberManager.CheckVerificationCodeIsValidAsync(dialCode, phone, input.Otp))
                 {
                     throw new UserFriendlyException(L(nameof(Exceptions.VerificationCodeIsnotCorrect)));
                 }
@@ -140,7 +141,7 @@ namespace ReadIraq.Authorization.Accounts
                 var user = await _userManager.Users
                     .Include(u => u.Grade)
                     .Include(u => u.Governorate).ThenInclude(c => c.Translations)
-                    .FirstOrDefaultAsync(u => u.PhoneNumber == input.Phone && u.DialCode == input.DialCode);
+                    .FirstOrDefaultAsync(u => u.PhoneNumber == phone && u.DialCode == dialCode);
 
                 if (user == null)
                 {
@@ -151,48 +152,39 @@ namespace ReadIraq.Authorization.Accounts
                 user.IsActive = true;
                 await _userManager.UpdateAsync(user);
 
-                await _registerdPhoneNumberManager.VerifiedPhoneNumberAsync(input.DialCode, input.Phone);
+                await _registerdPhoneNumberManager.VerifiedPhoneNumberAsync(dialCode, phone);
 
                 var principal = await _claimsPrincipalFactory.CreateAsync(user);
                 var accessToken = _tokenAuthManager.CreateAccessToken(principal.Identity as ClaimsIdentity);
 
-                return new
+                return new VerifySignUpOutput
                 {
-                    success = true,
-                    data = new
-                    {
-                        user = ObjectMapper.Map<UserDetailDto>(user),
-                        token = accessToken
-                    }
+                    User = ObjectMapper.Map<UserDetailDto>(user),
+                    Token = accessToken
                 };
             }
         }
 
         [AbpAllowAnonymous]
         [HttpPost]
-        [DontWrapResult]
-        public async Task<object> ResendVerificationCode(ResendCodeInput input)
+        public async Task<ResendCodeOutput> ResendVerificationCode(ResendCodeInput input)
         {
-            var registeredPhone = await _registerdPhoneNumberManager.UpdateVerificationCodeAsync(input.DialCode, input.Phone);
-            return new
+            var registeredPhone = await _registerdPhoneNumberManager.UpdateVerificationCodeAsync(input.DialCode.Trim(), input.Phone.Trim());
+            return new ResendCodeOutput
             {
-                success = true,
-                data = new
-                {
-                    otpSent = true,
-                    message = $"OTP {registeredPhone.VerficationCode} sent to phone"
-                }
+                OtpSent = true,
+                Message = $"OTP {registeredPhone.VerficationCode} sent to phone"
             };
         }
 
         [AbpAllowAnonymous]
         [HttpPost]
-        [DontWrapResult]
-        public async Task<object> SignInWithPhoneNumber(SignInInput input)
+        public async Task<SignInOutput> SignInWithPhoneNumber(SignInInput input)
         {
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
-                var loginResult = await _logInManager.LoginAsync(input.Phone, input.Password, "Default");
+                var phone = input.Phone.Trim();
+                var loginResult = await _logInManager.LoginAsync(phone, input.Password, "Default");
 
                 if (loginResult.Result != AbpLoginResultType.Success)
                 {
@@ -206,15 +198,11 @@ namespace ReadIraq.Authorization.Accounts
 
                 var accessToken = _tokenAuthManager.CreateAccessToken(loginResult.Identity);
 
-                return new
+                return new SignInOutput
                 {
-                    success = true,
-                    data = new
-                    {
-                        token = accessToken,
-                        refreshToken = "",
-                        user = ObjectMapper.Map<UserDetailDto>(user)
-                    }
+                    Token = accessToken,
+                    RefreshToken = string.Empty,
+                    User = ObjectMapper.Map<UserDetailDto>(user)
                 };
             }
         }

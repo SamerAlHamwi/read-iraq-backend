@@ -758,7 +758,7 @@
           }
         }
       },
-      "NSwag.Annotations/14.0.3": {
+      "NSwag.Annotations/14.6.3": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/NSwag.Annotations.dll": {
@@ -2678,10 +2678,10 @@
         "nito.disposables.nuspec"
       ]
     },
-    "NSwag.Annotations/14.0.3": {
-      "sha512": "FOK/EvGfnNcVTRPaZXsngmZJl0uOB51/8M5xSdDYqVLhrqxmSOsL/SIISVecRy/9nbg5dmVsHS20of6papLk5w==",
+    "NSwag.Annotations/14.6.3": {
+      "sha512": "ZAmmjFF6ieW7D7bS7ViIcFZ6Sq77NxAZbvIOypsB8EVRnZMdcr+Rn/sVaVDwPi3YtZJBydSAMNsYDdluhy0ayA==",
       "type": "package",
-      "path": "nswag.annotations/14.0.3",
+      "path": "nswag.annotations/14.6.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2690,7 +2690,7 @@
         "lib/net462/NSwag.Annotations.xml",
         "lib/netstandard2.0/NSwag.Annotations.dll",
         "lib/netstandard2.0/NSwag.Annotations.xml",
-        "nswag.annotations.14.0.3.nupkg.sha512",
+        "nswag.annotations.14.6.3.nupkg.sha512",
         "nswag.annotations.nuspec"
       ]
     },
@@ -5514,11 +5514,12 @@
       "Abp.ZeroCore.EntityFrameworkCore >= 8.4.0",
       "Castle.Windsor.MsDependencyInjection >= 4.1.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 7.0.12",
-      "NSwag.Annotations >= 14.0.3"
+      "NSwag.Annotations >= 14.6.3"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Tech\\.nuget\\packages\\": {}
+    "C:\\Users\\Tech\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
@@ -5529,8 +5530,12 @@
       "packagesPath": "C:\\Users\\Tech\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Core\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
         "C:\\Users\\Tech\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5555,7 +5560,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net7.0": {
@@ -5579,7 +5585,7 @@
           },
           "NSwag.Annotations": {
             "target": "Package",
-            "version": "[14.0.3, )"
+            "version": "[14.6.3, )"
           }
         },
         "imports": [
@@ -5599,7 +5605,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311\\RuntimeIdentifierGraph.json"
       }
     }
   }

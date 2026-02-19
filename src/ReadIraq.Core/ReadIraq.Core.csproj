@@ -19,7 +19,7 @@
     <PackageReference Include="Abp.AutoMapper" Version="8.4.0" />
     <PackageReference Include="Abp.ZeroCore.EntityFrameworkCore" Version="8.4.0" />
     <PackageReference Include="Castle.Windsor.MsDependencyInjection" Version="4.1.0" />
-    <PackageReference Include="NSwag.Annotations" Version="14.0.3" />
+    <PackageReference Include="NSwag.Annotations" Version="14.6.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.12" />
   </ItemGroup>
   <ItemGroup>

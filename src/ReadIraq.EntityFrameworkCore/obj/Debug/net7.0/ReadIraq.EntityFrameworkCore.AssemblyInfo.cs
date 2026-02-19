@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ReadIraq.EntityFrameworkCore")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1adf048c36f63e1a8e71982290825f6d3fa2e753")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0587d3c14733b322444f0b2dc675865277aa357c")]
 [assembly: System.Reflection.AssemblyProductAttribute("ReadIraq.EntityFrameworkCore")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ReadIraq.EntityFrameworkCore")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

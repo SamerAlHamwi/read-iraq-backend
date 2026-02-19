@@ -8,13 +8,13 @@
     ".NETCoreApp,Version=v7.0": {
       "ReadIraq.Application/1.0.0.0": {
         "dependencies": {
-          "FirebaseAdmin": "3.0.0",
+          "FirebaseAdmin": "3.4.0",
           "Google.Apis.Auth": "1.68.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.12",
-          "NSwag.Annotations": "14.0.3",
+          "NSwag.Annotations": "14.6.3",
           "ReadIraq.Core": "1.0.0",
           "ReadIraq.EntityFrameworkCore": "1.0.0",
-          "SixLabors.ImageSharp": "3.0.1",
+          "SixLabors.ImageSharp": "3.1.12",
           "Stripe.net": "43.3.0",
           "Twilio": "6.14.1"
         },
@@ -238,7 +238,7 @@
           }
         }
       },
-      "FirebaseAdmin/3.0.0": {
+      "FirebaseAdmin/3.4.0": {
         "dependencies": {
           "Google.Api.Gax.Rest": "4.8.0",
           "Google.Apis.Auth": "1.68.0",
@@ -246,8 +246,8 @@
         },
         "runtime": {
           "lib/net6.0/FirebaseAdmin.dll": {
-            "assemblyVersion": "3.0.0.0",
-            "fileVersion": "3.0.0.0"
+            "assemblyVersion": "3.4.0.0",
+            "fileVersion": "3.4.0.0"
           }
         }
       },
@@ -689,19 +689,19 @@
           }
         }
       },
-      "NSwag.Annotations/14.0.3": {
+      "NSwag.Annotations/14.6.3": {
         "runtime": {
           "lib/netstandard2.0/NSwag.Annotations.dll": {
-            "assemblyVersion": "14.0.3.0",
-            "fileVersion": "14.0.3.0"
+            "assemblyVersion": "14.6.3.0",
+            "fileVersion": "14.6.3.0"
           }
         }
       },
-      "SixLabors.ImageSharp/3.0.1": {
+      "SixLabors.ImageSharp/3.1.12": {
         "runtime": {
           "lib/net6.0/SixLabors.ImageSharp.dll": {
             "assemblyVersion": "3.0.0.0",
-            "fileVersion": "3.0.1.0"
+            "fileVersion": "3.1.12.0"
           }
         }
       },
@@ -1308,10 +1308,13 @@
           "Abp.ZeroCore.EntityFrameworkCore": "8.4.0",
           "Castle.Windsor.MsDependencyInjection": "4.1.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.12",
-          "NSwag.Annotations": "14.0.3"
+          "NSwag.Annotations": "14.6.3"
         },
         "runtime": {
-          "ReadIraq.Core.dll": {}
+          "ReadIraq.Core.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         },
         "resources": {
           "ar/ReadIraq.Core.resources.dll": {
@@ -1325,7 +1328,10 @@
           "ReadIraq.Core": "1.0.0"
         },
         "runtime": {
-          "ReadIraq.EntityFrameworkCore.dll": {}
+          "ReadIraq.EntityFrameworkCore.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }
@@ -1448,12 +1454,12 @@
       "path": "castle.windsor.msdependencyinjection/4.1.0",
       "hashPath": "castle.windsor.msdependencyinjection.4.1.0.nupkg.sha512"
     },
-    "FirebaseAdmin/3.0.0": {
+    "FirebaseAdmin/3.4.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-6aNnm+RzH3ZQEprwDfJui83edH0M3ydbqx0zOCdc1ZaVyDuXB5bYhuh6dVPCHEhb8zeL+ZNySpx0cZDWJk8/vw==",
-      "path": "firebaseadmin/3.0.0",
-      "hashPath": "firebaseadmin.3.0.0.nupkg.sha512"
+      "sha512": "sha512-sQyVEOYRe4HSSmRCJQhKr33DxZk10lpDE2otdTgNkqPn4BRul2JG7TCQC7N7X0wO9ShnPLbVS4xuSUHlaPBbug==",
+      "path": "firebaseadmin/3.4.0",
+      "hashPath": "firebaseadmin.3.4.0.nupkg.sha512"
     },
     "Google.Api.Gax/4.8.0": {
       "type": "package",
@@ -1763,19 +1769,19 @@
       "path": "nito.disposables/2.2.1",
       "hashPath": "nito.disposables.2.2.1.nupkg.sha512"
     },
-    "NSwag.Annotations/14.0.3": {
+    "NSwag.Annotations/14.6.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-FOK/EvGfnNcVTRPaZXsngmZJl0uOB51/8M5xSdDYqVLhrqxmSOsL/SIISVecRy/9nbg5dmVsHS20of6papLk5w==",
-      "path": "nswag.annotations/14.0.3",
-      "hashPath": "nswag.annotations.14.0.3.nupkg.sha512"
+      "sha512": "sha512-ZAmmjFF6ieW7D7bS7ViIcFZ6Sq77NxAZbvIOypsB8EVRnZMdcr+Rn/sVaVDwPi3YtZJBydSAMNsYDdluhy0ayA==",
+      "path": "nswag.annotations/14.6.3",
+      "hashPath": "nswag.annotations.14.6.3.nupkg.sha512"
     },
-    "SixLabors.ImageSharp/3.0.1": {
+    "SixLabors.ImageSharp/3.1.12": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-o0v/J6SJwp3RFrzR29beGx0cK7xcMRgOyIuw8ZNLQyNnBhiyL/vIQKn7cfycthcWUPG3XezUjFwBWzkcUUDFbg==",
-      "path": "sixlabors.imagesharp/3.0.1",
-      "hashPath": "sixlabors.imagesharp.3.0.1.nupkg.sha512"
+      "sha512": "sha512-iAg6zifihXEFS/t7fiHhZBGAdCp3FavsF4i2ZIDp0JfeYeDVzvmlbY1CNhhIKimaIzrzSi5M/NBFcWvZT2rB/A==",
+      "path": "sixlabors.imagesharp/3.1.12",
+      "hashPath": "sixlabors.imagesharp.3.1.12.nupkg.sha512"
     },
     "Stripe.net/43.3.0": {
       "type": "package",

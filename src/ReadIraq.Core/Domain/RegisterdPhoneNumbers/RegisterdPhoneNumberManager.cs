@@ -17,22 +17,17 @@ namespace ReadIraq.Domain.RegisterdPhoneNumbers
 
         public async Task<RegisterdPhoneNumber> AddOrUpdatePhoneNumberAsync(string dialCode, string phoneNumber)
         {
-            //Random generator = new Random();
             var existingPhoneNumber = await _registerdPhoneNumberRepository.FirstOrDefaultAsync(x => x.DialCode == dialCode && x.PhoneNumber == phoneNumber);
             if (existingPhoneNumber is null)
             {
-
                 return await _registerdPhoneNumberRepository.InsertAsync(new RegisterdPhoneNumber
                 {
                     PhoneNumber = phoneNumber,
-                    DialCode = dialCode,
-                    //VerficationCode = generator.Next(0, 1000000).ToString("D6")
+                    DialCode = dialCode
                 });
             }
             else
             {
-                //existingPhoneNumber.VerficationCode = generator.Next(0, 1000000).ToString("D6");
-                //return await _registerdPhoneNumberRepository.UpdateAsync(existingPhoneNumber);
                 return existingPhoneNumber;
             }
         }
@@ -40,7 +35,7 @@ namespace ReadIraq.Domain.RegisterdPhoneNumbers
         public async Task<bool> CheckPhoneNumberIsVerifiedAsync(string dialCode, string phoneNumber)
         {
             var existingPhoneNumber = await _registerdPhoneNumberRepository.FirstOrDefaultAsync(x => x.DialCode == dialCode && x.PhoneNumber == phoneNumber);
-            if (existingPhoneNumber.IsVerified)
+            if (existingPhoneNumber != null && existingPhoneNumber.IsVerified)
                 return true;
             return false;
         }
@@ -73,13 +68,30 @@ namespace ReadIraq.Domain.RegisterdPhoneNumbers
         public async Task<RegisterdPhoneNumber> UpdateVerificationCodeAsync(string dialCode, string phoneNumber)
         {
             Random generator = new Random();
+            string code = generator.Next(100000, 999999).ToString();
+
             var existingPhoneNumber = await _registerdPhoneNumberRepository.FirstOrDefaultAsync(x => x.DialCode == dialCode && x.PhoneNumber == phoneNumber);
-            if (existingPhoneNumber is not null)
+
+            if (existingPhoneNumber is null)
             {
-                existingPhoneNumber.VerficationCode = generator.Next(0, 1000000).ToString("D6");
-                return await _registerdPhoneNumberRepository.UpdateAsync(existingPhoneNumber);
+                existingPhoneNumber = new RegisterdPhoneNumber
+                {
+                    DialCode = dialCode,
+                    PhoneNumber = phoneNumber,
+                    VerficationCode = code,
+                    IsVerified = false
+                };
+                await _registerdPhoneNumberRepository.InsertAsync(existingPhoneNumber);
             }
-            throw new UserFriendlyException(string.Format(Exceptions.ObjectWasNotFound, Tokens.PhoneNumber));
+            else
+            {
+                existingPhoneNumber.VerficationCode = code;
+                existingPhoneNumber.IsVerified = false;
+                await _registerdPhoneNumberRepository.UpdateAsync(existingPhoneNumber);
+            }
+
+            await UnitOfWorkManager.Current.SaveChangesAsync();
+            return existingPhoneNumber;
         }
 
         public async Task VerifiedPhoneNumberAsync(string dialCode, string phoneNumber)
@@ -89,8 +101,8 @@ namespace ReadIraq.Domain.RegisterdPhoneNumbers
             {
                 existingPhoneNumber.IsVerified = true;
                 await _registerdPhoneNumberRepository.UpdateAsync(existingPhoneNumber);
+                await UnitOfWorkManager.Current.SaveChangesAsync();
             }
         }
-
     }
 }

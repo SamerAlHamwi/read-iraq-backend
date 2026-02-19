@@ -6,5 +6,6 @@ namespace ReadIraq.Authorization.Accounts.Dto
         public string Phone { get; set; }
         public bool OtpSent { get; set; }
         public string Message { get; set; }
+        public string VerificationCode { get; set; }
     }
 }

@@ -30,6 +30,12 @@ namespace ReadIraq.Grades
             _gradeSubjectRepository = gradeSubjectRepository;
         }
 
+        [AbpAllowAnonymous]
+        public override async Task<PagedResultDto<LiteGradeDto>> GetAllAsync(PagedGradeResultRequestDto input)
+        {
+            return await base.GetAllAsync(input);
+        }
+
         protected override IQueryable<Grade> CreateFilteredQuery(PagedGradeResultRequestDto input)
         {
             return base.CreateFilteredQuery(input)

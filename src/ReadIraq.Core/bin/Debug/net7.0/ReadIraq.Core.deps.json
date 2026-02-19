@@ -12,7 +12,7 @@
           "Abp.ZeroCore.EntityFrameworkCore": "8.4.0",
           "Castle.Windsor.MsDependencyInjection": "4.1.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.12",
-          "NSwag.Annotations": "14.0.3"
+          "NSwag.Annotations": "14.6.3"
         },
         "runtime": {
           "ReadIraq.Core.dll": {}
@@ -458,11 +458,11 @@
           }
         }
       },
-      "NSwag.Annotations/14.0.3": {
+      "NSwag.Annotations/14.6.3": {
         "runtime": {
           "lib/netstandard2.0/NSwag.Annotations.dll": {
-            "assemblyVersion": "14.0.3.0",
-            "fileVersion": "14.0.3.0"
+            "assemblyVersion": "14.6.3.0",
+            "fileVersion": "14.6.3.0"
           }
         }
       },
@@ -1253,12 +1253,12 @@
       "path": "nito.disposables/2.2.1",
       "hashPath": "nito.disposables.2.2.1.nupkg.sha512"
     },
-    "NSwag.Annotations/14.0.3": {
+    "NSwag.Annotations/14.6.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-FOK/EvGfnNcVTRPaZXsngmZJl0uOB51/8M5xSdDYqVLhrqxmSOsL/SIISVecRy/9nbg5dmVsHS20of6papLk5w==",
-      "path": "nswag.annotations/14.0.3",
-      "hashPath": "nswag.annotations.14.0.3.nupkg.sha512"
+      "sha512": "sha512-ZAmmjFF6ieW7D7bS7ViIcFZ6Sq77NxAZbvIOypsB8EVRnZMdcr+Rn/sVaVDwPi3YtZJBydSAMNsYDdluhy0ayA==",
+      "path": "nswag.annotations/14.6.3",
+      "hashPath": "nswag.annotations.14.6.3.nupkg.sha512"
     },
     "System.Buffers/4.5.1": {
       "type": "package",

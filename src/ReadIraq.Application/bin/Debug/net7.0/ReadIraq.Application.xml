@@ -531,8 +531,6 @@
             <summary>
             Call this EndPoint Only When To UpdateDatabase
             </summary>
-            <returns></returns>
-            <exception cref="T:Abp.UI.UserFriendlyException"></exception>
         </member>
         <member name="T:ReadIraq.Net.MimeTypes.MimeTypeNames">
             <summary>

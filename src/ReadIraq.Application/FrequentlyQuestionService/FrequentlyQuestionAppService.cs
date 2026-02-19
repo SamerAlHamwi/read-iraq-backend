@@ -105,23 +105,20 @@ namespace ReadIraq.FrequentlyQuestionService
             await UnitOfWorkManager.Current.SaveChangesAsync();
             return MapToEntityDto(entity);
         }
+
         /// <summary>
         /// Call this EndPoint Only When To UpdateDatabase
         /// </summary>
-        /// <returns></returns>
-        /// <exception cref="UserFriendlyException"></exception>
         [Tags("Update-DataBase")]
-        public async Task<object> MigrateDatabaseAsync()
+        public async Task MigrateDatabaseAsync()
         {
             try
             {
-
                 UnitOfWorkManager.Current.GetDbContext<ReadIraqDbContext>().Database.Migrate();
-                return new UserFriendlyException(200, "Update Database Complete  Successfully");
             }
             catch (Exception ex)
             {
-                throw new UserFriendlyException(ex.Message + " " + ex.InnerException);
+                throw new UserFriendlyException("Database migration failed: " + ex.Message);
             }
         }
     }

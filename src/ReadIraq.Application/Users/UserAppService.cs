@@ -400,7 +400,7 @@ namespace ReadIraq.Users
                 var user = await _userManager.FindByIdAsync(AbpSession.GetUserId().ToString());
                 if (user == null)
                 {
-                    throw new Exception("There is no current user!");
+                    throw new UserFriendlyException(L(nameof(Exceptions.ObjectWasNotFound), L(nameof(Tokens.User))));
                 }
 
                 if (await _userManager.CheckPasswordAsync(user, input.CurrentPassword))

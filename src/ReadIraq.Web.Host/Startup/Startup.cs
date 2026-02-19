@@ -107,27 +107,37 @@ namespace ReadIraq.Web.Host.Startup
 
             app.UseAbpRequestLocalization();
 
-            app.UseEndpoints(endpoints =>
+            // Enable middleware to serve generated Swagger as a JSON/YAML endpoint
+            // Using explicit paths to ensure both are registered correctly
+            app.UseSwagger(c =>
             {
-                endpoints.MapHub<AbpCommonHub>("/signalr");
-                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapControllerRoute("defaultWithArea", "{area}/{controller=Home}/{action=Index}/{id?}");
+                c.RouteTemplate = "swagger/{documentName}/swagger.json";
             });
 
-            // Enable middleware to serve generated Swagger as a JSON endpoint
-            app.UseSwagger(c => { c.RouteTemplate = "swagger/{documentName}/swagger.json"; });
+            app.UseSwagger(c =>
+            {
+                c.RouteTemplate = "swagger/{documentName}/swagger.yaml";
+            });
 
             // Enable middleware to serve swagger-ui assets (HTML, JS, CSS etc.)
             app.UseSwaggerUI(options =>
             {
-                // specifying the Swagger JSON endpoint.
-                options.SwaggerEndpoint($"/swagger/{_apiVersion}/swagger.json", $"ReadIraq API {_apiVersion}");
+                // specifying the Swagger JSON/YAML endpoint.
+                options.SwaggerEndpoint($"/swagger/{_apiVersion}/swagger.json", $"ReadIraq API {_apiVersion} (JSON)");
+                options.SwaggerEndpoint($"/swagger/{_apiVersion}/swagger.yaml", $"ReadIraq API {_apiVersion} (YAML)");
+
                 options.IndexStream = () => Assembly.GetExecutingAssembly()
                     .GetManifestResourceStream("ReadIraq.Web.Host.wwwroot.swagger.ui.index.html");
                 options.DisplayRequestDuration(); // Controls the display of the request duration (in milliseconds) for "Try it out" requests.  
 
             }); // URL: /swagger
 
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<AbpCommonHub>("/signalr");
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute("defaultWithArea", "{area}/{controller=Home}/{action=Index}/{id?}");
+            });
         }
 
         private void ConfigureSwagger(IServiceCollection services)
@@ -164,25 +174,37 @@ namespace ReadIraq.Web.Host.Startup
                     Type = SecuritySchemeType.ApiKey
                 });
 
-                //add summaries to swagger
+                // add summaries to swagger
                 bool canShowSummaries = _appConfiguration.GetValue<bool>("Swagger:ShowSummaries");
                 if (canShowSummaries)
                 {
                     var hostXmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                     var hostXmlPath = Path.Combine(AppContext.BaseDirectory, hostXmlFile);
-                    options.IncludeXmlComments(hostXmlPath);
+                    if (System.IO.File.Exists(hostXmlPath))
+                    {
+                        options.IncludeXmlComments(hostXmlPath);
+                    }
 
-                    var applicationXml = $"ReadIraq.Application.xml";
+                    var applicationXml = "ReadIraq.Application.xml";
                     var applicationXmlPath = Path.Combine(AppContext.BaseDirectory, applicationXml);
-                    options.IncludeXmlComments(applicationXmlPath);
+                    if (System.IO.File.Exists(applicationXmlPath))
+                    {
+                        options.IncludeXmlComments(applicationXmlPath);
+                    }
 
-                    var domainXmlFile = $"ReadIraq.Core.xml";
+                    var domainXmlFile = "ReadIraq.Core.xml";
                     var domainXmlPath = Path.Combine(AppContext.BaseDirectory, domainXmlFile);
-                    options.IncludeXmlComments(domainXmlPath);
+                    if (System.IO.File.Exists(domainXmlPath))
+                    {
+                        options.IncludeXmlComments(domainXmlPath);
+                    }
 
-                    var webCoreXmlFile = $"ReadIraq.Web.Core.xml";
+                    var webCoreXmlFile = "ReadIraq.Web.Core.xml";
                     var webCoreXmlPath = Path.Combine(AppContext.BaseDirectory, webCoreXmlFile);
-                    options.IncludeXmlComments(webCoreXmlPath);
+                    if (System.IO.File.Exists(webCoreXmlPath))
+                    {
+                        options.IncludeXmlComments(webCoreXmlPath);
+                    }
                 }
             });
         }

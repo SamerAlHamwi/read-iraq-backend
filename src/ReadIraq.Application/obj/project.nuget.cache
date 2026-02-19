@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ySG+9oY2gdw=",
+  "dgSpecHash": "tCLPaBTAEtc=",
   "success": true,
   "projectFilePath": "C:\\Users\\Tech\\source\\repos\\ReadIraq\\src\\ReadIraq.Application\\ReadIraq.Application.csproj",
   "expectedPackageFiles": [
@@ -20,7 +20,7 @@
     "C:\\Users\\Tech\\.nuget\\packages\\castle.loggingfacility\\6.0.0\\castle.loggingfacility.6.0.0.nupkg.sha512",
     "C:\\Users\\Tech\\.nuget\\packages\\castle.windsor\\6.0.0\\castle.windsor.6.0.0.nupkg.sha512",
     "C:\\Users\\Tech\\.nuget\\packages\\castle.windsor.msdependencyinjection\\4.1.0\\castle.windsor.msdependencyinjection.4.1.0.nupkg.sha512",
-    "C:\\Users\\Tech\\.nuget\\packages\\firebaseadmin\\3.0.0\\firebaseadmin.3.0.0.nupkg.sha512",
+    "C:\\Users\\Tech\\.nuget\\packages\\firebaseadmin\\3.4.0\\firebaseadmin.3.4.0.nupkg.sha512",
     "C:\\Users\\Tech\\.nuget\\packages\\google.api.gax\\4.8.0\\google.api.gax.4.8.0.nupkg.sha512",
     "C:\\Users\\Tech\\.nuget\\packages\\google.api.gax.rest\\4.8.0\\google.api.gax.rest.4.8.0.nupkg.sha512",
     "C:\\Users\\Tech\\.nuget\\packages\\google.apis\\1.68.0\\google.apis.1.68.0.nupkg.sha512",
@@ -65,8 +65,8 @@
     "C:\\Users\\Tech\\.nuget\\packages\\nito.asyncex.tasks\\5.1.2\\nito.asyncex.tasks.5.1.2.nupkg.sha512",
     "C:\\Users\\Tech\\.nuget\\packages\\nito.collections.deque\\1.1.1\\nito.collections.deque.1.1.1.nupkg.sha512",
     "C:\\Users\\Tech\\.nuget\\packages\\nito.disposables\\2.2.1\\nito.disposables.2.2.1.nupkg.sha512",
-    "C:\\Users\\Tech\\.nuget\\packages\\nswag.annotations\\14.0.3\\nswag.annotations.14.0.3.nupkg.sha512",
-    "C:\\Users\\Tech\\.nuget\\packages\\sixlabors.imagesharp\\3.0.1\\sixlabors.imagesharp.3.0.1.nupkg.sha512",
+    "C:\\Users\\Tech\\.nuget\\packages\\nswag.annotations\\14.6.3\\nswag.annotations.14.6.3.nupkg.sha512",
+    "C:\\Users\\Tech\\.nuget\\packages\\sixlabors.imagesharp\\3.1.12\\sixlabors.imagesharp.3.1.12.nupkg.sha512",
     "C:\\Users\\Tech\\.nuget\\packages\\stripe.net\\43.3.0\\stripe.net.43.3.0.nupkg.sha512",
     "C:\\Users\\Tech\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
     "C:\\Users\\Tech\\.nuget\\packages\\system.codedom\\7.0.0\\system.codedom.7.0.0.nupkg.sha512",
@@ -136,76 +136,5 @@
     "C:\\Users\\Tech\\.nuget\\packages\\timezoneconverter\\6.1.0\\timezoneconverter.6.1.0.nupkg.sha512",
     "C:\\Users\\Tech\\.nuget\\packages\\twilio\\6.14.1\\twilio.6.14.1.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-2cmq-823j-5qj8",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    },
-    {
-      "code": "NU1902",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-5x7m-6737-26cr",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    },
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-63p8-c4ww-9cg7",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    },
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-65x7-c272-7g7r",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    },
-    {
-      "code": "NU1902",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-g85r-6x2q-45w7",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    },
-    {
-      "code": "NU1902",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-qxrv-gp6x-rc23",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    },
-    {
-      "code": "NU1902",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'SixLabors.ImageSharp' 3.0.1 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-rxmq-m78w-7wmc",
-      "libraryId": "SixLabors.ImageSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    }
-  ]
+  "logs": []
 }
