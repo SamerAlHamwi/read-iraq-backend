@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.LessonSessions;
+using ReadIraq.Domain.Enrollments;
 using ReadIraq.Teachers.Dto;
 using ReadIraq.LessonSessions.Dto;
 using ReadIraq.Domain.Attachments;
@@ -30,6 +31,7 @@ namespace ReadIraq.Subjects
         private readonly IRepository<TeacherSubject, Guid> _teacherSubjectRepository;
         private readonly IRepository<LessonSession, Guid> _lessonSessionRepository;
         private readonly IRepository<UserPreferredTeacher, Guid> _userPreferredTeacherRepository;
+        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
         private readonly IAttachmentManager _attachmentManager;
 
         public SubjectAppService(
@@ -39,6 +41,7 @@ namespace ReadIraq.Subjects
             IRepository<TeacherSubject, Guid> teacherSubjectRepository,
             IRepository<LessonSession, Guid> lessonSessionRepository,
             IRepository<UserPreferredTeacher, Guid> userPreferredTeacherRepository,
+            IRepository<Enrollment, Guid> enrollmentRepository,
             IAttachmentManager attachmentManager)
             : base(repository)
         {
@@ -47,6 +50,7 @@ namespace ReadIraq.Subjects
             _teacherSubjectRepository = teacherSubjectRepository;
             _lessonSessionRepository = lessonSessionRepository;
             _userPreferredTeacherRepository = userPreferredTeacherRepository;
+            _enrollmentRepository = enrollmentRepository;
             _attachmentManager = attachmentManager;
         }
 
@@ -82,6 +86,8 @@ namespace ReadIraq.Subjects
                     item.Attachment.Url = _attachmentManager.GetUrl(attachment);
                     item.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
                 }
+
+                item.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.SubjectId == item.Id);
             }
 
             return result;
@@ -105,6 +111,42 @@ namespace ReadIraq.Subjects
                 dto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
                 dto.Attachment.Url = _attachmentManager.GetUrl(attachment);
                 dto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+            }
+
+            dto.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.SubjectId == entity.Id);
+
+            // Lessons
+            var lessons = await _lessonSessionRepository.GetAllListAsync(x => x.SubjectId == entity.Id);
+            dto.Lessons = ObjectMapper.Map<List<LiteLessonSessionDto>>(lessons.OrderBy(x => x.Order));
+
+            // Progress
+            var userId = AbpSession.UserId;
+            if (userId.HasValue)
+            {
+                var enrollment = await _enrollmentRepository.FirstOrDefaultAsync(x => x.UserId == userId.Value && x.SubjectId == entity.Id);
+                if (enrollment != null)
+                {
+                    dto.ProgressPercentage = enrollment.ProgressPercent;
+                }
+            }
+
+            // Top Teacher
+            var topTeacher = await _teacherSubjectRepository.GetAll()
+                .Include(ts => ts.TeacherProfile)
+                .Where(ts => ts.SubjectId == entity.Id && ts.TeacherProfile.IsActive)
+                .OrderByDescending(ts => ts.TeacherProfile.AverageRating)
+                .Select(ts => ts.TeacherProfile)
+                .FirstOrDefaultAsync();
+
+            if (topTeacher != null)
+            {
+                dto.TopTeacher = ObjectMapper.Map<LiteTeacherProfileDto>(topTeacher);
+                var teacherImg = await _attachmentManager.GetElementByRefAsync(topTeacher.Id.ToString(), AttachmentRefType.TeacherProfile);
+                if (teacherImg != null)
+                {
+                    dto.TopTeacher.Attachment = ObjectMapper.Map<LiteAttachmentDto>(teacherImg);
+                    dto.TopTeacher.Attachment.Url = _attachmentManager.GetUrl(teacherImg);
+                }
             }
 
             return dto;

@@ -12,5 +12,8 @@ namespace ReadIraq.Subjects.Dto
     {
         public List<TranslationDto> Name { get; set; }
         public LiteAttachmentDto Attachment { get; set; }
+        public int TeachersCount { get; set; }
+        public int LessonsCount { get; set; }
+        public string Color { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Abp.Domain.Entities.Auditing;
 using ReadIraq.Domain.Translations;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static ReadIraq.Enums.Enum;
 
@@ -16,6 +17,10 @@ namespace ReadIraq.Domain.Subjects
         public SubjectLevel Level { get; set; }
         public int StudentsCount { get; set; }
         public int TeachersCount { get; set; }
+
+        [StringLength(7)]
+        public string Color { get; set; }
+
         public bool IsActive { get; set; }
 
         public Subject()
