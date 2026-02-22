@@ -10,7 +10,7 @@ namespace ReadIraq.LessonSessions
         PagedLessonSessionResultRequestDto, CreateLessonSessionDto, UpdateLessonSessionDto>
     {
         Task MarkAsCompleteAsync(EntityDto<Guid> input);
+        Task UpdateProgressAsync(UpdateLessonProgressInput input);
         Task ReportIssueAsync(ReportSessionIssueInput input);
-        // Comments logic could be here or in a separate CommentAppService
     }
 }

@@ -9,6 +9,7 @@ namespace ReadIraq.Quizzes
 {
     public interface IQuizAppService : IAsyncCrudAppService<QuizDto, Guid, PagedQuizResultRequestDto, CreateQuizDto, QuizDto>
     {
+        Task<QuizDto> GetBySessionIdAsync(EntityDto<Guid> input);
         Task<QuestionDto> CreateQuestionAsync(CreateQuestionDto input);
         Task<List<QuestionDto>> AddQuestionsAsync(List<CreateQuestionDto> input);
         Task<QuestionDto> UpdateQuestionAsync(QuestionDto input);

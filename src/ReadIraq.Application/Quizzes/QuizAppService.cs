@@ -7,11 +7,13 @@ using Abp.UI;
 using Microsoft.EntityFrameworkCore;
 using ReadIraq.CrudAppServiceBase;
 using ReadIraq.Domain.Quizzes;
+using ReadIraq.Domain.Attachments;
 using ReadIraq.Quizzes.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Quizzes
 {
@@ -19,71 +21,85 @@ namespace ReadIraq.Quizzes
     public class QuizAppService : ReadIraqAsyncCrudAppService<Quiz, QuizDto, Guid, QuizDto, PagedQuizResultRequestDto, CreateQuizDto, QuizDto>, IQuizAppService
     {
         private readonly IRepository<Question, Guid> _questionRepository;
+        private readonly IAttachmentManager _attachmentManager;
 
         public QuizAppService(
             IRepository<Quiz, Guid> repository,
-            IRepository<Question, Guid> questionRepository)
+            IRepository<Question, Guid> questionRepository,
+            IAttachmentManager attachmentManager)
             : base(repository)
         {
             _questionRepository = questionRepository;
+            _attachmentManager = attachmentManager;
         }
 
         protected override IQueryable<Quiz> CreateFilteredQuery(PagedQuizResultRequestDto input)
         {
             return base.CreateFilteredQuery(input)
+                .Include(x => x.Subject)
+                .Include(x => x.Session)
+                .Include(x => x.Teacher)
                 .WhereIf(input.SubjectId.HasValue, x => x.SubjectId == input.SubjectId)
                 .WhereIf(input.SessionId.HasValue, x => x.SessionId == input.SessionId);
         }
 
-        public override async Task<QuizDto> CreateAsync(CreateQuizDto input)
+        public async Task<QuizDto> GetBySessionIdAsync(EntityDto<Guid> input)
         {
-            await CheckUniquenessAsync(input.SubjectId, input.SessionId);
-            return await base.CreateAsync(input);
-        }
+            var entity = await Repository.GetAll()
+                .Include(x => x.Questions)
+                .Include(x => x.Subject).ThenInclude(x => x.Name)
+                .Include(x => x.Session)
+                .Include(x => x.Teacher)
+                .FirstOrDefaultAsync(x => x.SessionId == input.Id);
 
-        public override async Task<QuizDto> UpdateAsync(QuizDto input)
-        {
-            await CheckUniquenessAsync(input.SubjectId, input.SessionId, input.Id);
-            return await base.UpdateAsync(input);
-        }
-
-        private async Task CheckUniquenessAsync(Guid? subjectId, Guid? sessionId, Guid? excludeId = null)
-        {
-            if (subjectId.HasValue)
+            if (entity == null)
             {
-                var exists = await Repository.GetAll()
-                    .WhereIf(excludeId.HasValue, x => x.Id != excludeId)
-                    .AnyAsync(x => x.SubjectId == subjectId);
-                if (exists)
-                {
-                    throw new UserFriendlyException(L("QuizAlreadyExistsForSubject"));
-                }
+                throw new UserFriendlyException(L("QuizNotFoundForThisLesson"));
             }
 
-            if (sessionId.HasValue)
-            {
-                var exists = await Repository.GetAll()
-                    .WhereIf(excludeId.HasValue, x => x.Id != excludeId)
-                    .AnyAsync(x => x.SessionId == sessionId);
-                if (exists)
-                {
-                    throw new UserFriendlyException(L("QuizAlreadyExistsForSession"));
-                }
-            }
+            return await MapToDtoWithExtras(entity);
         }
 
         public override async Task<QuizDto> GetAsync(EntityDto<Guid> input)
         {
             var entity = await Repository.GetAll()
                 .Include(x => x.Questions)
+                .Include(x => x.Subject).ThenInclude(x => x.Name)
+                .Include(x => x.Session)
+                .Include(x => x.Teacher)
                 .FirstOrDefaultAsync(x => x.Id == input.Id);
 
             if (entity == null)
             {
-                throw new UserFriendlyException(L("ObjectWasNotFound", L("Quiz")));
+                throw new UserFriendlyException(L("QuizNotFound"));
             }
 
-            return MapToEntityDto(entity);
+            return await MapToDtoWithExtras(entity);
+        }
+
+        private async Task<QuizDto> MapToDtoWithExtras(Quiz entity)
+        {
+            var dto = MapToEntityDto(entity);
+
+            dto.SubjectName = entity.Subject?.Name?.FirstOrDefault()?.Name;
+            dto.SessionTitle = entity.Session?.Title;
+            dto.TeacherName = entity.Teacher?.Name;
+            dto.SecondsRemaining = entity.DurationSeconds; // Default to full duration
+
+            if (dto.Questions != null)
+            {
+                foreach (var qDto in dto.Questions)
+                {
+                    var qImage = await _attachmentManager.GetElementByRefAsync(qDto.Id.ToString(), AttachmentRefType.Other);
+                    if (qImage != null)
+                    {
+                        qDto.ImageUrl = _attachmentManager.GetUrl(qImage);
+                    }
+                    qDto.Category = entity.Subject?.Name?.FirstOrDefault()?.Name ?? "General";
+                }
+            }
+
+            return dto;
         }
 
         public async Task<QuestionDto> CreateQuestionAsync(CreateQuestionDto input)
@@ -94,29 +110,14 @@ namespace ReadIraq.Quizzes
             return ObjectMapper.Map<QuestionDto>(question);
         }
 
-        public async Task<List<QuestionDto>> AddQuestionsAsync(List<CreateQuestionDto> input)
+        public Task<List<QuestionDto>> AddQuestionsAsync(List<CreateQuestionDto> input)
         {
-            var questions = new List<Question>();
-            foreach (var item in input)
-            {
-                var question = ObjectMapper.Map<Question>(item);
-                await _questionRepository.InsertAsync(question);
-                questions.Add(question);
-            }
-            await CurrentUnitOfWork.SaveChangesAsync();
-            return ObjectMapper.Map<List<QuestionDto>>(questions);
+            throw new NotImplementedException();
         }
 
-        public async Task<QuestionDto> UpdateQuestionAsync(QuestionDto input)
+        public Task<QuestionDto> UpdateQuestionAsync(QuestionDto input)
         {
-            var question = await _questionRepository.GetAsync(input.Id);
-            if (question == null)
-            {
-                throw new UserFriendlyException(L("ObjectWasNotFound", L("Question")));
-            }
-            ObjectMapper.Map(input, question);
-            await _questionRepository.UpdateAsync(question);
-            return ObjectMapper.Map<QuestionDto>(question);
+            throw new NotImplementedException();
         }
 
         public async Task DeleteQuestionAsync(EntityDto<Guid> input)

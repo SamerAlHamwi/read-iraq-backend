@@ -12,9 +12,13 @@ namespace ReadIraq.Quizzes.Dto
         public string Title { get; set; }
         public string Description { get; set; }
         public Guid? SubjectId { get; set; }
+        public string SubjectName { get; set; }
         public Guid? SessionId { get; set; }
+        public string SessionTitle { get; set; }
         public Guid? TeacherId { get; set; }
+        public string TeacherName { get; set; }
         public int DurationSeconds { get; set; }
+        public int SecondsRemaining { get; set; } // Added as requested
         public int TotalMarks { get; set; }
         public List<QuestionDto> Questions { get; set; }
     }
@@ -25,6 +29,8 @@ namespace ReadIraq.Quizzes.Dto
         public Guid QuizId { get; set; }
         public byte Type { get; set; }
         public string Text { get; set; }
+        public string ImageUrl { get; set; }
+        public string Category { get; set; }
         public string Options { get; set; }
         public string CorrectAnswer { get; set; }
         public int Marks { get; set; }

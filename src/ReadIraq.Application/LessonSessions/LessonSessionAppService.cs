@@ -41,6 +41,7 @@ namespace ReadIraq.LessonSessions
         protected override IQueryable<LessonSession> CreateFilteredQuery(PagedLessonSessionResultRequestDto input)
         {
             return base.CreateFilteredQuery(input)
+                .Include(x => x.Subject)
                 .WhereIf(!string.IsNullOrWhiteSpace(input.Keyword),
                     x => x.Title.Contains(input.Keyword) || x.Description.Contains(input.Keyword))
                 .WhereIf(input.TeacherProfileId.HasValue, x => x.TeacherProfileId == input.TeacherProfileId.Value)
@@ -78,6 +79,8 @@ namespace ReadIraq.LessonSessions
         {
             var entity = await Repository.GetAll()
                 .Include(x => x.Attachments).ThenInclude(x => x.Attachment)
+                .Include(x => x.Subject).ThenInclude(x => x.Name)
+                .Include(x => x.TeacherProfile)
                 .FirstOrDefaultAsync(x => x.Id == input.Id);
 
             if (entity == null)
@@ -110,6 +113,28 @@ namespace ReadIraq.LessonSessions
                 dto.Video.Url = _attachmentManager.GetUrl(video);
             }
 
+            // Map Teacher Details
+            if (entity.TeacherProfile != null)
+            {
+                dto.TeacherName = entity.TeacherProfile.Name;
+                dto.TeacherBio = entity.TeacherProfile.Bio;
+                dto.TeacherSpecialization = entity.TeacherProfile.Specialization;
+                dto.TeacherRating = entity.TeacherProfile.AverageRating;
+                dto.TeacherReviewsCount = entity.TeacherProfile.ReviewsCount;
+
+                var teacherImg = await _attachmentManager.GetElementByRefAsync(entity.TeacherProfileId.ToString(), AttachmentRefType.TeacherProfile);
+                if (teacherImg != null)
+                {
+                    dto.TeacherImageUrl = _attachmentManager.GetUrl(teacherImg);
+                }
+            }
+
+            // Map Subject Name
+            if (entity.Subject != null)
+            {
+                 dto.SubjectName = entity.Subject.Name?.FirstOrDefault()?.Name;
+            }
+
             // Check progress for current user
             var userId = AbpSession.UserId;
             if (userId.HasValue)
@@ -122,113 +147,37 @@ namespace ReadIraq.LessonSessions
             return dto;
         }
 
-        public override async Task<LessonSessionDto> CreateAsync(CreateLessonSessionDto input)
-        {
-            CheckCreatePermission();
-
-            var entity = MapToEntity(input);
-            entity.ViewsCount = 0;
-            entity.LikesCount = 0;
-            entity.IsActive = true;
-
-            await Repository.InsertAsync(entity);
-            await CurrentUnitOfWork.SaveChangesAsync();
-
-            if (input.ThumbnailAttachmentId > 0)
-            {
-                await _attachmentManager.CheckAndUpdateRefIdAsync(input.ThumbnailAttachmentId, AttachmentRefType.LessonSessionThumbnail, entity.Id.ToString());
-            }
-
-            if (input.VideoAttachmentId > 0)
-            {
-                await _attachmentManager.CheckAndUpdateRefIdAsync(input.VideoAttachmentId, AttachmentRefType.LessonSessionVideo, entity.Id.ToString());
-            }
-
-            if (input.AttachmentIds != null)
-            {
-                foreach (var attachmentId in input.AttachmentIds.Distinct())
-                {
-                    entity.Attachments.Add(new LessonSessionAttachment { AttachmentId = attachmentId });
-                }
-            }
-
-            await CurrentUnitOfWork.SaveChangesAsync();
-
-            return await GetAsync(new EntityDto<Guid>(entity.Id));
-        }
-
-        public override async Task<LessonSessionDto> UpdateAsync(UpdateLessonSessionDto input)
-        {
-            CheckUpdatePermission();
-
-            var entity = await Repository.GetAll()
-                .Include(x => x.Attachments)
-                .FirstOrDefaultAsync(x => x.Id == input.Id);
-
-            if (entity == null)
-            {
-                throw new Abp.UI.UserFriendlyException("Session not found");
-            }
-
-            MapToEntity(input, entity);
-
-            if (input.ThumbnailAttachmentId > 0)
-            {
-                var oldThumbnail = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.LessonSessionThumbnail);
-                if (oldThumbnail != null && oldThumbnail.Id != input.ThumbnailAttachmentId)
-                {
-                    await _attachmentManager.DeleteRefIdAsync(oldThumbnail);
-                }
-                await _attachmentManager.CheckAndUpdateRefIdAsync(input.ThumbnailAttachmentId, AttachmentRefType.LessonSessionThumbnail, entity.Id.ToString());
-            }
-
-            if (input.VideoAttachmentId > 0)
-            {
-                var oldVideo = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.LessonSessionVideo);
-                if (oldVideo != null && oldVideo.Id != input.VideoAttachmentId)
-                {
-                    await _attachmentManager.DeleteRefIdAsync(oldVideo);
-                }
-                await _attachmentManager.CheckAndUpdateRefIdAsync(input.VideoAttachmentId, AttachmentRefType.LessonSessionVideo, entity.Id.ToString());
-            }
-
-            entity.Attachments.Clear();
-            if (input.AttachmentIds != null)
-            {
-                foreach (var attachmentId in input.AttachmentIds.Distinct())
-                {
-                    entity.Attachments.Add(new LessonSessionAttachment
-                    {
-                        LessonSessionId = entity.Id,
-                        AttachmentId = attachmentId
-                    });
-                }
-            }
-
-            await Repository.UpdateAsync(entity);
-            await CurrentUnitOfWork.SaveChangesAsync();
-
-            return await GetAsync(new EntityDto<Guid>(entity.Id));
-        }
-
         public async Task MarkAsCompleteAsync(EntityDto<Guid> input)
         {
+            await UpdateProgressAsync(new UpdateLessonProgressInput { SessionId = input.Id, IsCompleted = true });
+        }
+
+        public async Task UpdateProgressAsync(UpdateLessonProgressInput input)
+        {
             var userId = AbpSession.GetUserId();
-            var progress = await _progressRepository.FirstOrDefaultAsync(p => p.SessionId == input.Id && p.UserId == userId);
+            var progress = await _progressRepository.FirstOrDefaultAsync(p => p.SessionId == input.SessionId && p.UserId == userId);
 
             if (progress == null)
             {
                 await _progressRepository.InsertAsync(new UserSessionProgress
                 {
-                    SessionId = input.Id,
+                    SessionId = input.SessionId,
                     UserId = userId,
-                    IsCompleted = true,
+                    WatchedSeconds = input.WatchedSeconds,
+                    IsCompleted = input.IsCompleted,
                     LastWatchedAt = DateTime.Now
                 });
             }
             else
             {
-                progress.IsCompleted = true;
+                if (input.WatchedSeconds > progress.WatchedSeconds)
+                {
+                    progress.WatchedSeconds = input.WatchedSeconds;
+                }
+                if (input.IsCompleted)
+                {
+                    progress.IsCompleted = true;
+                }
                 progress.LastWatchedAt = DateTime.Now;
                 await _progressRepository.UpdateAsync(progress);
             }

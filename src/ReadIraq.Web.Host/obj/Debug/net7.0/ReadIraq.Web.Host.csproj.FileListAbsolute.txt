@@ -483,8 +483,8 @@ C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\appsettings.json
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\appsettings.Staging.json
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\FirebaseConfig\movers-26fb9-firebase-adminsdk-uvgeb-30e0a931c9.json
-C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\ReadIraq.Web.Host.staticwebassets.endpoints.json
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\ReadIraq.Web.Host.staticwebassets.runtime.json
+C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\ReadIraq.Web.Host.staticwebassets.endpoints.json
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\ReadIraq.Web.Host.exe
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\wwwroot\swagger\ui\index.html
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\Dockerfile

@@ -14,7 +14,16 @@ namespace ReadIraq.LessonSessions.Dto
         public LiteAttachmentDto Thumbnail { get; set; }
         public LiteAttachmentDto Video { get; set; }
         public Guid TeacherProfileId { get; set; }
+        public string TeacherName { get; set; }
+        public string TeacherBio { get; set; }
+        public string TeacherSpecialization { get; set; }
+        public string TeacherImageUrl { get; set; }
+        public decimal TeacherRating { get; set; }
+        public int TeacherReviewsCount { get; set; }
+
         public Guid SubjectId { get; set; }
+        public string SubjectName { get; set; }
+
         public int DurationSeconds { get; set; }
         public int Order { get; set; }
         public bool IsSavedByDefault { get; set; }

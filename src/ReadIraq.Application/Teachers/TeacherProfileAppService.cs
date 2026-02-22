@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ReadIraq.Domain.Attachments;
+using ReadIraq.Domain.LessonSessions;
 using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Teachers
@@ -22,20 +23,26 @@ namespace ReadIraq.Teachers
         private readonly ITeacherProfileManager _teacherProfileManager;
         private readonly IRepository<TeacherFeatureMap, Guid> _featureMapRepository;
         private readonly IRepository<TeacherSubject, Guid> _teacherSubjectRepository;
+        private readonly IRepository<LessonSession, Guid> _lessonSessionRepository;
         private readonly IAttachmentManager _attachmentManager;
+        private readonly IRepository<TeacherFeature, Guid> _featureRepository;
 
         public TeacherProfileAppService(
             IRepository<TeacherProfile, Guid> repository,
             ITeacherProfileManager teacherProfileManager,
             IRepository<TeacherFeatureMap, Guid> featureMapRepository,
             IRepository<TeacherSubject, Guid> teacherSubjectRepository,
-            IAttachmentManager attachmentManager)
+            IRepository<LessonSession, Guid> lessonSessionRepository,
+            IAttachmentManager attachmentManager,
+            IRepository<TeacherFeature, Guid> featureRepository)
             : base(repository)
         {
             _teacherProfileManager = teacherProfileManager;
             _featureMapRepository = featureMapRepository;
             _teacherSubjectRepository = teacherSubjectRepository;
+            _lessonSessionRepository = lessonSessionRepository;
             _attachmentManager = attachmentManager;
+            _featureRepository = featureRepository;
         }
 
         protected override IQueryable<TeacherProfile> CreateFilteredQuery(PagedTeacherProfileResultRequestDto input)
@@ -65,6 +72,8 @@ namespace ReadIraq.Teachers
                     item.Attachment.Url = _attachmentManager.GetUrl(attachment);
                     item.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
                 }
+
+                item.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.TeacherProfileId == item.Id && x.IsActive);
             }
 
             return result;
@@ -86,6 +95,11 @@ namespace ReadIraq.Teachers
             var dto = MapToEntityDto(entity);
             dto.FeatureIds = entity.Features.Select(f => f.TeacherFeatureId).ToList();
             dto.SubjectIds = entity.Subjects.Select(s => s.SubjectId).ToList();
+
+            var features = await _featureRepository.GetAllListAsync(x => dto.FeatureIds.Contains(x.Id));
+            dto.Features = ObjectMapper.Map<List<TeacherFeatureDto>>(features);
+
+            dto.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.TeacherProfileId == entity.Id && x.IsActive);
 
             var attachment = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.TeacherProfile);
             if (attachment != null)

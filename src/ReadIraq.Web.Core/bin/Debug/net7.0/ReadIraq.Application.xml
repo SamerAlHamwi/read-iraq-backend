@@ -4,89 +4,6 @@
         <name>ReadIraq.Application</name>
     </assembly>
     <members>
-        <member name="M:ClinicSystem.Advertisiments.AdvertisimentAppService.GetAsync(Abp.Application.Services.Dto.EntityDto{System.Int32})">
-            <summary>
-            GetAsync
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ClinicSystem.Regions.RegionAppService.#ctor(Abp.Domain.Repositories.IRepository{ReadIraq.Domain.Regions.Region},ReadIraq.Domain.Regions.RegionManager,ReadIraq.Domain.Countries.ICountryManager,Abp.Domain.Repositories.IRepository{ReadIraq.Domain.Regions.RegionTranslation},Abp.Domain.Repositories.IRepository{ReadIraq.Domain.Regions.Region})">
-            <summary>
-            Region AppService
-            </summary>
-            <param name="repository"></param>
-            <param name="regionManager"></param>
-            <param name="countryManager"></param>
-            <param name="regionTranslationRepository"></param>
-        </member>
-        <member name="M:ClinicSystem.Regions.RegionAppService.GetAsync(Abp.Application.Services.Dto.EntityDto{System.Int32})">
-            <summary>
-            Get Region Details ById
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ClinicSystem.Regions.RegionAppService.GetAllAsync(ReadIraq.Domain.Regions.Dto.PagedRegionResultRequestDto)">
-            <summary>
-            Get All Regions Details
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ClinicSystem.Regions.RegionAppService.CreateAsync(ReadIraq.Domain.Regions.Dto.CreateRegionDto)">
-            <summary>
-            Add New Region Details
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ClinicSystem.Regions.RegionAppService.UpdateAsync(ReadIraq.Domain.Regions.Dto.UpdateRegionDto)">
-            <summary>
-            Update Region Details
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ClinicSystem.Regions.RegionAppService.DeleteAsync(Abp.Application.Services.Dto.EntityDto{System.Int32})">
-            <summary>
-            Delete Region Details
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ClinicSystem.Regions.RegionAppService.CreateFilteredQuery(ReadIraq.Domain.Regions.Dto.PagedRegionResultRequestDto)">
-            <summary>
-            Filter For A Group Of Regions
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ClinicSystem.Regions.RegionAppService.ApplySorting(System.Linq.IQueryable{ReadIraq.Domain.Regions.Region},ReadIraq.Domain.Regions.Dto.PagedRegionResultRequestDto)">
-            <summary>
-            Sorting Filtered Regions
-            </summary>
-            <param name="query"></param>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ClinicSystem.Regions.RegionAppService.SwitchActivationAsync(ReadIraq.Domain.Cities.Dto.SwitchActivationInputDto)">
-            <summary>
-            Switch Activation Of A Region
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="T:ReadIraq.Advertisiments.Mapper.AdvertisimentMapProfile">
-            <summary>
-            PostsMapProfile
-            </summary>
-        </member>
-        <member name="M:ReadIraq.Advertisiments.Mapper.AdvertisimentMapProfile.#ctor">
-            <summary>
-             Posts Map Profile 
-            </summary>
-        </member>
         <member name="F:ReadIraq.AppConsts.DefaultPassPhrase">
             <summary>
             Default pass phrase for SimpleStringCipher decrypt/encrypt operations
@@ -913,6 +830,72 @@
             <summary>
             Set or clear FCM Token for current user
             </summary>
+        </member>
+        <member name="M:ClinicSystem.Regions.RegionAppService.#ctor(Abp.Domain.Repositories.IRepository{ReadIraq.Domain.Regions.Region},ReadIraq.Domain.Regions.RegionManager,ReadIraq.Domain.Countries.ICountryManager,Abp.Domain.Repositories.IRepository{ReadIraq.Domain.Regions.RegionTranslation},Abp.Domain.Repositories.IRepository{ReadIraq.Domain.Regions.Region})">
+            <summary>
+            Region AppService
+            </summary>
+            <param name="repository"></param>
+            <param name="regionManager"></param>
+            <param name="countryManager"></param>
+            <param name="regionTranslationRepository"></param>
+        </member>
+        <member name="M:ClinicSystem.Regions.RegionAppService.GetAsync(Abp.Application.Services.Dto.EntityDto{System.Int32})">
+            <summary>
+            Get Region Details ById
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClinicSystem.Regions.RegionAppService.GetAllAsync(ReadIraq.Domain.Regions.Dto.PagedRegionResultRequestDto)">
+            <summary>
+            Get All Regions Details
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClinicSystem.Regions.RegionAppService.CreateAsync(ReadIraq.Domain.Regions.Dto.CreateRegionDto)">
+            <summary>
+            Add New Region Details
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClinicSystem.Regions.RegionAppService.UpdateAsync(ReadIraq.Domain.Regions.Dto.UpdateRegionDto)">
+            <summary>
+            Update Region Details
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClinicSystem.Regions.RegionAppService.DeleteAsync(Abp.Application.Services.Dto.EntityDto{System.Int32})">
+            <summary>
+            Delete Region Details
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClinicSystem.Regions.RegionAppService.CreateFilteredQuery(ReadIraq.Domain.Regions.Dto.PagedRegionResultRequestDto)">
+            <summary>
+            Filter For A Group Of Regions
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClinicSystem.Regions.RegionAppService.ApplySorting(System.Linq.IQueryable{ReadIraq.Domain.Regions.Region},ReadIraq.Domain.Regions.Dto.PagedRegionResultRequestDto)">
+            <summary>
+            Sorting Filtered Regions
+            </summary>
+            <param name="query"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClinicSystem.Regions.RegionAppService.SwitchActivationAsync(ReadIraq.Domain.Cities.Dto.SwitchActivationInputDto)">
+            <summary>
+            Switch Activation Of A Region
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>

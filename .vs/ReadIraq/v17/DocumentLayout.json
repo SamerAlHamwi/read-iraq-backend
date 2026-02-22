@@ -3,8 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260219084457_update-user-data.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260219084457_update-user-data.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260222080340_edits.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260222080340_edits.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0580562-F8F2-4EBB-B07A-ABFC6F2C314F}|src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj|c:\\users\\tech\\studioprojects\\stugoo\\flutter-start-project\\readiraq\\src\\readiraq.entityframeworkcore\\migrations\\20260219100520_update-user-datas.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0580562-F8F2-4EBB-B07A-ABFC6F2C314F}|src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj|solutionrelative:src\\readiraq.entityframeworkcore\\migrations\\20260219100520_update-user-datas.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0580562-F8F2-4EBB-B07A-ABFC6F2C314F}|src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj|c:\\users\\tech\\studioprojects\\stugoo\\flutter-start-project\\readiraq\\src\\readiraq.entityframeworkcore\\migrations\\20260219084457_update-user-data.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0580562-F8F2-4EBB-B07A-ABFC6F2C314F}|src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj|solutionrelative:src\\readiraq.entityframeworkcore\\migrations\\20260219084457_update-user-data.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,6 +27,32 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "20260222080340_edits.cs",
+              "DocumentMoniker": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260222080340_edits.cs",
+              "RelativeDocumentMoniker": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260222080340_edits.cs",
+              "ToolTip": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260222080340_edits.cs",
+              "RelativeToolTip": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260222080340_edits.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T08:03:41.066Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "20260219100520_update-user-datas.cs",
+              "DocumentMoniker": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260219100520_update-user-datas.cs",
+              "RelativeDocumentMoniker": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260219100520_update-user-datas.cs",
+              "ToolTip": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260219100520_update-user-datas.cs",
+              "RelativeToolTip": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260219100520_update-user-datas.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-19T10:05:20.614Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "20260219084457_update-user-data.cs",
               "DocumentMoniker": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260219084457_update-user-data.cs",
               "RelativeDocumentMoniker": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260219084457_update-user-data.cs",
@@ -26,8 +60,7 @@
               "RelativeToolTip": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260219084457_update-user-data.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-19T08:44:57.536Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-19T08:44:57.536Z"
             }
           ]
         }

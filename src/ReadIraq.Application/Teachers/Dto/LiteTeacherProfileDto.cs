@@ -12,5 +12,6 @@ namespace ReadIraq.Teachers.Dto
         public string Specialization { get; set; }
         public LiteAttachmentDto Attachment { get; set; }
         public decimal AverageRating { get; set; }
+        public int LessonsCount { get; set; }
     }
 }

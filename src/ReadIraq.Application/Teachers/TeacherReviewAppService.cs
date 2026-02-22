@@ -12,15 +12,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ReadIraq.Domain.Attachments;
+using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Teachers
 {
     [AbpAuthorize]
     public class TeacherReviewAppService : ReadIraqAsyncCrudAppService<TeacherReview, TeacherReviewDto, Guid, TeacherReviewDto, PagedTeacherReviewResultRequestDto, CreateTeacherReviewDto, UpdateTeacherReviewDto>, ITeacherReviewAppService
     {
-        public TeacherReviewAppService(IRepository<TeacherReview, Guid> repository)
+        private readonly IAttachmentManager _attachmentManager;
+
+        public TeacherReviewAppService(
+            IRepository<TeacherReview, Guid> repository,
+            IAttachmentManager attachmentManager)
             : base(repository)
         {
+            _attachmentManager = attachmentManager;
         }
 
         protected override IQueryable<TeacherReview> CreateFilteredQuery(PagedTeacherReviewResultRequestDto input)
@@ -40,13 +47,11 @@ namespace ReadIraq.Teachers
 
             if (existingReview != null)
             {
-                // Update existing instead of creating new? Or throw error?
-                // Usually "rate + review" updates the old one if it exists.
                 existingReview.Rating = input.Rating;
                 existingReview.ReviewText = input.ReviewText;
                 await Repository.UpdateAsync(existingReview);
                 await CurrentUnitOfWork.SaveChangesAsync();
-                return MapToEntityDto(existingReview);
+                return await MapToEntityDtoAsync(existingReview);
             }
 
             var entity = MapToEntity(input);
@@ -55,7 +60,7 @@ namespace ReadIraq.Teachers
             await Repository.InsertAsync(entity);
             await CurrentUnitOfWork.SaveChangesAsync();
 
-            return MapToEntityDto(entity);
+            return await MapToEntityDtoAsync(entity);
         }
 
         public async Task<List<TeacherRatingBreakdownDto>> GetRatingBreakdownAsync(Guid teacherProfileId)
@@ -80,6 +85,31 @@ namespace ReadIraq.Teachers
             }
 
             return breakdown.OrderByDescending(b => b.Rating).ToList();
+        }
+
+        public override async Task<PagedResultDto<TeacherReviewDto>> GetAllAsync(PagedTeacherReviewResultRequestDto input)
+        {
+            var result = await base.GetAllAsync(input);
+            foreach (var dto in result.Items)
+            {
+                var attachment = await _attachmentManager.GetElementByRefAsync(dto.UserId.ToString(), AttachmentRefType.Profile);
+                if (attachment != null)
+                {
+                    dto.UserAvatar = _attachmentManager.GetUrl(attachment);
+                }
+            }
+            return result;
+        }
+
+        private async Task<TeacherReviewDto> MapToEntityDtoAsync(TeacherReview entity)
+        {
+            var dto = MapToEntityDto(entity);
+            var attachment = await _attachmentManager.GetElementByRefAsync(entity.UserId.ToString(), AttachmentRefType.Profile);
+            if (attachment != null)
+            {
+                dto.UserAvatar = _attachmentManager.GetUrl(attachment);
+            }
+            return dto;
         }
 
         protected override TeacherReviewDto MapToEntityDto(TeacherReview entity)

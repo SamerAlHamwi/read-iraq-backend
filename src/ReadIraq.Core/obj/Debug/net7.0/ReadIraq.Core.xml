@@ -228,21 +228,6 @@
             Value, stored as JSON string.
             </summary>
         </member>
-        <member name="T:ReadIraq.Advertisiments.Dto.PagedAdvertisimentResultRequestDto">
-            <summary>
-            Paged Post Category Result Request Dto
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Advertisiments.Dto.PagedAdvertisimentResultRequestDto.Keyword">
-            <summary>
-            Keyword
-            </summary>
-        </member>
-        <member name="P:ReadIraq.Advertisiments.Dto.PagedAdvertisimentResultRequestDto.Position">
-            <summary>
-            Position For Advertisiment Value:  Top=1,InBetween=2
-            </summary>
-        </member>
         <member name="T:ReadIraq.Attachments.Dto.AttachmentDto">
             <summary>
             AttachmentDto
