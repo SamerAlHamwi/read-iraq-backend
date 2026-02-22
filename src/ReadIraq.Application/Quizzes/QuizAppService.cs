@@ -90,7 +90,7 @@ namespace ReadIraq.Quizzes
             {
                 foreach (var qDto in dto.Questions)
                 {
-                    var qImage = await _attachmentManager.GetElementByRefAsync(qDto.Id.ToString(), AttachmentRefType.Other);
+                    var qImage = await _attachmentManager.GetElementByRefAsync(qDto.Id.ToString(), AttachmentRefType.Question);
                     if (qImage != null)
                     {
                         qDto.ImageUrl = _attachmentManager.GetUrl(qImage);

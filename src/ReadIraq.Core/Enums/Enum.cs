@@ -30,7 +30,9 @@ namespace ReadIraq.Enums
             LessonSessionThumbnail = 4,
             LessonSessionVideo = 5,
             TeacherProfile = 6,
-            LessonSessionOther = 7
+            LessonSessionOther = 7,
+            Other = 8,
+            Question = 9
         }
         public enum AttachmentType : byte
         {

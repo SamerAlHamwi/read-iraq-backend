@@ -126,7 +126,7 @@ namespace ReadIraq.Subjects
                 var enrollment = await _enrollmentRepository.FirstOrDefaultAsync(x => x.UserId == userId.Value && x.SubjectId == entity.Id);
                 if (enrollment != null)
                 {
-                    dto.ProgressPercentage = enrollment.ProgressPercent;
+                    dto.ProgressPercentage = (double)enrollment.ProgressPercent;
                 }
             }
 

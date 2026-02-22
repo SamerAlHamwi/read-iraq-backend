@@ -42,13 +42,22 @@ namespace ReadIraq.Search
             if (string.IsNullOrEmpty(input.Type) || input.Type == "subject")
             {
                 var query = _subjectRepository.GetAll()
-                    .WhereIf(!string.IsNullOrEmpty(input.Q), x => x.Description.Contains(input.Q)); // simplified search
+                    .WhereIf(!string.IsNullOrEmpty(input.Q), x => x.Description.Contains(input.Q));
 
                 totalCount += await query.CountAsync();
-                var items = await query.Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
+                var items = await query.OrderBy(x => x.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
                 foreach (var item in items)
                 {
-                    var searchResult = new SearchResultItem { Id = item.Id.ToString(), Title = "Subject", Description = item.Description, Type = "subject" };
+                    var lessonsCount = await _sessionRepository.CountAsync(x => x.SubjectId == item.Id);
+                    var searchResult = new SearchResultItem
+                    {
+                        Id = item.Id.ToString(),
+                        Title = "Subject", // Replace with translation if available
+                        Description = item.Description,
+                        Type = "subject",
+                        LessonsCount = lessonsCount,
+                        Color = item.Color
+                    };
                     var attachment = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.Subject);
                     if (attachment != null) searchResult.ImageUrl = _attachmentManager.GetUrl(attachment);
                     results.Add(searchResult);
@@ -57,14 +66,22 @@ namespace ReadIraq.Search
 
             if (string.IsNullOrEmpty(input.Type) || input.Type == "session")
             {
-                var query = _sessionRepository.GetAll()
+                var query = _sessionRepository.GetAll().Include(x => x.Subject)
                     .WhereIf(!string.IsNullOrEmpty(input.Q), x => x.Title.Contains(input.Q) || x.Description.Contains(input.Q));
 
                 totalCount += await query.CountAsync();
-                var items = await query.Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
+                var items = await query.OrderBy(x => x.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
                 foreach (var item in items)
                 {
-                    var searchResult = new SearchResultItem { Id = item.Id.ToString(), Title = item.Title, Description = item.Description, Type = "session" };
+                    var searchResult = new SearchResultItem
+                    {
+                        Id = item.Id.ToString(),
+                        Title = item.Title,
+                        Description = item.Description,
+                        Subtitle = item.Subject?.Description, // Or Level
+                        Type = "session",
+                        Duration = TimeSpan.FromSeconds(item.DurationSeconds).ToString(@"mm\:ss")
+                    };
                     var attachment = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.LessonSessionThumbnail);
                     if (attachment != null) searchResult.ImageUrl = _attachmentManager.GetUrl(attachment);
                     results.Add(searchResult);
@@ -77,10 +94,20 @@ namespace ReadIraq.Search
                     .WhereIf(!string.IsNullOrEmpty(input.Q), x => x.Name.Contains(input.Q));
 
                 totalCount += await query.CountAsync();
-                var items = await query.Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
+                var items = await query.OrderBy(x => x.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
                 foreach (var item in items)
                 {
-                    var searchResult = new SearchResultItem { Id = item.Id.ToString(), Title = item.Name, Description = item.Bio, Type = "teacher" };
+                    var lessonsCount = await _sessionRepository.CountAsync(x => x.TeacherProfileId == item.Id);
+                    var searchResult = new SearchResultItem
+                    {
+                        Id = item.Id.ToString(),
+                        Title = item.Name,
+                        Description = item.Bio,
+                        Subtitle = item.Specialization,
+                        Type = "teacher",
+                        Rating = (double)item.AverageRating,
+                        LessonsCount = lessonsCount
+                    };
                     var attachment = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.TeacherProfile);
                     if (attachment != null) searchResult.ImageUrl = _attachmentManager.GetUrl(attachment);
                     results.Add(searchResult);

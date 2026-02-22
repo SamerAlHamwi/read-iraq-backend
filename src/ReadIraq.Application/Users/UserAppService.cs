@@ -310,7 +310,7 @@ namespace ReadIraq.Users
                 UserId = input.Id,
                 TotalPoints = user.Points,
                 Grade = ObjectMapper.Map<GradeDto>(user.Grade),
-                SubjectProgresses = new List<SubjectProgressDto>()
+                SubjectProgresses = new List<UserSubjectProgressDto>()
             };
 
             foreach (var enrollment in enrollments)
@@ -325,7 +325,7 @@ namespace ReadIraq.Users
                     subjectDto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
                 }
 
-                result.SubjectProgresses.Add(new SubjectProgressDto
+                result.SubjectProgresses.Add(new UserSubjectProgressDto
                 {
                     Subject = subjectDto,
                     ProgressPercentage = enrollment.ProgressPercent
