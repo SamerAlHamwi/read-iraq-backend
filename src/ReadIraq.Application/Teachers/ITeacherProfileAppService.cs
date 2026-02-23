@@ -12,5 +12,7 @@ namespace ReadIraq.Teachers
         Task AssignSubjectsAsync(AssignSubjectsInput input);
         Task<TeacherStatsDto> GetStatsAsync(EntityDto<Guid> input);
         Task ToggleActiveAsync(EntityDto<Guid> input);
+        Task FollowAsync(EntityDto<Guid> input);
+        Task UnfollowAsync(EntityDto<Guid> input);
     }
 }

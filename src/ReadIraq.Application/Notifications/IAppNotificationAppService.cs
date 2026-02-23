@@ -10,6 +10,6 @@ namespace ReadIraq.Notifications
     {
         Task SendNotificationAsync(SendNotificationInput input);
         Task MarkAsReadAsync(EntityDto<Guid> input);
-        Task ScheduleNotificationAsync(ScheduleNotificationInput input);
+        Task DeleteNotificationAsync(EntityDto<Guid> input);
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ReadIraq.Comments.Dto;
 using ReadIraq.CrudAppServiceBase;
 using ReadIraq.Domain.Comments;
+using ReadIraq.NotificationService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +19,14 @@ namespace ReadIraq.Comments
     [AbpAuthorize]
     public class SessionCommentAppService : ReadIraqAsyncCrudAppService<SessionComment, SessionCommentDto, Guid, SessionCommentDto, PagedSessionCommentResultRequestDto, CreateSessionCommentDto, UpdateSessionCommentDto>, ISessionCommentAppService
     {
-        public SessionCommentAppService(IRepository<SessionComment, Guid> repository)
+        private readonly INotificationService _notificationService;
+
+        public SessionCommentAppService(
+            IRepository<SessionComment, Guid> repository,
+            INotificationService notificationService)
             : base(repository)
         {
+            _notificationService = notificationService;
         }
 
         protected override IQueryable<SessionComment> CreateFilteredQuery(PagedSessionCommentResultRequestDto input)
@@ -63,6 +69,12 @@ namespace ReadIraq.Comments
 
             await Repository.InsertAsync(reply);
             await CurrentUnitOfWork.SaveChangesAsync();
+
+            // Notify parent comment author if it's someone else replying
+            if (parentComment.UserId != AbpSession.GetUserId())
+            {
+                await _notificationService.NotifyTeacherReplyAsync(parentComment.UserId, parentComment.LessonSessionId);
+            }
 
             return MapToEntityDto(reply);
         }

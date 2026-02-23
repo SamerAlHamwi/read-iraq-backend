@@ -35,6 +35,15 @@ namespace ReadIraq.Authorization.Users
         public string Avatar { get; set; }
         public int Points { get; set; }
 
+        public bool DailyReminderEnabled { get; set; } = true;
+        public TimeSpan? DailyReminderTime { get; set; } = new TimeSpan(20, 0, 0); // Default to 8:00 PM
+
+        // Channel preferences
+        public bool PushEnabled { get; set; } = true;
+        public bool EmailEnabled { get; set; } = true;
+
+        public DateTime? LastStudiedAt { get; set; }
+
         public static string CreateRandomPassword()
         {
             return Guid.NewGuid().ToString("N").Truncate(16);

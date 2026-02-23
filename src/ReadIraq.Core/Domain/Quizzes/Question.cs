@@ -25,6 +25,11 @@ namespace ReadIraq.Domain.Quizzes
         /// </summary>
         public string CorrectAnswer { get; set; }
 
+        /// <summary>
+        /// Explanation for the correct answer.
+        /// </summary>
+        public string AnswerDescription { get; set; }
+
         public int Marks { get; set; }
     }
 }

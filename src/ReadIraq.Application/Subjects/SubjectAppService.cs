@@ -101,7 +101,7 @@ namespace ReadIraq.Subjects
 
             if (entity == null)
             {
-                throw new Abp.UI.UserFriendlyException("Subject not found");
+                throw new Abp.UI.UserFriendlyException(L("SubjectNotFound"));
             }
 
             var dto = MapToEntityDto(entity);

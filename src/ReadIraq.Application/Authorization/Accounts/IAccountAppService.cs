@@ -17,5 +17,12 @@ namespace ReadIraq.Authorization.Accounts
         Task DeleteAccount();
         Task SetUserPreferredSubjects(SetPreferredSubjectsInput input);
         Task SetUserPreferredTeacherSubjects(SetPreferredTeacherSubjectsInput input);
+
+        // New Methods
+        Task ChangePassword(ChangePasswordInput input);
+        Task ForgotPassword(ForgotPasswordInput input);
+        Task VerifyForgotPassword(VerifyForgotPasswordInput input);
+        Task RequestChangePhoneNumber(ChangePhoneNumberDto input);
+        Task VerifyChangePhoneNumber(VerifyChangePhoneNumberDto input);
     }
 }

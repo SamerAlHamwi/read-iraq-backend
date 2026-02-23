@@ -119,7 +119,7 @@ namespace ReadIraq.Users
                     var currentUser = await _userManager.GetUserByIdAsync(AbpSession.UserId.Value);
                     var isNotSuperAdmin = currentUser.Type != UserType.SuperAdmin;
                     if ((isNotSuperAdmin && input.Type == UserType.SuperAdmin) || (isNotSuperAdmin && input.RoleNames.Any(x => x.Contains(StaticRoleNames.Tenants.SuperAdmin))))
-                        throw new UserFriendlyException(Exceptions.YouCannotDoThisAction);
+                        throw new UserFriendlyException(L("YouCannotDoThisAction"));
 
                     var user = ObjectMapper.Map<User>(input);
                     user.RegistrationFullName = user.Name + " " + user.Surname;
@@ -254,7 +254,7 @@ namespace ReadIraq.Users
                 .FirstOrDefaultAsync(x => x.Id == userId);
 
             if (user == null)
-                throw new UserFriendlyException(Exceptions.ObjectWasNotFound, Tokens.User);
+                throw new UserFriendlyException(L("ObjectWasNotFound"), L("User"));
 
             return MapToEntityDto(user);
         }
@@ -298,7 +298,7 @@ namespace ReadIraq.Users
             var user = await Repository.GetAllIncluding(x => x.Grade)
                 .FirstOrDefaultAsync(x => x.Id == input.Id);
 
-            if (user == null) throw new UserFriendlyException("User not found");
+            if (user == null) throw new UserFriendlyException(L("UserNotFound"));
 
             var enrollments = await _enrollmentRepository.GetAll()
                 .Include(x => x.Subject).ThenInclude(x => x.Name)
@@ -439,7 +439,7 @@ namespace ReadIraq.Users
                 var user = await _userManager.FindByIdAsync(AbpSession.GetUserId().ToString());
                 if (user == null)
                 {
-                    throw new UserFriendlyException(L(nameof(Exceptions.ObjectWasNotFound), L(nameof(Tokens.User))));
+                    throw new UserFriendlyException(L("ObjectWasNotFound"), L("User"));
                 }
 
                 if (await _userManager.CheckPasswordAsync(user, input.CurrentPassword))
@@ -450,7 +450,7 @@ namespace ReadIraq.Users
                 {
                     CheckErrors(IdentityResult.Failed(new IdentityError
                     {
-                        Description = "Incorrect password."
+                        Description = L("IncorrectPassword")
                     }));
                 }
 
@@ -490,14 +490,14 @@ namespace ReadIraq.Users
             {
                 if (_abpSession.UserId == null)
                 {
-                    throw new UserFriendlyException("Please log in before attempting to reset password.");
+                    throw new UserFriendlyException(L("PleaseLoginBeforeResettingPassword"));
                 }
 
                 var currentUser = await _userManager.GetUserByIdAsync(_abpSession.GetUserId());
                 var loginAsync = await _logInManager.LoginAsync(currentUser.UserName, input.AdminPassword, shouldLockout: false);
                 if (loginAsync.Result != AbpLoginResultType.Success)
                 {
-                    throw new UserFriendlyException("Your 'Admin Password' did not match the one on record.  Please try again.");
+                    throw new UserFriendlyException(L("AdminPasswordDidNotMatch"));
                 }
 
                 if (currentUser.IsDeleted || !currentUser.IsActive)
@@ -508,7 +508,7 @@ namespace ReadIraq.Users
                 var roles = await _userManager.GetRolesAsync(currentUser);
                 if (!roles.Contains(StaticRoleNames.Tenants.SuperAdmin))
                 {
-                    throw new UserFriendlyException("Only administrators may reset passwords.");
+                    throw new UserFriendlyException(L("OnlyAdminsCanResetPasswords"));
                 }
 
                 var user = await _userManager.GetUserByIdAsync(input.UserId);
@@ -539,7 +539,7 @@ namespace ReadIraq.Users
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
                 var user = await _userManager.GetUserByIdAsync(AbpSession.UserId.Value);
-                if (user is null) { throw new UserFriendlyException(Exceptions.ObjectWasNotFound, Tokens.User); }
+                if (user is null) { throw new UserFriendlyException(L("ObjectWasNotFound"), L("User")); }
                 var reult = new CheckIsBrokerDto();
                 reult.IsBroker = false;
                 return reult;
@@ -569,7 +569,7 @@ namespace ReadIraq.Users
         {
             var askForHelp = await _askForHelpRepository.GetAsync(id);
             if (askForHelp == null)
-                throw new UserFriendlyException(404, Exceptions.ObjectWasNotFound, Tokens.Entity);
+                throw new UserFriendlyException(404, L("ObjectWasNotFound"), L("Entity"));
             askForHelp.Statues = AskForHelpStatues.Followed;
             await _askForHelpRepository.UpdateAsync(askForHelp);
             return true;

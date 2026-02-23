@@ -2,17 +2,21 @@ using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
+using Abp.Localization;
 using Abp.Runtime.Session;
 using Abp.UI;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using ReadIraq.Authorization.Users;
 using ReadIraq.CrudAppServiceBase;
 using ReadIraq.Domain.Notifications;
 using ReadIraq.NotificationService;
 using ReadIraq.Notifications.Dto;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Notifications
 {
@@ -34,7 +38,13 @@ namespace ReadIraq.Notifications
 
         public async Task SendNotificationAsync(SendNotificationInput input)
         {
-            var data = new TypedMessageNotificationData(NotificationType.General, input.Title, input.Title, input.Body);
+            var data = new TypedMessageNotificationData(
+                input.Type,
+                input.Title, // Assuming these are passed as single strings for broadcast or we need to handle multi-lang input
+                input.Title,
+                input.Body,
+                input.Body,
+                null);
 
             long[] targetUserIds;
 
@@ -48,7 +58,6 @@ namespace ReadIraq.Notifications
             }
             else
             {
-                // Other filters logic would go here
                 targetUserIds = Array.Empty<long>();
             }
 
@@ -60,33 +69,49 @@ namespace ReadIraq.Notifications
 
         public async Task MarkAsReadAsync(EntityDto<Guid> input)
         {
-            var notification = await Repository.GetAsync(input.Id);
-            if (notification == null)
-            {
-                throw new UserFriendlyException(L("ObjectWasNotFound", L("Notification")));
-            }
-
-            if (notification.UserId != AbpSession.GetUserId())
-            {
-                throw new UserFriendlyException(L("YouCannotDoThisAction"));
-            }
-
-            notification.IsRead = true;
-            await Repository.UpdateAsync(notification);
+            await _notificationService.MarkAsReadAsync(input.Id);
         }
 
-        public async Task ScheduleNotificationAsync(ScheduleNotificationInput input)
+        public async Task DeleteNotificationAsync(EntityDto<Guid> input)
         {
-            var notification = new AppNotification
-            {
-                Title = input.Title,
-                Body = input.Body,
-                ScheduledAt = input.ScheduledTime,
-                IsRead = false,
-                Type = "Scheduled"
-            };
+            await _notificationService.DeleteNotificationAsync(input.Id);
+        }
 
-            await Repository.InsertAsync(notification);
+        public override async Task<PagedResultDto<AppNotificationDto>> GetAllAsync(PagedAndSortedResultRequestDto input)
+        {
+            var query = CreateFilteredQuery(input);
+            var totalCount = await query.CountAsync();
+            query = ApplySorting(query, input);
+            query = ApplyPaging(query, input);
+
+            var list = await query.ToListAsync();
+
+            var lang = await SettingManager.GetSettingValueForUserAsync(LocalizationSettingNames.DefaultLanguage, AbpSession.TenantId, AbpSession.GetUserId());
+            var isArabic = lang != null && lang.ToUpper().Contains("AR");
+
+            var dtos = list.Select(x => {
+                var dto = MapToEntityDto(x);
+                dto.Title = GetLocalizedValue(x.Title, isArabic);
+                dto.Body = GetLocalizedValue(x.Body, isArabic);
+                dto.CreatedAt = x.CreationTime;
+                return dto;
+            }).ToList();
+
+            return new PagedResultDto<AppNotificationDto>(totalCount, dtos);
+        }
+
+        private string GetLocalizedValue(string json, bool isArabic)
+        {
+            if (string.IsNullOrEmpty(json)) return "";
+            try {
+                if (!json.Trim().StartsWith("{")) return json;
+                var values = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                if (isArabic && values.ContainsKey("ar")) return values["ar"];
+                if (values.ContainsKey("en")) return values["en"];
+                return values.Values.FirstOrDefault() ?? "";
+            } catch {
+                return json;
+            }
         }
 
         protected override IQueryable<AppNotification> CreateFilteredQuery(PagedAndSortedResultRequestDto input)

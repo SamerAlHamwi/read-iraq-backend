@@ -350,5 +350,89 @@ namespace ReadIraq.Authorization.Accounts
                 }
             }
         }
+
+        [AbpAuthorize]
+        [HttpPost]
+        public async Task ChangePassword(ChangePasswordInput input)
+        {
+            var user = await _userManager.GetUserByIdAsync(AbpSession.GetUserId());
+            CheckErrors(await _userManager.ChangePasswordAsync(user, input.CurrentPassword, input.NewPassword));
+        }
+
+        [AbpAllowAnonymous]
+        [HttpPost]
+        public async Task ForgotPassword(ForgotPasswordInput input)
+        {
+            using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
+            {
+                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == input.Phone && u.DialCode == input.DialCode);
+                if (user == null)
+                {
+                    throw new UserFriendlyException(L(nameof(Exceptions.ObjectWasNotFound), L(nameof(Tokens.User))));
+                }
+
+                await _registerdPhoneNumberManager.UpdateVerificationCodeAsync(input.DialCode, input.Phone);
+            }
+        }
+
+        [AbpAllowAnonymous]
+        [HttpPost]
+        public async Task VerifyForgotPassword(VerifyForgotPasswordInput input)
+        {
+            using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
+            {
+                if (!await _registerdPhoneNumberManager.CheckVerificationCodeIsValidAsync(input.DialCode, input.Phone, input.Otp))
+                {
+                    throw new UserFriendlyException(L(nameof(Exceptions.VerificationCodeIsnotCorrect)));
+                }
+
+                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == input.Phone && u.DialCode == input.DialCode);
+                if (user == null)
+                {
+                    throw new UserFriendlyException(L(nameof(Exceptions.ObjectWasNotFound), L(nameof(Tokens.User))));
+                }
+
+                // In ABP/Identity, to reset password without token, we can use RemovePassword and AddPassword
+                // or just ChangePasswordAsync if we have a way to bypass old password.
+                // Here we use a simpler way if allowed:
+                user.Password = _passwordHasher.HashPassword(user, input.NewPassword);
+                await _userManager.UpdateAsync(user);
+
+                await _registerdPhoneNumberManager.VerifiedPhoneNumberAsync(input.DialCode, input.Phone);
+            }
+        }
+
+        [AbpAuthorize]
+        [HttpPost]
+        public async Task RequestChangePhoneNumber(ChangePhoneNumberDto input)
+        {
+            // Send OTP to NEW number
+            await _registerdPhoneNumberManager.UpdateVerificationCodeAsync(input.DialCode, input.PhoneNumber);
+        }
+
+        [AbpAuthorize]
+        [HttpPost]
+        public async Task VerifyChangePhoneNumber(VerifyChangePhoneNumberDto input)
+        {
+            if (!await _registerdPhoneNumberManager.CheckVerificationCodeIsValidAsync(input.NewDialCode, input.NewPhone, input.Otp))
+            {
+                throw new UserFriendlyException(L(nameof(Exceptions.VerificationCodeIsnotCorrect)));
+            }
+
+            var user = await _userManager.GetUserByIdAsync(AbpSession.GetUserId());
+
+            // Check if new phone is already used
+            var existingUser = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == input.NewPhone && u.DialCode == input.NewDialCode && u.Id != user.Id);
+            if (existingUser != null)
+            {
+                throw new UserFriendlyException(L(nameof(Exceptions.ObjectIsAlreadyExist), L(nameof(Tokens.PhoneNumber))));
+            }
+
+            user.PhoneNumber = input.NewPhone;
+            user.DialCode = input.NewDialCode;
+            await _userManager.UpdateAsync(user);
+
+            await _registerdPhoneNumberManager.VerifiedPhoneNumberAsync(input.NewDialCode, input.NewPhone);
+        }
     }
 }

@@ -10,7 +10,7 @@
     <text name="ThereIsNoTenantDefinedWithName{0}" value="There is no tenant defined with name {0}" />
     <text name="TenantIsNotActive" value="Tenant {0} is not active." />
     <text name="UserIsNotActiveAndCanNotLogin" value="User {0} is not active and can not log in." />
-    <text name="UserEmailIsNotConfirmedAndCanNotLogin">Your email address is not confirmed. You can not login.</text>
+    <text name="UserEmailIsNotConfirmedAndCanNotLogin">Your email address is not confirmed. You can not log in.</text>
     <text name="UserLockedOutMessage">The user account has been locked out. Please try again later.</text>
     <text name="PleaseEnterLoginInformation" value="Please enter login information" />
     <text name="TenancyName" value="Tenancy name" />
@@ -117,93 +117,44 @@
     <text name="ResetPasswordStepOneInfo">1. Enter your administrator password</text>
     <text name="ResetPasswordStepTwoInfo">2. Copy this random password so you can send it to the user</text>
     <text name="UsersActivation">Users activation</text>
-    <text name="PushNotification">Go Movaro</text>
-    <text name="NewRequest">New Request</text>
-    <text name="SendNewRequestFromAdminToCompany">You have Recive New Request</text>
-    <text name="SendNewOfferToUser">You Have New Offer</text>
-    <text name="ThereIsNewAskForHelp">There Is New Ask For Help</text>
-    <text name="NewOffer">NewOffer</text>
-    <text name="AskForHelp">AskForHelp</text>
-    <text name="YourCompanyHasApproved">The Administrator Has Approved your Company</text>
-    <text name="ApproveForCompany">Approval</text>
-    <text name="PossibleClient">Possible Client</text>
-    <text name="ThereIsNewPossibleClient">There Is A Possible Client, You Might Want To See His Order</text>
-    <text name="ThereIsCompanyNeedToUpdate">There Is Company Need To Update.</text>
-    <text name="UpdateCompany">Update Company</text>
-    <text name="UsersList">User List</text>
-    <text name="UserCreate">Create User</text>
-    <text name="UserUpdate">Update User</text>
-    <text name="UserDelete">Delete User</text>
-    <text name="RolesList">Role List</text>
-    <text name="RoleCreate">Create Role</text>
-    <text name="RoleUpdate">Update Role</text>
-    <text name="RoleDelete">Delete Role</text>
-    <text name="RolesPermission">List Of Permission</text>
-    <text name="RoleGet">Get Role</text>
-    <text name="CompanyList">Company List</text>
-    <text name="CompanyCreate">Create Company</text>
-    <text name="CompanyUpdate">Update Company</text>
-    <text name="CompanyDelete">Delete Company</text>
-    <text name="CompanyGet">Company Detalis</text>
-    <text name="CompanyChangeStatus">Change Company Statues </text>
-    <text name="CompanyBranchList">Company Branch List</text>
-    <text name="CompanyBranchCreate">Create Company Branch</text>
-    <text name="CompanyBranchUpdate">Update Company Branch</text>
-    <text name="CompanyBranchDelete">Delete Company Branch</text>
-    <text name="CompanyBranchChangeStatus">Change Company Branch Status</text>
-    <text name="CompanyIncluding">Include ConmpanyBranch</text>
-    <text name="CompanyBranchGet">CompanyBranch Detalis</text>
-    <text name="RequestList">Request List</text>
-    <text name="RequestGet">Request Detalis</text>
-    <text name="CreateRequest">Create Request</text>
-    <text name="UpdateRequest">Update Request</text>
-    <text name="DeleteRequest">Delete Request</text>
-    <text name="ChangeRequestStatus">Change Request Status</text>
-    <text name="OfferList">Offer List</text>
-    <text name="CreateOffer">Create Offer</text>
-    <text name="UpdateOffer">Update Offer</text>
-    <text name="DeleteOffer">Delete Offer</text>
-    <text name="ChangeOfferStatus">Change Offer Status</text>
-    <text name="OfferTake">Approve For Offer</text>
-    <text name="CityFullControl">Full Control over Cities</text>
-    <text name="RegionFullControl">Full Control over Regions</text>
-    <text name="CountryFullControl">Full Control over Countries</text>
-    <text name="SourceTypeFullControl">Full Control over Source Types</text>
-    <text name="AttributeForSourceTypeFullControl">Full Control over Attributes for Source Types</text>
-    <text name="AttributeChoiceFullControl">Full Control over Attribute Choices</text>
-    <text name="ServiceFullControl">Full Control over Services</text>
-    <text name="SubServiceFullControl">Full Control over Sub-Services</text>
-    <text name="ToolFullControl">Full Control over Tools</text>
-    <text name="PrivacyPolicyFullControl">Full Control over Privacy Policy</text>
-    <text name="TermsFullControl">Full Control over Terms</text>
-    <text name="FrequencyQuestionFullControl">Full Control over Frequency Questions</text>
-    <text name="RejectReasonFullControl">Full Control over Reject Reasons</text>
-    <text name="PointsFullControl">Full Control over Points</text>
-    <text name="ContactUsFullControl">Full Control over Contact Us</text>
-    <text name="GetCommissionForBranchesWithoutCompany">Get Commission for Branches Without Company</text>
-    <text name="GetDiscountPercentage">Get Discount Percentage</text>
-    <text name="GetEmailSetting">Get Email Setting</text>
-    <text name="GetFileSizeSetting">Get File Size Setting</text>
-    <text name="GetHoursInSystem">Get Hours in System</text>
-    <text name="GetSmsSetting">Get SMS Setting</text>
-    <text name="SetCommissionForBranchesWithoutCompany">Set Commission for Branches Without Company</text>
-    <text name="SetDiscountPercentage">Set Discount Percentage</text>
-    <text name="SetEmailSetting">Set Email Setting</text>
-    <text name="SetFileSizeSetting">Set File Size Setting</text>
-    <text name="SetHoursInSystem">Set Hours in System</text>
-    <text name="SetSmsSetting">Set SMS Setting</text>
-    <text name="CommissionGroupFullControl">Full Control over Commission Groups</text>
-    <text name="ApkBuildFullControl">Full Control over APK Builds</text>
-    <text name="PartnerFullControl">Full Control over Partners</text>
-    <text name="BrokerFullControl">Full Control over Brokers</text>
-    <text name="YourUpdatedHasApproved">Your Request to Update Your Company Information has been Approved.</text>
-    <text name="SelectedByUser">Selected By User</text>
-    <text name="Approved">Approved By Admin</text>
-    <text name="CommentNotFound">Comment not found</text>
-    <text name="OnlyAuthorOrAdminCanUpdateComment">Only author or admin can update this comment</text>
-    <text name="OnlyAuthorOrAdminCanDeleteComment">Only author or admin can delete this comment</text>
-    <text name="RatingNotFound">Rating not found</text>
-    <text name="SubscriptionPlanNotFound">Subscription plan not found</text>
+    <text name="PushNotification">Iqraa</text>
     <text name="InsufficientPermissions">Insufficient permissions</text>
+
+    <text name="UserNotFound" value="User not found" />
+    <text name="OnlyAdminsCanResetPasswords" value="Only administrators may reset passwords." />
+    <text name="SessionNotFound" value="Session not found" />
+    <text name="PleaseLoginBeforeResettingPassword" value="Please log in before attempting to reset password." />
+    <text name="YouCanOnlyMarkYourOwnNotificationsAsRead" value="You can only mark your own notifications as read." />
+    <text name="DefaultTenantNotFound" value="Default tenant not found!" />
+    <text name="AdminPasswordDidNotMatch" value="Your 'Admin Password' did not match the one on record. Please try again." />
+    <text name="SubjectNotFound" value="Subject not found" />
+    <text name="YouCanOnlyDeleteYourOwnNotifications" value="You can only delete your own notifications." />
+    <text name="TeacherNotFound" value="Teacher not found" />
+    <text name="IncorrectPassword" value="Incorrect password." />
+    <text name="QuizNotFoundForThisLesson" value="Quiz not found for this lesson" />
+    <text name="QuizNotFound" value="Quiz not found" />
+    <text name="ObjectWasNotFound" value="{0} was not found" />
+    <text name="YouCannotDoThisAction" value="You cannot do this action" />
+
+    <text name="Notification_DAILY_STUDY_REMINDER_Title" value="Keep your streak alive!" />
+    <text name="Notification_DAILY_STUDY_REMINDER_Body" value="Complete {0} to reach your daily goal." />
+    <text name="Notification_NEW_LESSON_UPLOADED_Title" value="New lesson uploaded" />
+    <text name="Notification_NEW_LESSON_UPLOADED_Body" value="New lesson from {0}: {1}" />
+    <text name="Notification_QUIZ_REMINDER_TO_TAKE_Title" value="Quiz Reminder" />
+    <text name="Notification_QUIZ_REMINDER_TO_TAKE_Body" value="Quiz of {0} is waiting for you." />
+    <text name="Notification_QUIZ_PASSED_HIGH_SCORE_Title" value="Great Job!" />
+    <text name="Notification_QUIZ_PASSED_HIGH_SCORE_Body" value="You scored {0}% on the {1} quiz." />
+    <text name="Notification_WEEKLY_PROGRESS_REPORT_Title" value="Weekly Report" />
+    <text name="Notification_WEEKLY_PROGRESS_REPORT_Body" value="This week: {0} minutes, {1} lessons." />
+    <text name="Notification_SUBSCRIPTION_EXPIRING_Title" value="Subscription expiring soon" />
+    <text name="Notification_SUBSCRIPTION_EXPIRING_Body" value="Your subscription expires in {0} days. Renew now." />
+    <text name="Notification_TEACHER_REPLY_Title" value="Teacher replied to your question" />
+    <text name="Notification_TEACHER_REPLY_Body" value="Tap to view the reply." />
+    <text name="Notification_STREAK_BROKEN_Title" value="You missed a day" />
+    <text name="Notification_STREAK_BROKEN_Body" value="You lost your {0}-day streak. Start again with {1}." />
+    <text name="Notification_SYSTEM_MAINTENANCE_Title" value="Scheduled maintenance" />
+    <text name="Notification_SYSTEM_MAINTENANCE_Body" value="App will be unavailable on {0} from {1} to {2}." />
+    <text name="Notification_CONTENT_RECOMMENDATION_Title" value="Recommended for you" />
+    <text name="Notification_CONTENT_RECOMMENDATION_Body" value="Based on your progress, try {0}." />
   </texts>
 </localizationDictionary>

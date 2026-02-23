@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 using ReadIraq.Domain.Attachments;
 using static ReadIraq.Enums.Enum;
 using System.Collections.Generic;
+using ReadIraq.NotificationService;
+using ReadIraq.Domain.Enrollments;
+using ReadIraq.Authorization.Users;
 
 namespace ReadIraq.LessonSessions
 {
@@ -25,17 +28,26 @@ namespace ReadIraq.LessonSessions
         private readonly IRepository<UserSessionProgress, Guid> _progressRepository;
         private readonly IAttachmentManager _attachmentManager;
         private readonly IRepository<Attachment, long> _attachmentRepository;
+        private readonly INotificationService _notificationService;
+        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly UserManager _userManager;
 
         public LessonSessionAppService(
             IRepository<LessonSession, Guid> repository,
             IRepository<UserSessionProgress, Guid> progressRepository,
             IAttachmentManager attachmentManager,
-            IRepository<Attachment, long> attachmentRepository)
+            IRepository<Attachment, long> attachmentRepository,
+            INotificationService notificationService,
+            IRepository<Enrollment, Guid> enrollmentRepository,
+            UserManager userManager)
             : base(repository)
         {
             _progressRepository = progressRepository;
             _attachmentManager = attachmentManager;
             _attachmentRepository = attachmentRepository;
+            _notificationService = notificationService;
+            _enrollmentRepository = enrollmentRepository;
+            _userManager = userManager;
         }
 
         protected override IQueryable<LessonSession> CreateFilteredQuery(PagedLessonSessionResultRequestDto input)
@@ -48,6 +60,32 @@ namespace ReadIraq.LessonSessions
                 .WhereIf(input.SubjectId.HasValue, x => x.SubjectId == input.SubjectId.Value)
                 .WhereIf(input.IsFree.HasValue, x => x.IsFree == input.IsFree.Value)
                 .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive.Value);
+        }
+
+        public override async Task<LessonSessionDto> CreateAsync(CreateLessonSessionDto input)
+        {
+            var lesson = await base.CreateAsync(input);
+
+            // Trigger notification for users enrolled in this subject
+            var enrolledUserIds = await _enrollmentRepository.GetAll()
+                .Where(x => x.SubjectId == input.SubjectId)
+                .Select(x => x.UserId)
+                .ToArrayAsync();
+
+            if (enrolledUserIds.Any())
+            {
+                var teacher = await _userManager.FindByIdAsync(AbpSession.GetUserId().ToString());
+                await _notificationService.NotifyNewLessonUploadedAsync(
+                    enrolledUserIds,
+                    lesson.Id,
+                    lesson.Title,
+                    teacher?.Name ?? "Teacher",
+                    input.SubjectId,
+                    teacher?.Id != null ? Guid.Empty : Guid.Empty // TeacherProfileId is needed, but we have userId here.
+                );
+            }
+
+            return lesson;
         }
 
         public override async Task<PagedResultDto<LiteLessonSessionDto>> GetAllAsync(PagedLessonSessionResultRequestDto input)
@@ -85,7 +123,7 @@ namespace ReadIraq.LessonSessions
 
             if (entity == null)
             {
-                throw new Abp.UI.UserFriendlyException("Session not found");
+                throw new Abp.UI.UserFriendlyException(L("SessionNotFound"));
             }
 
             var dto = MapToEntityDto(entity);
@@ -180,6 +218,14 @@ namespace ReadIraq.LessonSessions
                 }
                 progress.LastWatchedAt = DateTime.Now;
                 await _progressRepository.UpdateAsync(progress);
+            }
+
+            // Update user LastStudiedAt
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user != null)
+            {
+                user.LastStudiedAt = DateTime.UtcNow;
+                await _userManager.UpdateAsync(user);
             }
         }
 

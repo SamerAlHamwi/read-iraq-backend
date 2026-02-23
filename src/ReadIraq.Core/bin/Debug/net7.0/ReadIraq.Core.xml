@@ -208,6 +208,11 @@
             Correct answer(s), stored as JSON string.
             </summary>
         </member>
+        <member name="P:ReadIraq.Domain.Quizzes.Question.AnswerDescription">
+            <summary>
+            Explanation for the correct answer.
+            </summary>
+        </member>
         <member name="P:ReadIraq.Domain.Quizzes.QuizAttempt.Answers">
             <summary>
             User answers, stored as JSON string.

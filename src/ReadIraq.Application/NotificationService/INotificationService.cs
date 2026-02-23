@@ -1,23 +1,26 @@
 ﻿using Abp.Dependency;
+using System;
 using System.Threading.Tasks;
+using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.NotificationService
 {
     public interface INotificationService : ITransientDependency
     {
-        /// <summary>
-        /// Notify user and his delegation about notification data
-        /// </summary>
-        //Task NotifyUserAndHisDelegationUsersAsync(TypedMessageNotificationData data, long userId);
+        Task NotifyUsersAsync(TypedMessageNotificationData data, long[] userIds, bool withPush, bool forEmailToo = false, DateTime? scheduledAtUtc = null);
+        Task MarkAsReadAsync(Guid notificationId);
+        Task DeleteNotificationAsync(Guid notificationId);
 
-        ///// <summary>
-        ///// Notify users and their delegations about notification data
-        ///// </summary>
-        //Task NotifyUsersAndTheirDelegationUsersAsync(TypedMessageNotificationData data, List<long> userIds);
-
-        /// <summary>
-        /// Notify users about notification data
-        /// </summary>
-        Task NotifyUsersAsync(TypedMessageNotificationData data, long[] userIds, bool withNotify, bool forEmailToo = false);
+        // Core Notification Types
+        Task NotifyDailyStudyReminderAsync(long userId, Guid lessonId, string lessonName, Guid subjectId);
+        Task NotifyNewLessonUploadedAsync(long[] userIds, Guid lessonId, string lessonName, string teacherName, Guid subjectId, Guid teacherId);
+        Task NotifyQuizReminderAsync(long userId, Guid quizId, Guid lessonId, string lessonName);
+        Task NotifyQuizPassedHighScoreAsync(long userId, Guid quizId, Guid lessonId, string lessonName, int score);
+        Task NotifyWeeklyProgressReportAsync(long userId, int minutesStudied, int lessonsCompleted);
+        Task NotifySubscriptionExpiringAsync(long userId, int days);
+        Task NotifyTeacherReplyAsync(long userId, Guid lessonId);
+        Task NotifyStreakBrokenAsync(long userId, int nDays, string lessonName, Guid lessonId);
+        Task NotifySystemMaintenanceAsync(long[] userIds, string date, string start, string end);
+        Task NotifyContentRecommendationAsync(long userId, string lessonName, Guid lessonId);
     }
 }

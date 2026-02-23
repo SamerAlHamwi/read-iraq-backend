@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using ReadIraq.CrudAppServiceBase;
 using ReadIraq.Domain.Quizzes;
+using ReadIraq.NotificationService;
 using ReadIraq.Quizzes.Dto;
 using System;
 using System.Linq;
@@ -19,21 +20,25 @@ namespace ReadIraq.Quizzes
     {
         private readonly IRepository<Quiz, Guid> _quizRepository;
         private readonly IRepository<Question, Guid> _questionRepository;
+        private readonly INotificationService _notificationService;
 
         public QuizAttemptAppService(
             IRepository<QuizAttempt, Guid> repository,
             IRepository<Quiz, Guid> quizRepository,
-            IRepository<Question, Guid> questionRepository)
+            IRepository<Question, Guid> questionRepository,
+            INotificationService notificationService)
             : base(repository)
         {
             _quizRepository = quizRepository;
             _questionRepository = questionRepository;
+            _notificationService = notificationService;
         }
 
         public async Task<QuizAttemptDto> SubmitAttemptAsync(SubmitQuizAttemptDto input)
         {
             var quiz = await _quizRepository.GetAll()
                 .Include(x => x.Questions)
+                .Include(x => x.Session)
                 .FirstOrDefaultAsync(x => x.Id == input.QuizId);
 
             if (quiz == null)
@@ -47,7 +52,6 @@ namespace ReadIraq.Quizzes
                 var question = quiz.Questions.FirstOrDefault(q => q.Id == userAnswer.QuestionId);
                 if (question != null)
                 {
-                    // Simple exact match scoring for this example
                     if (question.CorrectAnswer == userAnswer.Answer)
                     {
                         score += question.Marks;
@@ -55,18 +59,33 @@ namespace ReadIraq.Quizzes
                 }
             }
 
+            var scorePercentage = (int)((double)score / quiz.TotalMarks * 100);
+            var passed = scorePercentage >= 50; // Example pass criteria
+
             var attempt = new QuizAttempt
             {
                 QuizId = quiz.Id,
                 UserId = AbpSession.GetUserId(),
                 Answers = JsonConvert.SerializeObject(input.Answers),
                 Score = score,
-                Passed = score >= (quiz.TotalMarks / 2), // Example pass criteria
+                Passed = passed,
                 TakenAt = DateTime.UtcNow
             };
 
             await Repository.InsertAsync(attempt);
             await CurrentUnitOfWork.SaveChangesAsync();
+
+            // Trigger notification if high score
+            if (passed && scorePercentage >= 80)
+            {
+                await _notificationService.NotifyQuizPassedHighScoreAsync(
+                    AbpSession.GetUserId(),
+                    quiz.Id,
+                    quiz.SessionId,
+                    quiz.Session?.Title ?? "Lesson",
+                    scorePercentage
+                );
+            }
 
             return MapToEntityDto(attempt);
         }

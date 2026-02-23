@@ -33,6 +33,7 @@ namespace ReadIraq.Quizzes.Dto
         public string Category { get; set; }
         public string Options { get; set; }
         public string CorrectAnswer { get; set; }
+        public string AnswerDescription { get; set; }
         public int Marks { get; set; }
     }
 }

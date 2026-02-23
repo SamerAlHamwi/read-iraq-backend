@@ -116,5 +116,41 @@ namespace ReadIraq.Enums
             TrueFalse = 2,
             ShortAnswer = 3
         }
+
+        public enum NotificationType : byte
+        {
+            DAILY_STUDY_REMINDER = 1,
+            NEW_LESSON_UPLOADED = 2,
+            QUIZ_REMINDER_TO_TAKE = 3,
+            QUIZ_PASSED_HIGH_SCORE = 4,
+            WEEKLY_PROGRESS_REPORT = 5,
+            TEACHER_REPLY = 6,
+            STREAK_BROKEN = 7,
+            SYSTEM_MAINTENANCE = 8,
+            CONTENT_RECOMMENDATION = 9,
+            SUBSCRIPTION_EXPIRING = 10,
+        }
+
+        public enum NotificationPriority : byte
+        {
+            LOW = 1,
+            DEFAULT = 2,
+            HIGH = 3
+        }
+
+        public enum NotificationChannel : byte
+        {
+            PUSH = 1,
+            IN_APP = 2,
+            EMAIL = 3,
+            SMS = 4
+        }
+
+        public enum NotificationDeliveryStatus : byte
+        {
+            PENDING = 1,
+            SENT = 2,
+            FAILED = 3
+        }
     }
 }

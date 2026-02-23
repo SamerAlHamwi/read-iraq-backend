@@ -3,6 +3,8 @@ using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
+using Abp.Runtime.Session;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReadIraq.CrudAppServiceBase;
 using ReadIraq.Domain.Teachers;
@@ -13,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ReadIraq.Domain.Attachments;
 using ReadIraq.Domain.LessonSessions;
+using ReadIraq.Domain.Follows;
 using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Teachers
@@ -26,6 +29,7 @@ namespace ReadIraq.Teachers
         private readonly IRepository<LessonSession, Guid> _lessonSessionRepository;
         private readonly IAttachmentManager _attachmentManager;
         private readonly IRepository<TeacherFeature, Guid> _featureRepository;
+        private readonly IRepository<UserFollowTeacher, Guid> _userFollowTeacherRepository;
 
         public TeacherProfileAppService(
             IRepository<TeacherProfile, Guid> repository,
@@ -34,7 +38,8 @@ namespace ReadIraq.Teachers
             IRepository<TeacherSubject, Guid> teacherSubjectRepository,
             IRepository<LessonSession, Guid> lessonSessionRepository,
             IAttachmentManager attachmentManager,
-            IRepository<TeacherFeature, Guid> featureRepository)
+            IRepository<TeacherFeature, Guid> featureRepository,
+            IRepository<UserFollowTeacher, Guid> userFollowTeacherRepository)
             : base(repository)
         {
             _teacherProfileManager = teacherProfileManager;
@@ -43,6 +48,7 @@ namespace ReadIraq.Teachers
             _lessonSessionRepository = lessonSessionRepository;
             _attachmentManager = attachmentManager;
             _featureRepository = featureRepository;
+            _userFollowTeacherRepository = userFollowTeacherRepository;
         }
 
         protected override IQueryable<TeacherProfile> CreateFilteredQuery(PagedTeacherProfileResultRequestDto input)
@@ -62,6 +68,7 @@ namespace ReadIraq.Teachers
         public override async Task<PagedResultDto<LiteTeacherProfileDto>> GetAllAsync(PagedTeacherProfileResultRequestDto input)
         {
             var result = await base.GetAllAsync(input);
+            var userId = AbpSession.UserId;
 
             foreach (var item in result.Items)
             {
@@ -74,6 +81,11 @@ namespace ReadIraq.Teachers
                 }
 
                 item.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.TeacherProfileId == item.Id && x.IsActive);
+
+                if (userId.HasValue)
+                {
+                    item.IsFollowed = await _userFollowTeacherRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.TeacherProfileId == item.Id);
+                }
             }
 
             return result;
@@ -107,6 +119,12 @@ namespace ReadIraq.Teachers
                 dto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
                 dto.Attachment.Url = _attachmentManager.GetUrl(attachment);
                 dto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+            }
+
+            var userId = AbpSession.UserId;
+            if (userId.HasValue)
+            {
+                dto.IsFollowed = await _userFollowTeacherRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.TeacherProfileId == entity.Id);
             }
 
             return dto;
@@ -221,6 +239,32 @@ namespace ReadIraq.Teachers
             var entity = await Repository.GetAsync(input.Id);
             entity.IsActive = !entity.IsActive;
             await Repository.UpdateAsync(entity);
+        }
+
+        [HttpPost]
+        public async Task FollowAsync(EntityDto<Guid> input)
+        {
+            var userId = AbpSession.GetUserId();
+            var exists = await _userFollowTeacherRepository.GetAll().AnyAsync(x => x.UserId == userId && x.TeacherProfileId == input.Id);
+            if (!exists)
+            {
+                await _userFollowTeacherRepository.InsertAsync(new UserFollowTeacher
+                {
+                    UserId = userId,
+                    TeacherProfileId = input.Id
+                });
+            }
+        }
+
+        [HttpPost]
+        public async Task UnfollowAsync(EntityDto<Guid> input)
+        {
+            var userId = AbpSession.GetUserId();
+            var follow = await _userFollowTeacherRepository.FirstOrDefaultAsync(x => x.UserId == userId && x.TeacherProfileId == input.Id);
+            if (follow != null)
+            {
+                await _userFollowTeacherRepository.DeleteAsync(follow.Id);
+            }
         }
     }
 }

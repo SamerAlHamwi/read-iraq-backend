@@ -46,6 +46,9 @@ using ReadIraq.Domain.Audit;
 using ReadIraq.Audit.Dto;
 using ReadIraq.Domain.Settings;
 using ReadIraq.Settings.Dto;
+using ReadIraq.Domain.LessonSessions;
+using ReadIraq.Domain.LessonSessions.Dto;
+using ReadIraq.NotificationService;
 
 namespace ReadIraq
 {
@@ -57,6 +60,7 @@ namespace ReadIraq
         public override void PostInitialize()
         {
             var workManager = IocManager.Resolve<IBackgroundWorkerManager>();
+            workManager.Add(IocManager.Resolve<NotificationBackgroundWorker>());
         }
         public override void PreInitialize()
         {
@@ -87,6 +91,7 @@ namespace ReadIraq
                 #region User
                 configuration.CreateMap<User, UserDetailDto>();
                 configuration.CreateMap<User, ProfileInfoDto>();
+                configuration.CreateMap<User, UserDto>();
                 #endregion
 
                 #region Grade
@@ -202,6 +207,11 @@ namespace ReadIraq
                 configuration.CreateMap<UserSessionProgress, UserSessionProgressDto>();
                 configuration.CreateMap<CreateUserSessionProgressDto, UserSessionProgress>();
                 configuration.CreateMap<UpdateUserSessionProgressDto, UserSessionProgress>();
+                #endregion
+
+                #region LessonReport
+                configuration.CreateMap<LessonReport, LessonReportDto>();
+                configuration.CreateMap<CreateLessonReportDto, LessonReport>();
                 #endregion
 
                 #region Subscription

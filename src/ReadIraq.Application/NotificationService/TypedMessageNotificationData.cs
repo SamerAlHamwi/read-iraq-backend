@@ -1,7 +1,6 @@
-﻿using Abp.Localization.Sources;
-using Abp.Notifications;
+﻿using Abp.Notifications;
 using System;
-using System.Globalization;
+using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.NotificationService
 {
@@ -9,45 +8,36 @@ namespace ReadIraq.NotificationService
     public class TypedMessageNotificationData : NotificationData
     {
         public NotificationType NotificationType { get; set; }
+
+        // These will now store the localized values retrieved during notification creation
+        public string ArTitle { get; set; }
+        public string EnTitle { get; set; }
         public string ArMessage { get; set; }
         public string EnMessage { get; set; }
 
         public string AdditionalValue { get; set; }
 
-        public TypedMessageNotificationData(NotificationType notificationType, string arMessage, string enMessage, string AdditionalValue)
+        public TypedMessageNotificationData(
+            NotificationType notificationType,
+            string arTitle,
+            string enTitle,
+            string arMessage,
+            string enMessage,
+            string additionalValue)
         {
             NotificationType = notificationType;
+            ArTitle = arTitle;
+            EnTitle = enTitle;
             ArMessage = arMessage;
             EnMessage = enMessage;
-            this.AdditionalValue = AdditionalValue;
+            AdditionalValue = additionalValue;
 
             Properties.Add(nameof(NotificationType), NotificationType);
             Properties.Add(nameof(AdditionalValue), AdditionalValue);
-            Properties.Add(nameof(arMessage), arMessage);
-            Properties.Add(nameof(enMessage), enMessage);
+            Properties.Add(nameof(ArTitle), ArTitle);
+            Properties.Add(nameof(EnTitle), EnTitle);
+            Properties.Add(nameof(ArMessage), ArMessage);
+            Properties.Add(nameof(EnMessage), EnMessage);
         }
-
-        public static TypedMessageNotificationData CreateCustom(NotificationType notificationType, ILocalizationSource localizationSource,
-           string AdditionalValue, string arMessage, string enMessage)
-        {
-            return new TypedMessageNotificationData(notificationType, arMessage, enMessage, AdditionalValue);
-        }
-
-        public static TypedMessageNotificationData Create(NotificationType notificationType, ILocalizationSource localizationSource,
-            string AdditionalValue, params object[] localizationParams)
-        {
-            var arMessage = localizationSource.GetString(notificationType + "Text",
-                    CultureInfo.GetCultureInfo("ar"));
-            var enMessage = localizationSource.GetString(notificationType + "Text",
-                    CultureInfo.GetCultureInfo("en"));
-
-            return new TypedMessageNotificationData(notificationType, arMessage, enMessage, AdditionalValue);
-        }
-    }
-
-    public enum NotificationType : byte
-    {
-        PushNotification = 1,
-        General = 2
     }
 }

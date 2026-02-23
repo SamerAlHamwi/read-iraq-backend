@@ -54,6 +54,7 @@ namespace ReadIraq.EntityFrameworkCore
         public virtual DbSet<LessonSession> LessonSessions { get; set; }
         public virtual DbSet<LessonSessionAttachment> LessonSessionAttachments { get; set; }
         public virtual DbSet<SessionComment> SessionComments { get; set; }
+        public virtual DbSet<LessonReport> LessonReports { get; set; }
         public virtual DbSet<UserFollowTeacher> UserFollowTeachers { get; set; }
         public virtual DbSet<UserSavedItem> UserSavedItems { get; set; }
         public virtual DbSet<PushNotification> PushNotifications { get; set; }
@@ -125,6 +126,19 @@ namespace ReadIraq.EntityFrameworkCore
                 modelBuilder.Entity<SessionComment>().HasOne(x => x.LessonSession)
                     .WithMany()
                     .HasForeignKey(x => x.LessonSessionId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<LessonReport>(b =>
+            {
+                b.HasOne(x => x.LessonSession)
+                    .WithMany()
+                    .HasForeignKey(x => x.LessonSessionId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                b.HasOne(x => x.User)
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
