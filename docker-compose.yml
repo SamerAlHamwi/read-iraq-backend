@@ -1,0 +1,45 @@
+version: '3.4'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=YourSecurePassword123!
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-U", "sa", "-P", "YourSecurePassword123!", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  migrator:
+    build:
+      context: .
+      target: migrator
+    command: ["-q"]
+    environment:
+      - ConnectionStrings__Default=Server=db;Database=ReadIraqDb;User Id=sa;Password=YourSecurePassword123!;TrustServerCertificate=True;
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    build:
+      context: .
+      target: api
+    ports:
+      - "8086:8086"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8086
+      - ConnectionStrings__Default=Server=db;Database=ReadIraqDb;User Id=sa;Password=YourSecurePassword123!;TrustServerCertificate=True;
+      - App__ServerRootAddress=http://153.92.214.111:8086/
+      - App__ClientRootAddress=http://153.92.214.111:4200/
+    depends_on:
+      db:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully

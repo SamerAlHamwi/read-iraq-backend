@@ -1,37 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{E0580562-F8F2-4EBB-B07A-ABFC6F2C314F}|src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj|c:\\users\\tech\\studioprojects\\stugoo\\flutter-start-project\\readiraq\\src\\readiraq.entityframeworkcore\\entityframeworkcore\\seed\\host\\initialsampledatabuilder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0580562-F8F2-4EBB-B07A-ABFC6F2C314F}|src\\ReadIraq.EntityFrameworkCore\\ReadIraq.EntityFrameworkCore.csproj|solutionrelative:src\\readiraq.entityframeworkcore\\entityframeworkcore\\seed\\host\\initialsampledatabuilder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "InitialSampleDataBuilder.cs",
-              "DocumentMoniker": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\EntityFrameworkCore\\Seed\\Host\\InitialSampleDataBuilder.cs",
-              "RelativeDocumentMoniker": "src\\ReadIraq.EntityFrameworkCore\\EntityFrameworkCore\\Seed\\Host\\InitialSampleDataBuilder.cs",
-              "ToolTip": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\EntityFrameworkCore\\Seed\\Host\\InitialSampleDataBuilder.cs",
-              "RelativeToolTip": "src\\ReadIraq.EntityFrameworkCore\\EntityFrameworkCore\\Seed\\Host\\InitialSampleDataBuilder.cs",
-              "ViewState": "AgIAAD0AAAAAAAAAAAAQwEYAAAAvAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-24T08:45:23.491Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }
