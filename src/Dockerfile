@@ -7,15 +7,21 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 
-COPY src/ReadIraq.csproj src/
-RUN dotnet restore src/ReadIraq.csproj
+# Copy all project files and restore
+COPY ReadIraq.Core/ReadIraq.Core.csproj ReadIraq.Core/
+COPY ReadIraq.Application/ReadIraq.Application.csproj ReadIraq.Application/
+COPY ReadIraq.EntityFrameworkCore/ReadIraq.EntityFrameworkCore.csproj ReadIraq.EntityFrameworkCore/
+COPY ReadIraq.Web.Core/ReadIraq.Web.Core.csproj ReadIraq.Web.Core/
+COPY ReadIraq.Web.Host/ReadIraq.Web.Host.csproj ReadIraq.Web.Host/
 
+RUN dotnet restore ReadIraq.Web.Host/ReadIraq.Web.Host.csproj
+
+# Copy everything else and build
 COPY . .
-WORKDIR /src
-RUN dotnet publish ReadIraq.csproj -c Release -o /app/publish
+RUN dotnet publish ReadIraq.Web.Host/ReadIraq.Web.Host.csproj -c Release -o /app/publish
 
 # -------- Final image --------
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
-ENTRYPOINT ["dotnet", "ReadIraq.dll"]
+ENTRYPOINT ["dotnet", "ReadIraq.Web.Host.dll"]
