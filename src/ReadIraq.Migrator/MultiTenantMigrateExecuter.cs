@@ -2,6 +2,7 @@ using Abp.Data;
 using Abp.Dependency;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
+using Abp.EntityFrameworkCore;
 using Abp.Extensions;
 using Abp.MultiTenancy;
 using Abp.Runtime.Security;
