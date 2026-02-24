@@ -15,6 +15,9 @@ namespace ReadIraq.LessonSessions.Dto
 
         public string Description { get; set; }
 
+        [Required]
+        public Guid SubjectId { get; set; }
+
         public long ThumbnailAttachmentId { get; set; }
 
         public long VideoAttachmentId { get; set; }

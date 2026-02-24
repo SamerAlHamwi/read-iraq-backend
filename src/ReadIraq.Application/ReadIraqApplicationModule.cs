@@ -49,6 +49,7 @@ using ReadIraq.Settings.Dto;
 using ReadIraq.Domain.LessonSessions;
 using ReadIraq.Domain.LessonSessions.Dto;
 using ReadIraq.NotificationService;
+using ReadIraq.Users.Dto;
 
 namespace ReadIraq
 {

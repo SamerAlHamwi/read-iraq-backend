@@ -747,41 +747,6 @@
         <member name="F:ReadIraq.Net.MimeTypes.MimeTypeNames.ApplicationZip">
             <summary>ZIP archive files; Registered[7]</summary>
         </member>
-        <member name="M:ReadIraq.NotificationService.INotificationService.NotifyUsersAsync(ReadIraq.NotificationService.TypedMessageNotificationData,System.Int64[],System.Boolean,System.Boolean)">
-            <summary>
-            Notify users about notification data
-            </summary>
-        </member>
-        <member name="T:ReadIraq.NotificationService.NotificationService">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:ReadIraq.NotificationService.NotificationService.Logger">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:ReadIraq.NotificationService.NotificationService.#ctor(Abp.Notifications.INotificationPublisher,Abp.Configuration.ISettingManager,Abp.Runtime.Session.IAbpSession,Microsoft.Extensions.Configuration.IConfiguration,Abp.Localization.ILocalizationManager,ReadIraq.Authorization.Users.UserManager,Abp.Domain.Uow.IUnitOfWorkManager)">
-            <summary>
-            NotificationService
-            </summary>
-            <param name="notificationPublisher"></param>
-            <param name="settingManager"></param>
-            <param name="session"></param>
-            <param name="configuration"></param>
-            <param name="localizationManager"></param>
-            <param name="userManager"></param>
-            <param name="unitOfWorkManager"></param>
-        </member>
-        <member name="M:ReadIraq.NotificationService.NotificationService.NotifyUsersAsync(ReadIraq.NotificationService.TypedMessageNotificationData,System.Int64[],System.Boolean,System.Boolean)">
-            <summary>
-            Notify Users
-            </summary>
-            <param name="data"></param>
-            <param name="userIds"></param>
-            <returns></returns>
-        </member>
         <member name="M:ReadIraq.PushNotifications.PushNotificationAppService.#ctor(Abp.Domain.Repositories.IRepository{ReadIraq.Domain.PushNotifications.PushNotification},ReadIraq.NotificationService.INotificationService,ReadIraq.Authorization.Users.UserManager,ReadIraq.Domain.PushNotifications.IPushNotificationManager,Abp.Localization.ILocalizationManager,Abp.Configuration.ISettingManager,Abp.Runtime.Session.IAbpSession,AutoMapper.IMapper)">
             <summary>
              PushNotification AppService

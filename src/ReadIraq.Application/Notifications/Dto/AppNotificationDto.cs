@@ -29,26 +29,4 @@ namespace ReadIraq.Notifications.Dto
         public NotificationChannel Channel { get; set; }
         public DateTime? ScheduledAtUtc { get; set; }
     }
-
-    public class SendNotificationInput
-    {
-        public string Title { get; set; }
-        public string Body { get; set; }
-        public NotificationType Type { get; set; }
-        public NotificationFilter Filter { get; set; }
-    }
-
-    public class NotificationFilter
-    {
-        public bool All { get; set; }
-        public long[] UserIds { get; set; }
-    }
-
-    public class ScheduleNotificationInput
-    {
-        public string Title { get; set; }
-        public string Body { get; set; }
-        public DateTime ScheduledTime { get; set; }
-        public long[] UserIds { get; set; }
-    }
 }

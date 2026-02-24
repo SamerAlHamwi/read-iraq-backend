@@ -193,9 +193,24 @@
             Ordering inside module/collection.
             </summary>
         </member>
+        <member name="P:ReadIraq.Domain.Notifications.AppNotification.Title">
+            <summary>
+            {"en":"...", "ar":"..."} (store as JSON)
+            </summary>
+        </member>
+        <member name="P:ReadIraq.Domain.Notifications.AppNotification.Body">
+            <summary>
+            {"en":"...", "ar":"..."} (store as JSON)
+            </summary>
+        </member>
         <member name="P:ReadIraq.Domain.Notifications.AppNotification.Data">
             <summary>
             Metadata/Deep link info, stored as JSON string.
+            </summary>
+        </member>
+        <member name="P:ReadIraq.Domain.Notifications.AppNotification.Meta">
+            <summary>
+            Any other metadata (attempts, errors)
             </summary>
         </member>
         <member name="P:ReadIraq.Domain.Quizzes.Question.Options">

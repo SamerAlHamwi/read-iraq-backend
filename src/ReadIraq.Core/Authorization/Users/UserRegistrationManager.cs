@@ -47,6 +47,7 @@ namespace ReadIraq.Authorization.Users
             _mediatorRepository = mediatorRepository;
 
             AbpSession = NullAbpSession.Instance;
+            LocalizationSourceName = ReadIraqConsts.LocalizationSourceName;
         }
 
         public async Task<User> RegisterAsync(string name, string surname, string emailAddress, string userName, string plainPassword, bool isEmailConfirmed)
@@ -116,7 +117,7 @@ namespace ReadIraq.Authorization.Users
                     }
                     else
                     {
-                        throw new UserFriendlyException(string.Format(Exceptions.MediatorCodeIsNotCorrect));
+                        throw new UserFriendlyException(L("MediatorCodeIsNotCorrect"));
                     }
                 }
 
@@ -150,7 +151,7 @@ namespace ReadIraq.Authorization.Users
                 var tenant = await _tenantManager.FindByTenancyNameAsync("Default");
                 if (tenant == null)
                 {
-                    throw new UserFriendlyException("Default tenant not found!");
+                    throw new UserFriendlyException(L("DefaultTenantNotFound"));
                 }
 
                 var user = new User
@@ -227,7 +228,7 @@ namespace ReadIraq.Authorization.Users
         {
             if (!AbpSession.TenantId.HasValue)
             {
-                throw new InvalidOperationException("Can not register host users!");
+                throw new InvalidOperationException(L("CanNotRegisterHostUsers"));
             }
         }
 

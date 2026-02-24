@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Notifications.Dto
 {
@@ -7,6 +8,7 @@ namespace ReadIraq.Notifications.Dto
     {
         public string Title { get; set; }
         public string Body { get; set; }
+        public NotificationType Type { get; set; }
         public NotificationTargetFilter Filter { get; set; }
     }
 

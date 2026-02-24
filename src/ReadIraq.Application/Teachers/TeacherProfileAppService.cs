@@ -101,7 +101,7 @@ namespace ReadIraq.Teachers
 
             if (entity == null)
             {
-                throw new Abp.UI.UserFriendlyException("Teacher not found");
+                throw new Abp.UI.UserFriendlyException(L("TeacherNotFound"));
             }
 
             var dto = MapToEntityDto(entity);
@@ -175,7 +175,7 @@ namespace ReadIraq.Teachers
 
             if (entity == null)
             {
-                throw new Abp.UI.UserFriendlyException("Teacher not found");
+                throw new Abp.UI.UserFriendlyException(L("TeacherNotFound"));
             }
 
             MapToEntity(input, entity);
@@ -206,7 +206,7 @@ namespace ReadIraq.Teachers
 
             if (entity == null)
             {
-                throw new Abp.UI.UserFriendlyException("Teacher not found");
+                throw new Abp.UI.UserFriendlyException(L("TeacherNotFound"));
             }
 
             entity.Subjects.Clear();

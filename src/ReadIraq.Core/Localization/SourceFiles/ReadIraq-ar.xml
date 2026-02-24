@@ -19,6 +19,9 @@
     <text name="QuizNotFound" value="الاختبار غير موجود" />
     <text name="ObjectWasNotFound" value="لم يتم العثور على {0}" />
     <text name="YouCannotDoThisAction" value="لا يمكنك القيام بهذا الإجراء" />
+    <text name="ThereIsNoCurrentUser" value="لا يوجد مستخدم حالي!" />
+    <text name="CanNotRegisterHostUsers" value="لا يمكن تسجيل مستخدمي المضيف!" />
+    <text name="MediatorCodeIsNotCorrect" value="كود الوسيط غير صحيح" />
 
     <text name="Notification_DAILY_STUDY_REMINDER_Title" value="حافظ على تقدمك!" />
     <text name="Notification_DAILY_STUDY_REMINDER_Body" value="أكمل {0} للوصول لهدفك اليومي." />

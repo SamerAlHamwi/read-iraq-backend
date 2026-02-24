@@ -28,7 +28,7 @@ namespace ReadIraq
             var user = await UserManager.FindByIdAsync(AbpSession.GetUserId().ToString());
             if (user == null)
             {
-                throw new Exception("There is no current user!");
+                throw new Exception(L("ThereIsNoCurrentUser"));
             }
 
             return user;

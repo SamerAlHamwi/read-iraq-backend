@@ -10,7 +10,7 @@
     <text name="ThereIsNoTenantDefinedWithName{0}" value="There is no tenant defined with name {0}" />
     <text name="TenantIsNotActive" value="Tenant {0} is not active." />
     <text name="UserIsNotActiveAndCanNotLogin" value="User {0} is not active and can not log in." />
-    <text name="UserEmailIsNotConfirmedAndCanNotLogin">Your email address is not confirmed. You can not log in.</text>
+    <text name="UserEmailIsNotConfirmedAndCanNotLogin">Your email address is not confirmed. You can not login.</text>
     <text name="UserLockedOutMessage">The user account has been locked out. Please try again later.</text>
     <text name="PleaseEnterLoginInformation" value="Please enter login information" />
     <text name="TenancyName" value="Tenancy name" />
@@ -117,7 +117,7 @@
     <text name="ResetPasswordStepOneInfo">1. Enter your administrator password</text>
     <text name="ResetPasswordStepTwoInfo">2. Copy this random password so you can send it to the user</text>
     <text name="UsersActivation">Users activation</text>
-    <text name="PushNotification">Iqraa</text>
+    <text name="PushNotification">Iqra</text>
     <text name="InsufficientPermissions">Insufficient permissions</text>
 
     <text name="UserNotFound" value="User not found" />
@@ -135,6 +135,9 @@
     <text name="QuizNotFound" value="Quiz not found" />
     <text name="ObjectWasNotFound" value="{0} was not found" />
     <text name="YouCannotDoThisAction" value="You cannot do this action" />
+    <text name="ThereIsNoCurrentUser" value="There is no current user!" />
+    <text name="CanNotRegisterHostUsers" value="Can not register host users!" />
+    <text name="MediatorCodeIsNotCorrect" value="Mediator code is not correct" />
 
     <text name="Notification_DAILY_STUDY_REMINDER_Title" value="Keep your streak alive!" />
     <text name="Notification_DAILY_STUDY_REMINDER_Body" value="Complete {0} to reach your daily goal." />

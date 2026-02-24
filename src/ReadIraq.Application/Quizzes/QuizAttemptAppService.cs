@@ -81,7 +81,7 @@ namespace ReadIraq.Quizzes
                 await _notificationService.NotifyQuizPassedHighScoreAsync(
                     AbpSession.GetUserId(),
                     quiz.Id,
-                    quiz.SessionId,
+                    quiz.SessionId ?? Guid.Empty,
                     quiz.Session?.Title ?? "Lesson",
                     scorePercentage
                 );

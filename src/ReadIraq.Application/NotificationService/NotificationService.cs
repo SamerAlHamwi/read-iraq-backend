@@ -101,7 +101,7 @@ namespace ReadIraq.NotificationService
 					Title = JsonConvert.SerializeObject(new { en = data.EnTitle, ar = data.ArTitle }),
 					Body = JsonConvert.SerializeObject(new { en = data.EnMessage, ar = data.ArMessage }),
 					Data = data.AdditionalValue,
-					Priority = NotificationPriority.DEFAULT,
+					Priority = ReadIraq.Enums.Enum.NotificationPriority.DEFAULT,
 					Channel = NotificationChannel.IN_APP,
 					IsRead = false,
 					ScheduledAtUtc = scheduledAtUtc,
@@ -132,7 +132,7 @@ namespace ReadIraq.NotificationService
 			var notification = await _notificationRepository.GetAsync(notificationId);
 			if (notification.UserId != _session.UserId)
 			{
-				throw new UserFriendlyException("You can only mark your own notifications as read.");
+				throw new UserFriendlyException(_localizationSource.GetString("YouCanOnlyMarkYourOwnNotificationsAsRead"));
 			}
 			notification.IsRead = true;
 			await _notificationRepository.UpdateAsync(notification);
@@ -143,7 +143,7 @@ namespace ReadIraq.NotificationService
 			var notification = await _notificationRepository.GetAsync(notificationId);
 			if (notification.UserId != _session.UserId)
 			{
-				throw new UserFriendlyException("You can only delete your own notifications.");
+				throw new UserFriendlyException(_localizationSource.GetString("YouCanOnlyDeleteYourOwnNotifications"));
 			}
 			await _notificationRepository.DeleteAsync(notification);
 		}
