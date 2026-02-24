@@ -7,6 +7,7 @@ services:
       - MSSQL_PID=Developer
     ports:
       - "1433:1433"
+    restart: always
 
   migrator:
     build:
@@ -17,6 +18,7 @@ services:
       - ConnectionStrings__Default=Server=db;Database=ReadIraqDb;User Id=sa;Password=YourSecurePassword123!;TrustServerCertificate=True;
     depends_on:
       - db
+    restart: on-failure
 
   api:
     build:
@@ -33,3 +35,4 @@ services:
     depends_on:
       - db
       - migrator
+    restart: always
