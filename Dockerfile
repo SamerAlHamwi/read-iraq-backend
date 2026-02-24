@@ -27,10 +27,12 @@ RUN dotnet publish src/ReadIraq.Migrator/ReadIraq.Migrator.csproj -c Release -o 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS api
 WORKDIR /app
 COPY --from=build /app/publish/api .
-EXPOSE 80
+# Set the port the app listens on
+ENV ASPNETCORE_URLS=http://+:8086
+EXPOSE 8086
 ENTRYPOINT ["dotnet", "ReadIraq.Web.Host.dll"]
 
-# Runtime Stage - Migrator (used via docker-compose override or command)
+# Runtime Stage - Migrator
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS migrator
 WORKDIR /app
 COPY --from=build /app/publish/migrator .

@@ -7,6 +7,12 @@ services:
       - MSSQL_PID=Developer
     ports:
       - "1433:1433"
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
     restart: always
 
   migrator:
@@ -17,7 +23,8 @@ services:
     environment:
       - ConnectionStrings__Default=Server=db;Database=ReadIraqDb;User Id=sa;Password=YourSecurePassword123!;TrustServerCertificate=True;
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: on-failure
 
   api:
@@ -33,6 +40,8 @@ services:
       - App__ServerRootAddress=http://153.92.214.111:8086/
       - App__ClientRootAddress=http://153.92.214.111:4200/
     depends_on:
-      - db
-      - migrator
+      db:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
     restart: always

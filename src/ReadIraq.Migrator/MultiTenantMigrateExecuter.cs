@@ -5,12 +5,14 @@ using Abp.Domain.Uow;
 using Abp.Extensions;
 using Abp.MultiTenancy;
 using Abp.Runtime.Security;
+using Microsoft.EntityFrameworkCore;
 using ReadIraq.EntityFrameworkCore;
 using ReadIraq.EntityFrameworkCore.Seed;
 using ReadIraq.MultiTenancy;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 
 namespace ReadIraq.Migrator
 {
@@ -20,18 +22,21 @@ namespace ReadIraq.Migrator
         private readonly AbpZeroDbMigrator _migrator;
         private readonly IRepository<Tenant> _tenantRepository;
         private readonly IDbPerTenantConnectionStringResolver _connectionStringResolver;
+        private readonly IDbContextResolver _dbContextResolver;
 
         public MultiTenantMigrateExecuter(
             AbpZeroDbMigrator migrator,
             IRepository<Tenant> tenantRepository,
             Log log,
-            IDbPerTenantConnectionStringResolver connectionStringResolver)
+            IDbPerTenantConnectionStringResolver connectionStringResolver,
+            IDbContextResolver dbContextResolver)
         {
             _log = log;
 
             _migrator = migrator;
             _tenantRepository = tenantRepository;
             _connectionStringResolver = connectionStringResolver;
+            _dbContextResolver = dbContextResolver;
         }
 
         public bool Run(bool skipConnVerification)
@@ -59,6 +64,21 @@ namespace ReadIraq.Migrator
 
             try
             {
+                using (var context = _dbContextResolver.Resolve<ReadIraqDbContext>(hostConnStr, null))
+                {
+                    var pendingMigrations = context.Database.GetPendingMigrations().ToList();
+                    if (pendingMigrations.Any())
+                    {
+                        _log.Write($"Applying {pendingMigrations.Count} pending migrations...");
+                        context.Database.Migrate();
+                        _log.Write("Migrations applied successfully.");
+                    }
+                    else
+                    {
+                        _log.Write("No pending migrations found.");
+                    }
+                }
+
                 _migrator.CreateOrMigrateForHost(SeedHelper.SeedHostDb);
             }
             catch (Exception ex)
