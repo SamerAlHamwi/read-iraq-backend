@@ -10,15 +10,27 @@ fi
 DB_NAME=$1
 SA_PASSWORD="YourSecurePassword123!"
 
-echo "Creating database: $DB_NAME..."
+echo "Searching for the database container..."
 
-# Execute SQL Command inside the docker container
-docker exec -it $(docker ps -qf "name=db") /opt/mssql-tools/bin/sqlcmd \
+# Try to find the container ID using docker compose
+CONTAINER_ID=$(docker compose ps -q db)
+
+if [ -z "$CONTAINER_ID" ]
+then
+    echo "Error: The database container ('db' service) is not running."
+    echo "Please run 'docker compose up -d' first and wait a few seconds."
+    exit 1
+fi
+
+echo "Creating database: $DB_NAME inside container $CONTAINER_ID..."
+
+# Execute SQL Command
+docker exec -i $CONTAINER_ID /opt/mssql-tools/bin/sqlcmd \
    -S localhost -U sa -P $SA_PASSWORD \
    -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'$DB_NAME') CREATE DATABASE [$DB_NAME];"
 
 if [ $? -eq 0 ]; then
-    echo "Database '$DB_NAME' created successfully (or already existed)."
+    echo "Success: Database '$DB_NAME' is ready."
 else
-    echo "Failed to create database."
+    echo "Error: Failed to create database."
 fi
