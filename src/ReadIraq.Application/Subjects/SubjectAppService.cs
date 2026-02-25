@@ -73,6 +73,7 @@ namespace ReadIraq.Subjects
             return query;
         }
 
+        [AbpAllowAnonymous]
         public override async Task<PagedResultDto<LiteSubjectDto>> GetAllAsync(PagedSubjectResultRequestDto input)
         {
             var result = await base.GetAllAsync(input);
@@ -93,6 +94,7 @@ namespace ReadIraq.Subjects
             return result;
         }
 
+        [AbpAllowAnonymous]
         public override async Task<SubjectDto> GetAsync(EntityDto<Guid> input)
         {
             var entity = await Repository.GetAll()

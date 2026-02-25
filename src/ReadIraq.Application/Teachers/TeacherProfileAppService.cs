@@ -65,6 +65,7 @@ namespace ReadIraq.Teachers
             return query;
         }
 
+        [AbpAllowAnonymous]
         public override async Task<PagedResultDto<LiteTeacherProfileDto>> GetAllAsync(PagedTeacherProfileResultRequestDto input)
         {
             var result = await base.GetAllAsync(input);
@@ -91,6 +92,7 @@ namespace ReadIraq.Teachers
             return result;
         }
 
+        [AbpAllowAnonymous]
         public override async Task<TeacherProfileDto> GetAsync(EntityDto<Guid> input)
         {
             var entity = await Repository.GetAll()
