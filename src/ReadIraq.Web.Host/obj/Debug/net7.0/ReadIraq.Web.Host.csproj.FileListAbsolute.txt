@@ -491,7 +491,6 @@ C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\log4net.config
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\log4net.Production.config
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\appsettings.json
-C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\appsettings.Staging.json
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\ReadIraq.Web.Host.staticwebassets.runtime.json
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\ReadIraq.Web.Host.staticwebassets.endpoints.json
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Web.Host\bin\Debug\net7.0\ReadIraq.Web.Host.exe
