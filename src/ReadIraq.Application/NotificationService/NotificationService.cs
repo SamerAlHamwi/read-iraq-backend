@@ -59,7 +59,7 @@ namespace ReadIraq.NotificationService
 			_userManager = userManager;
 			_unitOfWorkManager = unitOfWorkManager;
 			_notificationRepository = notificationRepository;
-			InitializeFirebaseApp();
+			//InitializeFirebaseApp();
 		}
 
 		private FirebaseApp InitializeFirebaseApp()
