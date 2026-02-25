@@ -21,9 +21,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using ReadIraq.EntityFrameworkCore;
 
 namespace ReadIraq.Web.Host.Startup
 {
@@ -99,13 +96,6 @@ namespace ReadIraq.Web.Host.Startup
         {
             app.UseAbp(options => { options.UseAbpRequestLocalization = false; }); // Initializes ABP framework.
 
-            // 🔥 AUTO MIGRATION START
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<ReadIraqDbContext>();
-                dbContext.Database.Migrate();
-            }
-            // 🔥 AUTO MIGRATION END
             app.UseCors(_defaultCorsPolicyName); // Enable CORS!
 
             app.UseStaticFiles();
