@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ReadIraq.Comments.Dto;
 using ReadIraq.CrudAppServiceBase;
 using ReadIraq.Domain.Comments;
+using ReadIraq.Domain.LessonSessions;
 using ReadIraq.NotificationService;
 using System;
 using System.Collections.Generic;
@@ -20,13 +21,16 @@ namespace ReadIraq.Comments
     public class SessionCommentAppService : ReadIraqAsyncCrudAppService<SessionComment, SessionCommentDto, Guid, SessionCommentDto, PagedSessionCommentResultRequestDto, CreateSessionCommentDto, UpdateSessionCommentDto>, ISessionCommentAppService
     {
         private readonly INotificationService _notificationService;
+        private readonly IRepository<LessonSession, Guid> _lessonSessionRepository;
 
         public SessionCommentAppService(
             IRepository<SessionComment, Guid> repository,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IRepository<LessonSession, Guid> lessonSessionRepository)
             : base(repository)
         {
             _notificationService = notificationService;
+            _lessonSessionRepository = lessonSessionRepository;
         }
 
         protected override IQueryable<SessionComment> CreateFilteredQuery(PagedSessionCommentResultRequestDto input)
@@ -44,6 +48,7 @@ namespace ReadIraq.Comments
         {
             var entity = MapToEntity(input);
             entity.UserId = AbpSession.GetUserId();
+            await SetIsByTeacherAsync(entity);
 
             await Repository.InsertAsync(entity);
             await CurrentUnitOfWork.SaveChangesAsync();
@@ -66,6 +71,7 @@ namespace ReadIraq.Comments
                 Text = input.Text,
                 UserId = AbpSession.GetUserId()
             };
+            await SetIsByTeacherAsync(reply);
 
             await Repository.InsertAsync(reply);
             await CurrentUnitOfWork.SaveChangesAsync();
@@ -77,6 +83,18 @@ namespace ReadIraq.Comments
             }
 
             return MapToEntityDto(reply);
+        }
+
+        private async Task SetIsByTeacherAsync(SessionComment entity)
+        {
+            var session = await _lessonSessionRepository.GetAll()
+                .Include(s => s.TeacherProfile)
+                .FirstOrDefaultAsync(s => s.Id == entity.LessonSessionId);
+            
+            if (session != null && session.TeacherProfile != null)
+            {
+                entity.IsByTeacher = session.TeacherProfile.UserId == entity.UserId;
+            }
         }
 
         public override async Task<SessionCommentDto> UpdateAsync(UpdateSessionCommentDto input)
@@ -121,7 +139,7 @@ namespace ReadIraq.Comments
             }
             if (entity.Replies != null && entity.Replies.Any())
             {
-                dto.Replies = entity.Replies.Select(MapToEntityDto).ToList();
+                dto.Replies = entity.Replies.Select(MapToEntityDto).OrderBy(x => x.CreationTime).ToList();
             }
             return dto;
         }
