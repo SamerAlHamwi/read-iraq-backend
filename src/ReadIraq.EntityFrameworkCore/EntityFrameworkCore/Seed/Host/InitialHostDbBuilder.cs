@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace ReadIraq.EntityFrameworkCore.Seed.Host
+﻿namespace ReadIraq.EntityFrameworkCore.Seed.Host
 {
     public class InitialHostDbBuilder
     {
@@ -13,7 +11,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
 
         public void Create()
         {
-            _context.Database.Migrate();
+            // _context.Database.Migrate(); // This line caused the error when tables already exist
 
             new DefaultEditionCreator(_context).Create();
             new DefaultLanguagesCreator(_context).Create();
