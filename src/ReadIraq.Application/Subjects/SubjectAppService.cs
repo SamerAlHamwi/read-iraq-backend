@@ -33,6 +33,7 @@ namespace ReadIraq.Subjects
         private readonly IRepository<UserPreferredTeacher, Guid> _userPreferredTeacherRepository;
         private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
         private readonly IAttachmentManager _attachmentManager;
+        private readonly IRepository<Attachment, long> _attachmentRepository;
 
         public SubjectAppService(
             IRepository<Subject, Guid> repository,
@@ -42,7 +43,8 @@ namespace ReadIraq.Subjects
             IRepository<LessonSession, Guid> lessonSessionRepository,
             IRepository<UserPreferredTeacher, Guid> userPreferredTeacherRepository,
             IRepository<Enrollment, Guid> enrollmentRepository,
-            IAttachmentManager attachmentManager)
+            IAttachmentManager attachmentManager,
+            IRepository<Attachment, long> attachmentRepository)
             : base(repository)
         {
             _subjectManager = subjectManager;
@@ -52,6 +54,7 @@ namespace ReadIraq.Subjects
             _userPreferredTeacherRepository = userPreferredTeacherRepository;
             _enrollmentRepository = enrollmentRepository;
             _attachmentManager = attachmentManager;
+            _attachmentRepository = attachmentRepository;
         }
 
         protected override IQueryable<Subject> CreateFilteredQuery(PagedSubjectResultRequestDto input)
@@ -80,15 +83,28 @@ namespace ReadIraq.Subjects
 
             foreach (var item in result.Items)
             {
-                var attachment = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.Subject);
-                if (attachment != null)
+                var entity = await Repository.GetAsync(item.Id);
+                if (entity.AttachmentId.HasValue)
                 {
-                    item.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
-                    item.Attachment.Url = _attachmentManager.GetUrl(attachment);
-                    item.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                    var attachment = await _attachmentRepository.GetAsync(entity.AttachmentId.Value);
+                    if (attachment != null)
+                    {
+                        item.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                        item.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                        item.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                    }
                 }
 
                 item.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.SubjectId == item.Id);
+                
+                if (input.GradeId.HasValue)
+                {
+                    item.TeachersCount = await _teacherSubjectRepository.CountAsync(x => x.SubjectId == item.Id && x.GradeId == input.GradeId.Value && x.TeacherProfile.IsActive);
+                }
+                else
+                {
+                    item.TeachersCount = await _teacherSubjectRepository.CountAsync(x => x.SubjectId == item.Id && x.TeacherProfile.IsActive);
+                }
             }
 
             return result;
@@ -107,15 +123,20 @@ namespace ReadIraq.Subjects
             }
 
             var dto = MapToEntityDto(entity);
-            var attachment = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.Subject);
-            if (attachment != null)
+            
+            if (entity.AttachmentId.HasValue)
             {
-                dto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
-                dto.Attachment.Url = _attachmentManager.GetUrl(attachment);
-                dto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                var attachment = await _attachmentRepository.GetAsync(entity.AttachmentId.Value);
+                if (attachment != null)
+                {
+                    dto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                    dto.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                    dto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                }
             }
 
             dto.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.SubjectId == entity.Id);
+            dto.TeachersCount = await _teacherSubjectRepository.CountAsync(x => x.SubjectId == entity.Id && x.TeacherProfile.IsActive);
 
             // Lessons
             var lessons = await _lessonSessionRepository.GetAllListAsync(x => x.SubjectId == entity.Id);
@@ -143,11 +164,14 @@ namespace ReadIraq.Subjects
             if (topTeacher != null)
             {
                 dto.TopTeacher = ObjectMapper.Map<LiteTeacherProfileDto>(topTeacher);
-                var teacherImg = await _attachmentManager.GetElementByRefAsync(topTeacher.Id.ToString(), AttachmentRefType.TeacherProfile);
-                if (teacherImg != null)
+                if (topTeacher.AttachmentId.HasValue)
                 {
-                    dto.TopTeacher.Attachment = ObjectMapper.Map<LiteAttachmentDto>(teacherImg);
-                    dto.TopTeacher.Attachment.Url = _attachmentManager.GetUrl(teacherImg);
+                    var teacherImg = await _attachmentRepository.GetAsync(topTeacher.AttachmentId.Value);
+                    if (teacherImg != null)
+                    {
+                        dto.TopTeacher.Attachment = ObjectMapper.Map<LiteAttachmentDto>(teacherImg);
+                        dto.TopTeacher.Attachment.Url = _attachmentManager.GetUrl(teacherImg);
+                    }
                 }
             }
 
@@ -175,6 +199,7 @@ namespace ReadIraq.Subjects
             if (input.AttachmentId > 0)
             {
                 await _attachmentManager.CheckAndUpdateRefIdAsync(input.AttachmentId, AttachmentRefType.Subject, entity.Id.ToString());
+                entity.AttachmentId = input.AttachmentId;
             }
 
             return await GetAsync(new EntityDto<Guid>(entity.Id));
@@ -216,6 +241,7 @@ namespace ReadIraq.Subjects
                     await _attachmentManager.DeleteRefIdAsync(oldAttachment);
                 }
                 await _attachmentManager.CheckAndUpdateRefIdAsync(input.AttachmentId, AttachmentRefType.Subject, entity.Id.ToString());
+                entity.AttachmentId = input.AttachmentId;
             }
 
             await CurrentUnitOfWork.SaveChangesAsync();
@@ -230,7 +256,7 @@ namespace ReadIraq.Subjects
             await Repository.UpdateAsync(entity);
         }
 
-        public async Task<List<SubjectTeachersDto>> GetTeachersBySubjectsAsync(List<Guid> subjectIds)
+        public async Task<List<SubjectTeachersDto>> GetTeachersBySubjectsAsync(List<Guid> subjectIds, int? gradeId)
         {
             var subjects = await Repository.GetAll()
                 .Include(x => x.Name)
@@ -244,6 +270,7 @@ namespace ReadIraq.Subjects
                 var teachers = await _teacherSubjectRepository.GetAll()
                     .Include(ts => ts.TeacherProfile)
                     .Where(ts => ts.SubjectId == subject.Id && ts.TeacherProfile.IsActive)
+                    .WhereIf(gradeId.HasValue, ts => ts.GradeId == gradeId.Value)
                     .Select(ts => ts.TeacherProfile)
                     .ToListAsync();
 
@@ -251,12 +278,16 @@ namespace ReadIraq.Subjects
 
                 foreach (var teacherDto in teacherDtos)
                 {
-                    var attachment = await _attachmentManager.GetElementByRefAsync(teacherDto.Id.ToString(), AttachmentRefType.TeacherProfile);
-                    if (attachment != null)
+                    var profile = teachers.First(x => x.Id == teacherDto.Id);
+                    if (profile.AttachmentId.HasValue)
                     {
-                        teacherDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
-                        teacherDto.Attachment.Url = _attachmentManager.GetUrl(attachment);
-                        teacherDto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                        var attachment = await _attachmentRepository.GetAsync(profile.AttachmentId.Value);
+                        if (attachment != null)
+                        {
+                            teacherDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                            teacherDto.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                            teacherDto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                        }
                     }
                 }
 
@@ -295,12 +326,16 @@ namespace ReadIraq.Subjects
 
             foreach (var teacherDto in teacherDtos)
             {
-                var attachment = await _attachmentManager.GetElementByRefAsync(teacherDto.Id.ToString(), AttachmentRefType.TeacherProfile);
-                if (attachment != null)
+                var profile = allTeachers.First(x => x.Id == teacherDto.Id);
+                if (profile.AttachmentId.HasValue)
                 {
-                    teacherDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
-                    teacherDto.Attachment.Url = _attachmentManager.GetUrl(attachment);
-                    teacherDto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                    var attachment = await _attachmentRepository.GetAsync(profile.AttachmentId.Value);
+                    if (attachment != null)
+                    {
+                        teacherDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                        teacherDto.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                        teacherDto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                    }
                 }
             }
 
@@ -319,12 +354,16 @@ namespace ReadIraq.Subjects
 
             foreach (var teacherDto in teacherDtos)
             {
-                var attachment = await _attachmentManager.GetElementByRefAsync(teacherDto.Id.ToString(), AttachmentRefType.TeacherProfile);
-                if (attachment != null)
+                var profile = teachers.First(x => x.Id == teacherDto.Id);
+                if (profile.AttachmentId.HasValue)
                 {
-                    teacherDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
-                    teacherDto.Attachment.Url = _attachmentManager.GetUrl(attachment);
-                    teacherDto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                    var attachment = await _attachmentRepository.GetAsync(profile.AttachmentId.Value);
+                    if (attachment != null)
+                    {
+                        teacherDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                        teacherDto.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                        teacherDto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                    }
                 }
             }
 

@@ -27,6 +27,6 @@ namespace ReadIraq.Teachers.Dto
         public string Color { get; set; }
 
         public List<Guid> FeatureIds { get; set; }
-        public List<Guid> SubjectIds { get; set; }
+        public List<TeacherSubjectDto> Subjects { get; set; }
     }
 }

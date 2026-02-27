@@ -31,5 +31,7 @@ namespace ReadIraq.Domain.Quizzes
         public string AnswerDescription { get; set; }
 
         public int Marks { get; set; }
+
+        public long? AttachmentId { get; set; }
     }
 }

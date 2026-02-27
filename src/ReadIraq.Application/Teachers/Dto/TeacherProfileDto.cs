@@ -23,7 +23,7 @@ namespace ReadIraq.Teachers.Dto
 
         public List<Guid> FeatureIds { get; set; }
         public List<TeacherFeatureDto> Features { get; set; }
-        public List<Guid> SubjectIds { get; set; }
+        public List<TeacherSubjectDto> Subjects { get; set; }
         public List<TeacherRatingBreakdownDto> RatingBreakdowns { get; set; }
     }
 }

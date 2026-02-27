@@ -11,6 +11,7 @@ namespace ReadIraq.Quizzes.Dto
     {
         public string Title { get; set; }
         public string Description { get; set; }
+        public LiteAttachmentDto Attachment { get; set; }
         public Guid? SubjectId { get; set; }
         public string SubjectName { get; set; }
         public Guid? SessionId { get; set; }
@@ -29,7 +30,7 @@ namespace ReadIraq.Quizzes.Dto
         public Guid QuizId { get; set; }
         public byte Type { get; set; }
         public string Text { get; set; }
-        public string ImageUrl { get; set; }
+        public LiteAttachmentDto Attachment { get; set; }
         public string Category { get; set; }
         public string Options { get; set; }
         public string CorrectAnswer { get; set; }

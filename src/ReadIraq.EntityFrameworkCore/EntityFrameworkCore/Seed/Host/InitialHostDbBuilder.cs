@@ -1,4 +1,6 @@
-﻿namespace ReadIraq.EntityFrameworkCore.Seed.Host
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace ReadIraq.EntityFrameworkCore.Seed.Host
 {
     public class InitialHostDbBuilder
     {
@@ -11,6 +13,8 @@
 
         public void Create()
         {
+            _context.Database.Migrate();
+
             new DefaultEditionCreator(_context).Create();
             new DefaultLanguagesCreator(_context).Create();
             new HostRoleAndUserCreator(_context).Create();
