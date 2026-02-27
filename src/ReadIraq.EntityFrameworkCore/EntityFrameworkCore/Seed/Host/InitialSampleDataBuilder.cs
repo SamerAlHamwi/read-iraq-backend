@@ -45,22 +45,22 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
 
         private void DeleteAllData()
         {
-            _context.LessonSessionAttachments.IgnoreQueryFilters().RemoveRange(_context.LessonSessionAttachments.IgnoreQueryFilters());
-            _context.Questions.IgnoreQueryFilters().RemoveRange(_context.Questions.IgnoreQueryFilters());
-            _context.Quizzes.IgnoreQueryFilters().RemoveRange(_context.Quizzes.IgnoreQueryFilters());
-            _context.LessonSessions.IgnoreQueryFilters().RemoveRange(_context.LessonSessions.IgnoreQueryFilters());
-            _context.TeacherSubjects.IgnoreQueryFilters().RemoveRange(_context.TeacherSubjects.IgnoreQueryFilters());
-            _context.TeacherProfiles.IgnoreQueryFilters().RemoveRange(_context.TeacherProfiles.IgnoreQueryFilters());
-            _context.GradeSubjects.IgnoreQueryFilters().RemoveRange(_context.GradeSubjects.IgnoreQueryFilters());
-            _context.Subjects.IgnoreQueryFilters().RemoveRange(_context.Subjects.IgnoreQueryFilters());
-            _context.Grades.IgnoreQueryFilters().RemoveRange(_context.Grades.IgnoreQueryFilters());
-            _context.GradeGroups.IgnoreQueryFilters().RemoveRange(_context.GradeGroups.IgnoreQueryFilters());
-            _context.Cities.IgnoreQueryFilters().RemoveRange(_context.Cities.IgnoreQueryFilters());
-            _context.CityTranslations.IgnoreQueryFilters().RemoveRange(_context.CityTranslations.IgnoreQueryFilters());
-            _context.Countries.IgnoreQueryFilters().RemoveRange(_context.Countries.IgnoreQueryFilters());
-            _context.CountryTranslations.IgnoreQueryFilters().RemoveRange(_context.CountryTranslations.IgnoreQueryFilters());
-            _context.Translations.IgnoreQueryFilters().RemoveRange(_context.Translations.IgnoreQueryFilters());
-            _context.Attachments.IgnoreQueryFilters().RemoveRange(_context.Attachments.IgnoreQueryFilters());
+            _context.LessonSessionAttachments.RemoveRange(_context.LessonSessionAttachments.IgnoreQueryFilters());
+            _context.Questions.RemoveRange(_context.Questions.IgnoreQueryFilters());
+            _context.Quizzes.RemoveRange(_context.Quizzes.IgnoreQueryFilters());
+            _context.LessonSessions.RemoveRange(_context.LessonSessions.IgnoreQueryFilters());
+            _context.TeacherSubjects.RemoveRange(_context.TeacherSubjects.IgnoreQueryFilters());
+            _context.TeacherProfiles.RemoveRange(_context.TeacherProfiles.IgnoreQueryFilters());
+            _context.GradeSubjects.RemoveRange(_context.GradeSubjects.IgnoreQueryFilters());
+            _context.Subjects.RemoveRange(_context.Subjects.IgnoreQueryFilters());
+            _context.Grades.RemoveRange(_context.Grades.IgnoreQueryFilters());
+            _context.GradeGroups.RemoveRange(_context.GradeGroups.IgnoreQueryFilters());
+            _context.Cities.RemoveRange(_context.Cities.IgnoreQueryFilters());
+            _context.CityTranslations.RemoveRange(_context.CityTranslations.IgnoreQueryFilters());
+            _context.Countries.RemoveRange(_context.Countries.IgnoreQueryFilters());
+            _context.CountryTranslations.RemoveRange(_context.CountryTranslations.IgnoreQueryFilters());
+            _context.Translations.RemoveRange(_context.Translations.IgnoreQueryFilters());
+            _context.Attachments.RemoveRange(_context.Attachments.IgnoreQueryFilters());
             
             var teachers = _context.Users.IgnoreQueryFilters().Where(u => u.Type == UserType.Teacher).ToList();
             _context.Users.RemoveRange(teachers);
