@@ -1,8 +1,9 @@
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
+using ReadIraq.Domain.Teachers;
 using System;
 
-namespace ReadIraq.Domain.Teachers.Dto
+namespace ReadIraq.Teachers.Dto
 {
     [AutoMapFrom(typeof(TeacherReport))]
     public class TeacherReportDto : FullAuditedEntityDto<Guid>

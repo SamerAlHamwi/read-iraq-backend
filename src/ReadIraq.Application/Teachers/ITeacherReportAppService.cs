@@ -1,8 +1,8 @@
 using Abp.Application.Services;
-using ReadIraq.Domain.Teachers.Dto;
+using ReadIraq.Teachers.Dto;
 using System;
 
-namespace ReadIraq.Domain.Teachers
+namespace ReadIraq.Teachers
 {
     public interface ITeacherReportAppService : IAsyncCrudAppService<TeacherReportDto, Guid, PagedTeacherReportResultRequestDto, CreateTeacherReportDto, TeacherReportDto>
     {

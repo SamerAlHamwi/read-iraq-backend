@@ -229,6 +229,11 @@ namespace ReadIraq
                 configuration.CreateMap<CreateLessonReportDto, LessonReport>();
                 #endregion
 
+                #region TeacherReport
+                configuration.CreateMap<TeacherReport, TeacherReportDto>();
+                configuration.CreateMap<CreateTeacherReportDto, TeacherReport>();
+                #endregion
+
                 #region Subscription
                 configuration.CreateMap<SubscriptionPlan, SubscriptionPlanDto>();
                 configuration.CreateMap<CreateSubscriptionPlanDto, SubscriptionPlan>();

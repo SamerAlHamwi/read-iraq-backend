@@ -3980,6 +3980,54 @@ namespace ReadIraq.Migrations
                     b.ToTable("TeacherRatingBreakdowns");
                 });
 
+            modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherReport", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsProcessed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TeacherProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeacherProfileId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TeacherReports");
+                });
+
             modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherReview", b =>
                 {
                     b.Property<Guid>("Id")
@@ -5111,6 +5159,25 @@ namespace ReadIraq.Migrations
                         .IsRequired();
 
                     b.Navigation("TeacherProfile");
+                });
+
+            modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherReport", b =>
+                {
+                    b.HasOne("ReadIraq.Domain.Teachers.TeacherProfile", "TeacherProfile")
+                        .WithMany()
+                        .HasForeignKey("TeacherProfileId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ReadIraq.Authorization.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("TeacherProfile");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ReadIraq.Domain.Teachers.TeacherReview", b =>

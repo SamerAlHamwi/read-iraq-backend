@@ -5,12 +5,13 @@ using Abp.Linq.Extensions;
 using Abp.Runtime.Session;
 using Microsoft.EntityFrameworkCore;
 using ReadIraq.CrudAppServiceBase;
-using ReadIraq.Domain.Teachers.Dto;
+using ReadIraq.Domain.Teachers;
+using ReadIraq.Teachers.Dto;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ReadIraq.Domain.Teachers
+namespace ReadIraq.Teachers
 {
     [AbpAuthorize]
     public class TeacherReportAppService : ReadIraqAsyncCrudAppService<TeacherReport, TeacherReportDto, Guid, TeacherReportDto, PagedTeacherReportResultRequestDto, CreateTeacherReportDto, TeacherReportDto>, ITeacherReportAppService
