@@ -85,6 +85,7 @@ namespace ReadIraq.EntityFrameworkCore
         public virtual DbSet<TeacherSubject> TeacherSubjects { get; set; }
         public virtual DbSet<TeacherRatingBreakdown> TeacherRatingBreakdowns { get; set; }
         public virtual DbSet<TeacherReview> TeacherReviews { get; set; }
+        public virtual DbSet<TeacherReport> TeacherReports { get; set; }
         public virtual DbSet<UserPreferredTeacher> UserPreferredTeachers { get; set; }
 
         public virtual DbSet<Enrollment> Enrollments { get; set; }
@@ -210,6 +211,19 @@ namespace ReadIraq.EntityFrameworkCore
                     .WithMany()
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TeacherReport>(b =>
+            {
+                b.HasOne(x => x.TeacherProfile)
+                    .WithMany()
+                    .HasForeignKey(x => x.TeacherProfileId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                b.HasOne(x => x.User)
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<UserPreferredTeacher>(b =>
