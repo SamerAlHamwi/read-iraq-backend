@@ -41,14 +41,17 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
 
         public void Create()
         {
+            Console.WriteLine("--- Starting InitialSampleDataBuilder ---");
             DeleteAllData();
             CreateAdminUser();
             CreateCountryAndCities();
             CreateEducationalStructure();
+            Console.WriteLine("--- InitialSampleDataBuilder Completed Successfully ---");
         }
 
         private void DeleteAllData()
         {
+            Console.WriteLine("Cleaning up existing data...");
             var tables = new[]
             {
                 "LessonSessionAttachments",
@@ -77,7 +80,10 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                 {
                     _context.Database.ExecuteSqlRaw($"DELETE FROM {table}");
                 }
-                catch (Exception) { }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Could not delete from {table}: {ex.Message}");
+                }
             }
             
             try
@@ -87,10 +93,12 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             catch { }
 
             _context.SaveChanges();
+            Console.WriteLine("Cleanup done.");
         }
 
         private void CreateAdminUser()
         {
+            Console.WriteLine("Checking Admin User...");
             var adminUser = _context.Users.IgnoreQueryFilters().FirstOrDefault(u => u.UserName == "admin123");
             if (adminUser == null)
             {
@@ -119,11 +127,13 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                     _context.UserRoles.Add(new UserRole(null, user.Id, adminRole.Id));
                     _context.SaveChanges();
                 }
+                Console.WriteLine("Admin user created.");
             }
         }
 
         private void CreateCountryAndCities()
         {
+            Console.WriteLine("Creating Countries and Cities...");
             var iraq = _context.Countries.Include(c => c.Translations).FirstOrDefault(c => c.Translations.Any(t => t.Name == "Iraq"));
             if (iraq == null)
             {
@@ -170,31 +180,23 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
 
         private void CreateEducationalStructure()
         {
+            Console.WriteLine("Creating Educational Structure...");
             var stages = new[]
             {
                 new { NameEn = "Primary School", NameAr = "المرحلة الابتدائية", Grades = new[] { 1  } }
-//                new { NameEn = "Middle School", NameAr = "المرحلة المتوسطة", Grades = new[] {  } },
-//                new { NameEn = "High School", NameAr = "المرحلة الإعدادية", Grades = new[] {  } }
             };
 
             var subjects = new[]
             {
                 new { En = "Arabic", Ar = "اللغة العربية" },
                 new { En = "English", Ar = "اللغة الإنجليزية" }
-//                new { En = "Mathematics", Ar = "الرياضيات" },
-//                new { En = "Physics", Ar = "الفيزياء" },
-//                new { En = "Chemistry", Ar = "الكيمياء" },
-//                new { En = "Biology", Ar = "الأحياء" },
-//                new { En = "Islamic Studies", Ar = "التربية الإسلامية" },
-//                new { En = "History", Ar = "التاريخ" },
-//                new { En = "Geography", Ar = "الجغرافيا" },
-//                new { En = "Computer Science", Ar = "الحاسوب" }
             };
 
             var teacherNames = new[] { "أحمد علي", "فاطمة حسن" };
 
             foreach (var stage in stages)
             {
+                Console.WriteLine($"Processing Stage: {stage.NameEn}");
                 var group = _context.GradeGroups.Include(g => g.Name).FirstOrDefault(g => g.Name.Any(t => t.Name == stage.NameEn));
                 if (group == null)
                 {
@@ -215,6 +217,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                 {
                     var gradeNameEn = $"Grade {gradeNum}";
                     var gradeNameAr = $"الصف {GetArabicNumber(gradeNum)}";
+                    Console.WriteLine($"  Processing {gradeNameEn}...");
                     var grade = _context.Grades.Include(g => g.Name).FirstOrDefault(g => g.GradeGroupId == group.Id && g.Name.Any(t => t.Name == gradeNameEn));
                     if (grade == null)
                     {
@@ -235,6 +238,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
 
                     foreach (var sub in subjects)
                     {
+                        Console.WriteLine($"    Processing Subject: {sub.En}");
                         var subject = _context.Subjects.Include(s => s.Name).FirstOrDefault(s => s.Name.Any(t => t.Name == sub.En));
                         if (subject == null)
                         {
@@ -267,7 +271,6 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
 
                         CreateLessons(teacherProfile, subject.Id);
 
-                        // Save changes per subject to keep memory usage low but performance high
                         _context.SaveChanges();
                     }
                 }
@@ -282,11 +285,11 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
 
         private TeacherProfile CreateTeacher(string arabicName, Guid subjectId, int gradeId)
         {
-            var userName = "teacher_" + arabicName.Replace(" ", "_") + "_" + _random.Next(100, 999);
             var teacherUser = _context.Users.FirstOrDefault(u => u.Name == arabicName && u.Type == UserType.Teacher);
 
             if (teacherUser == null)
             {
+                var userName = "teacher_" + arabicName.Replace(" ", "_") + "_" + _random.Next(100, 999);
                 teacherUser = new User
                 {
                     TenantId = null,
@@ -435,7 +438,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                 Size = 1024
             };
             _context.Attachments.Add(attachment);
-            _context.SaveChanges(); // Ensure the ID is generated before it is used as a foreign key
+            _context.SaveChanges();
             return attachment;
         }
     }

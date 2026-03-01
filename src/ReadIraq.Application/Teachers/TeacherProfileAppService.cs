@@ -84,10 +84,10 @@ namespace ReadIraq.Teachers
 
             foreach (var item in result.Items)
             {
-                var entity = await Repository.GetAsync(item.Id);
-                if (entity.AttachmentId.HasValue)
+                var entity = await Repository.FirstOrDefaultAsync(item.Id);
+                if (entity != null && entity.AttachmentId.HasValue)
                 {
-                    var attachment = await _attachmentRepository.GetAsync(entity.AttachmentId.Value);
+                    var attachment = await _attachmentRepository.FirstOrDefaultAsync(entity.AttachmentId.Value);
                     if (attachment != null)
                     {
                         item.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
@@ -132,7 +132,7 @@ namespace ReadIraq.Teachers
 
             if (entity.AttachmentId.HasValue)
             {
-                var attachment = await _attachmentRepository.GetAsync(entity.AttachmentId.Value);
+                var attachment = await _attachmentRepository.FirstOrDefaultAsync(entity.AttachmentId.Value);
                 if (attachment != null)
                 {
                     dto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
