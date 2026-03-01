@@ -30,6 +30,10 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
         private readonly ReadIraqDbContext _context;
         private readonly Random _random = new Random();
 
+        // Static URLs to simulate "downloading once" for all records
+        private const string SampleImageUrl = "https://picsum.photos/id/237/400/300"; // Static dog image
+        private const string SampleVideoUrl = "https://www.w3schools.com/html/mov_bbb.mp4";
+
         public InitialSampleDataBuilder(ReadIraqDbContext context)
         {
             _context = context;
@@ -45,8 +49,6 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
 
         private void DeleteAllData()
         {
-            // Use raw SQL to avoid model mapping issues (like missing columns in DB) during deletion
-            // Order is important to respect foreign key constraints
             var tables = new[]
             {
                 "LessonSessionAttachments",
@@ -75,16 +77,12 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                 {
                     _context.Database.ExecuteSqlRaw($"DELETE FROM {table}");
                 }
-                catch (Exception)
-                {
-                    // Ignore errors if table doesn't exist or deletion fails due to FKs handled in wrong order
-                    // We can also use TRUNCATE but DELETE is safer with FKs in some DBs
-                }
+                catch (Exception) { }
             }
             
             try
             {
-                _context.Database.ExecuteSqlRaw("DELETE FROM AbpUsers WHERE Type = 3"); // UserType.Teacher = 3
+                _context.Database.ExecuteSqlRaw("DELETE FROM AbpUsers WHERE Type = 3");
             }
             catch { }
 
@@ -174,9 +172,9 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
         {
             var stages = new[]
             {
-                new { NameEn = "Primary School", NameAr = "المرحلة الابتدائية", Grades = new[] { 1  } }, //2, 3, 4, 5, 6
-                new { NameEn = "Middle School", NameAr = "المرحلة المتوسطة", Grades = new[] { 7 } }, //7, 8, 9
-                new { NameEn = "High School", NameAr = "المرحلة الإعدادية", Grades = new[] { 10 } } //10, 11, 12
+                new { NameEn = "Primary School", NameAr = "المرحلة الابتدائية", Grades = new[] { 1  } },
+                new { NameEn = "Middle School", NameAr = "المرحلة المتوسطة", Grades = new[] {  } },
+                new { NameEn = "High School", NameAr = "المرحلة الإعدادية", Grades = new[] {  } }
             };
 
             var subjects = new[]
@@ -241,7 +239,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                         if (subject == null)
                         {
                             var subjectId = Guid.NewGuid();
-                            var attachment = CreateAttachment(subjectId.ToString(), AttachmentRefType.Subject, MediaType.Image, $"https://picsum.photos/seed/{subjectId}/400/300");
+                            var attachment = CreateAttachment(subjectId.ToString(), AttachmentRefType.Subject, MediaType.Image);
 
                             subject = new Subject
                             {
@@ -262,13 +260,15 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                         if (!_context.GradeSubjects.Any(gs => gs.GradeId == grade.Id && gs.SubjectId == subject.Id))
                         {
                             _context.GradeSubjects.Add(new GradeSubject { GradeId = grade.Id, SubjectId = subject.Id });
-                            _context.SaveChanges();
                         }
 
                         var teacherName = teacherNames[_random.Next(teacherNames.Length)];
                         var teacherProfile = CreateTeacher(teacherName, subject.Id, grade.Id);
 
                         CreateLessons(teacherProfile, subject.Id);
+
+                        // Save changes per subject to keep memory usage low but performance high
+                        _context.SaveChanges();
                     }
                 }
             }
@@ -309,7 +309,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             if (profile == null)
             {
                 var profileId = Guid.NewGuid();
-                var attachment = CreateAttachment(profileId.ToString(), AttachmentRefType.TeacherProfile, MediaType.Image, $"https://i.pravatar.cc/300?u={profileId}");
+                var attachment = CreateAttachment(profileId.ToString(), AttachmentRefType.TeacherProfile, MediaType.Image);
 
                 profile = new TeacherProfile
                 {
@@ -328,7 +328,6 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             if (!_context.TeacherSubjects.Any(ts => ts.TeacherProfileId == profile.Id && ts.SubjectId == subjectId && ts.GradeId == gradeId))
             {
                 _context.TeacherSubjects.Add(new TeacherSubject { TeacherProfileId = profile.Id, SubjectId = subjectId, GradeId = gradeId });
-                _context.SaveChanges();
             }
 
             return profile;
@@ -341,7 +340,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                 .Select(t => t.Name)
                 .FirstOrDefault() ?? "المادة";
 
-            int lessonCount = _random.Next(5, 11);
+            int lessonCount = _random.Next(1, 3);
             for (int i = 1; i <= lessonCount; i++)
             {
                 var lessonTitle = $"الدرس {i}: مقدمة شاملة في {subjectNameAr}";
@@ -350,8 +349,8 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                 if (lesson == null)
                 {
                     var lessonId = Guid.NewGuid();
-                    var thumb = CreateAttachment(lessonId.ToString(), AttachmentRefType.LessonSessionThumbnail, MediaType.Image, $"https://picsum.photos/seed/{lessonId}/400/225");
-                    var video = CreateAttachment(lessonId.ToString(), AttachmentRefType.LessonSessionVideo, MediaType.Video, "https://www.w3schools.com/html/mov_bbb.mp4");
+                    var thumb = CreateAttachment(lessonId.ToString(), AttachmentRefType.LessonSessionThumbnail, MediaType.Image);
+                    var video = CreateAttachment(lessonId.ToString(), AttachmentRefType.LessonSessionVideo, MediaType.Video);
 
                     lesson = new LessonSession
                     {
@@ -368,12 +367,9 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                         VideoAttachmentId = video.Id
                     };
                     _context.LessonSessions.Add(lesson);
-                    _context.SaveChanges();
 
-                    // Link to LessonSessionAttachments table
                     _context.LessonSessionAttachments.Add(new LessonSessionAttachment { LessonSessionId = lesson.Id, AttachmentId = thumb.Id });
                     _context.LessonSessionAttachments.Add(new LessonSessionAttachment { LessonSessionId = lesson.Id, AttachmentId = video.Id });
-                    _context.SaveChanges();
 
                     CreateQuizForLesson(lesson);
                 }
@@ -386,7 +382,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             if (quiz == null)
             {
                 var quizId = Guid.NewGuid();
-                var attachment = CreateAttachment(quizId.ToString(), AttachmentRefType.Other, MediaType.Image, $"https://picsum.photos/seed/{quizId}/400/300");
+                var attachment = CreateAttachment(quizId.ToString(), AttachmentRefType.Other, MediaType.Image);
 
                 quiz = new Quiz
                 {
@@ -401,17 +397,13 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                     AttachmentId = attachment.Id
                 };
                 _context.Quizzes.Add(quiz);
-                _context.SaveChanges();
 
-                // Add Quiz Video (Optional, just as an extra attachment if needed)
-                CreateAttachment(quiz.Id.ToString(), AttachmentRefType.Other, MediaType.Video, "https://www.w3schools.com/html/movie.mp4");
-
-                int questionCount = _random.Next(5, 11);
+                int questionCount = _random.Next(2, 4);
                 for (int i = 1; i <= questionCount; i++)
                 {
                     bool isMcq = _random.Next(0, 2) == 0;
                     var questionId = Guid.NewGuid();
-                    var qAttachment = CreateAttachment(questionId.ToString(), AttachmentRefType.Question, MediaType.Image, $"https://picsum.photos/seed/{questionId}/200/200");
+                    var qAttachment = CreateAttachment(questionId.ToString(), AttachmentRefType.Question, MediaType.Image);
 
                     var question = new Question
                     {
@@ -426,29 +418,23 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                         AttachmentId = qAttachment.Id
                     };
                     _context.Questions.Add(question);
-                    _context.SaveChanges();
                 }
             }
         }
 
-        private Attachment CreateAttachment(string refId, AttachmentRefType refType, MediaType mediaType, string url)
+        private Attachment CreateAttachment(string refId, AttachmentRefType refType, MediaType mediaType)
         {
-            var attachment = _context.Attachments.IgnoreQueryFilters().FirstOrDefault(a => a.RefId == refId && a.RefType == refType && a.Type == mediaType);
-            if (attachment == null)
+            var attachment = new Attachment
             {
-                attachment = new Attachment
-                {
-                    RefId = refId,
-                    RefType = refType,
-                    Type = mediaType,
-                    Url = url,
-                    StorageKey = Guid.NewGuid().ToString(),
-                    FileName = url.Split('/').Last(),
-                    Size = 1024
-                };
-                _context.Attachments.Add(attachment);
-                _context.SaveChanges();
-            }
+                RefId = refId,
+                RefType = refType,
+                Type = mediaType,
+                Url = mediaType == MediaType.Video ? SampleVideoUrl : SampleImageUrl,
+                StorageKey = Guid.NewGuid().ToString(),
+                FileName = mediaType == MediaType.Video ? "video.mp4" : "image.jpg",
+                Size = 1024
+            };
+            _context.Attachments.Add(attachment);
             return attachment;
         }
     }
