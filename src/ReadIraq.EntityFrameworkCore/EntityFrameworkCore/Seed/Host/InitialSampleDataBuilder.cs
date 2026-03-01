@@ -180,18 +180,18 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             var subjects = new[]
             {
                 new { En = "Arabic", Ar = "اللغة العربية" },
-                new { En = "English", Ar = "اللغة الإنجليزية" },
-                new { En = "Mathematics", Ar = "الرياضيات" },
-                new { En = "Physics", Ar = "الفيزياء" },
-                new { En = "Chemistry", Ar = "الكيمياء" },
-                new { En = "Biology", Ar = "الأحياء" },
-                new { En = "Islamic Studies", Ar = "التربية الإسلامية" },
-                new { En = "History", Ar = "التاريخ" },
-                new { En = "Geography", Ar = "الجغرافيا" },
-                new { En = "Computer Science", Ar = "الحاسوب" }
+                new { En = "English", Ar = "اللغة الإنجليزية" }
+//                new { En = "Mathematics", Ar = "الرياضيات" },
+//                new { En = "Physics", Ar = "الفيزياء" },
+//                new { En = "Chemistry", Ar = "الكيمياء" },
+//                new { En = "Biology", Ar = "الأحياء" },
+//                new { En = "Islamic Studies", Ar = "التربية الإسلامية" },
+//                new { En = "History", Ar = "التاريخ" },
+//                new { En = "Geography", Ar = "الجغرافيا" },
+//                new { En = "Computer Science", Ar = "الحاسوب" }
             };
 
-            var teacherNames = new[] { "أحمد علي", "فاطمة حسن", "محمد جاسم", "زينب كاظم", "عمر محمود", "سارة إبراهيم", "حسين عبود", "مريم يوسف", "مصطفى شاكر", "ليلى مراد" };
+            var teacherNames = new[] { "أحمد علي", "فاطمة حسن" };
 
             foreach (var stage in stages)
             {
