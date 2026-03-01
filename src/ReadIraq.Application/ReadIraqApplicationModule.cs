@@ -24,7 +24,6 @@ using ReadIraq.Domain.Regions.Dto;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.Terms;
-using ReadIraq.Domain.Terms.Dto;
 using ReadIraq.Domain.Translations;
 using ReadIraq.Domain.Translations.Dto;
 using ReadIraq.Grades.Dto;
