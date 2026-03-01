@@ -87,7 +87,6 @@ namespace ReadIraq.LessonSessions
                 foreach (var attachmentId in input.AttachmentIds)
                 {
                     await _attachmentManager.CheckAndUpdateRefIdAsync(attachmentId, AttachmentRefType.LessonSessionOther, entity.Id.ToString());
-                    // Note: LessonSessionAttachment mapping might need more logic if it's a separate entity
                 }
             }
 
@@ -108,13 +107,14 @@ namespace ReadIraq.LessonSessions
                     lesson.Title,
                     teacher?.Name ?? "Teacher",
                     input.SubjectId,
-                    teacher?.Id != null ? Guid.Empty : Guid.Empty // TeacherProfileId is needed, but we have userId here.
+                    teacher?.Id != null ? Guid.Empty : Guid.Empty
                 );
             }
 
             return await GetAsync(new EntityDto<Guid>(entity.Id));
         }
 
+        [AbpAllowAnonymous]
         public override async Task<PagedResultDto<LiteLessonSessionDto>> GetAllAsync(PagedLessonSessionResultRequestDto input)
         {
             var result = await base.GetAllAsync(input);
@@ -149,6 +149,7 @@ namespace ReadIraq.LessonSessions
             return result;
         }
 
+        [AbpAllowAnonymous]
         public override async Task<LessonSessionDto> GetAsync(EntityDto<Guid> input)
         {
             var entity = await Repository.GetAll()

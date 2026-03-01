@@ -17,6 +17,7 @@ using ReadIraq.Domain.Attachments;
 using ReadIraq.Domain.LessonSessions;
 using ReadIraq.Domain.Follows;
 using static ReadIraq.Enums.Enum;
+using Abp.UI;
 
 namespace ReadIraq.Teachers
 {
@@ -118,7 +119,7 @@ namespace ReadIraq.Teachers
 
             if (entity == null)
             {
-                throw new Abp.UI.UserFriendlyException(L("TeacherNotFound"));
+                throw new UserFriendlyException(L("TeacherNotFound"));
             }
 
             var dto = MapToEntityDto(entity);
@@ -196,7 +197,7 @@ namespace ReadIraq.Teachers
 
             if (entity == null)
             {
-                throw new Abp.UI.UserFriendlyException(L("TeacherNotFound"));
+                throw new UserFriendlyException(L("TeacherNotFound"));
             }
 
             MapToEntity(input, entity);
@@ -246,7 +247,7 @@ namespace ReadIraq.Teachers
 
             if (entity == null)
             {
-                throw new Abp.UI.UserFriendlyException(L("TeacherNotFound"));
+                throw new UserFriendlyException(L("TeacherNotFound"));
             }
 
             entity.Subjects.Clear();
@@ -284,26 +285,49 @@ namespace ReadIraq.Teachers
         [HttpPost]
         public async Task FollowAsync(EntityDto<Guid> input)
         {
+            if (input == null || input.Id == Guid.Empty)
+            {
+                throw new UserFriendlyException("Teacher Id is required");
+            }
+
             var userId = AbpSession.GetUserId();
-            var exists = await _userFollowTeacherRepository.GetAll().AnyAsync(x => x.UserId == userId && x.TeacherProfileId == input.Id);
+            var teacherProfileId = input.Id;
+
+            var exists = await _userFollowTeacherRepository.GetAll().AnyAsync(x => x.UserId == userId && x.TeacherProfileId == teacherProfileId);
             if (!exists)
             {
+                // Verify teacher exists
+                if (!await Repository.GetAll().AnyAsync(x => x.Id == teacherProfileId))
+                {
+                    throw new UserFriendlyException(L("TeacherNotFound"));
+                }
+
                 await _userFollowTeacherRepository.InsertAsync(new UserFollowTeacher
                 {
                     UserId = userId,
-                    TeacherProfileId = input.Id
+                    TeacherProfileId = teacherProfileId
                 });
+
+                await CurrentUnitOfWork.SaveChangesAsync();
             }
         }
 
         [HttpPost]
         public async Task UnfollowAsync(EntityDto<Guid> input)
         {
+            if (input == null || input.Id == Guid.Empty)
+            {
+                throw new UserFriendlyException("Teacher Id is required");
+            }
+
             var userId = AbpSession.GetUserId();
-            var follow = await _userFollowTeacherRepository.FirstOrDefaultAsync(x => x.UserId == userId && x.TeacherProfileId == input.Id);
+            var teacherProfileId = input.Id;
+
+            var follow = await _userFollowTeacherRepository.FirstOrDefaultAsync(x => x.UserId == userId && x.TeacherProfileId == teacherProfileId);
             if (follow != null)
             {
                 await _userFollowTeacherRepository.DeleteAsync(follow.Id);
+                await CurrentUnitOfWork.SaveChangesAsync();
             }
         }
     }

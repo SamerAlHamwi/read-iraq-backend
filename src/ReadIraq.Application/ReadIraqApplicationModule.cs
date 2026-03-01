@@ -50,6 +50,8 @@ using ReadIraq.Domain.LessonSessions;
 using ReadIraq.Domain.LessonSessions.Dto;
 using ReadIraq.NotificationService;
 using ReadIraq.Users.Dto;
+using ReadIraq.LessonSessions.Dto;
+using ReadIraq.Domain.Attachments;
 
 namespace ReadIraq
 {
@@ -120,6 +122,16 @@ namespace ReadIraq
                 #region Subject
                 configuration.CreateMap<Subject, SubjectDto>();
                 configuration.CreateMap<Subject, LiteSubjectDto>();
+                #endregion
+
+                #region LessonSession
+                configuration.CreateMap<LessonSession, LessonSessionDto>();
+                configuration.CreateMap<LessonSession, LiteLessonSessionDto>();
+                configuration.CreateMap<LessonSessionAttachment, LiteAttachmentDto>()
+                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.AttachmentId))
+                    .ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Attachment.Url))
+                    .ForMember(dest => dest.FileName, opt => opt.MapFrom(src => src.Attachment.FileName))
+                    .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Attachment.Type));
                 #endregion
 
                 #region Translation
