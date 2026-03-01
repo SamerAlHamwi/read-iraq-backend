@@ -21,6 +21,12 @@ C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\re
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.xml
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.pdb
 C:\Users\Tech\source\repos\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ref\ReadIraq.Application.dll
+C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.csproj.AssemblyReference.cache
+C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.AssemblyInfoInputs.cache
+C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.AssemblyInfo.cs
+C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.csproj.CoreCompileInputs.cache
+C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.sourcelink.json
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\bin\Debug\net7.0\ReadIraq.Application.deps.json
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\bin\Debug\net7.0\ReadIraq.Application.dll
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\bin\Debug\net7.0\ReadIraq.Application.pdb
@@ -32,12 +38,6 @@ C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\bin\Debug\net7.0\ReadIraq.EntityFrameworkCore.pdb
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\bin\Debug\net7.0\ReadIraq.EntityFrameworkCore.dll.config
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\bin\Debug\net7.0\ar\ReadIraq.Core.resources.dll
-C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.csproj.AssemblyReference.cache
-C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.AssemblyInfoInputs.cache
-C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.AssemblyInfo.cs
-C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.csproj.CoreCompileInputs.cache
-C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.sourcelink.json
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.56B65829.Up2Date
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\ReadIraq.Application.dll
 C:\Users\Tech\StudioProjects\stugoo\Flutter-start-project\ReadIraq\src\ReadIraq.Application\obj\Debug\net7.0\refint\ReadIraq.Application.dll
