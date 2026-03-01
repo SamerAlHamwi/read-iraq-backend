@@ -1,6 +1,7 @@
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using ReadIraq.Domain.Grades;
+using ReadIraq.Domain.Grades.Dto;
 using ReadIraq.Domain.Translations.Dto;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,6 @@ namespace ReadIraq.Grades.Dto
     public class LiteGradeDto : EntityDto<int>
     {
         public List<TranslationDto> Name { get; set; }
+        public GradeGroupDto GradeLevel { get; set; }
     }
 }

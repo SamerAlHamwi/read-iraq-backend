@@ -40,6 +40,7 @@ namespace ReadIraq.Grades
         {
             return base.CreateFilteredQuery(input)
                 .Include(x => x.Name)
+                .Include(x => x.GradeGroup).ThenInclude(x => x.Name)
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.Name.Any(t => t.Name.Contains(input.Keyword)))
                 .WhereIf(input.GradeGroupId != null && input.GradeGroupId != Guid.Empty, x => x.GradeGroupId == input.GradeGroupId)
                 .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive.Value);
@@ -54,6 +55,7 @@ namespace ReadIraq.Grades
         {
             var entity = await Repository.GetAll()
                 .Include(x => x.Name)
+                .Include(x => x.GradeGroup).ThenInclude(x => x.Name)
                 .Include(x => x.GradeSubjects)
                 .FirstOrDefaultAsync(x => x.Id == input.Id);
 
@@ -90,6 +92,7 @@ namespace ReadIraq.Grades
 
             var entity = await Repository.GetAll()
                 .Include(x => x.Name)
+                .Include(x => x.GradeGroup).ThenInclude(x => x.Name)
                 .Include(x => x.GradeSubjects)
                 .FirstOrDefaultAsync(x => x.Id == input.Id);
 

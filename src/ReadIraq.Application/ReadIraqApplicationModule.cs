@@ -17,6 +17,7 @@ using ReadIraq.Domain.Countries;
 using ReadIraq.Domain.FrequentlyQuestions;
 using ReadIraq.Domain.FrequentlyQuestions.Dto;
 using ReadIraq.Domain.Grades;
+using ReadIraq.Domain.Grades.Dto;
 using ReadIraq.Domain.PrivacyPolicies;
 using ReadIraq.Domain.PushNotifications;
 using ReadIraq.Domain.Regions;
@@ -50,7 +51,6 @@ using ReadIraq.Domain.LessonSessions;
 using ReadIraq.Domain.LessonSessions.Dto;
 using ReadIraq.NotificationService;
 using ReadIraq.Users.Dto;
-using ReadIraq.LessonSessions.Dto;
 using ReadIraq.Domain.Attachments;
 using ReadIraq.Domain.Comments;
 using ReadIraq.Comments.Dto;
@@ -102,7 +102,9 @@ namespace ReadIraq
 
                 #region Grade
                 configuration.CreateMap<Grade, GradeDto>();
-                configuration.CreateMap<Grade, LiteGradeDto>();
+                configuration.CreateMap<Grade, LiteGradeDto>()
+                    .ForMember(dest => dest.GradeLevel, opt => opt.MapFrom(src => src.GradeGroup));
+                configuration.CreateMap<GradeGroup, GradeGroupDto>();
                 #endregion
 
                 #region TeacherFeature
