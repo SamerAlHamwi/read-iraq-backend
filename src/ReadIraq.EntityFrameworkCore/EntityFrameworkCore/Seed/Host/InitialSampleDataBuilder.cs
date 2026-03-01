@@ -368,8 +368,8 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                     };
                     _context.LessonSessions.Add(lesson);
 
-                    _context.LessonSessionAttachments.Add(new LessonSessionAttachment { LessonSessionId = lesson.Id, AttachmentId = thumb.Id });
-                    _context.LessonSessionAttachments.Add(new LessonSessionAttachment { LessonSessionId = lesson.Id, AttachmentId = video.Id });
+                    _context.LessonSessionAttachments.Add(new LessonSessionAttachment { LessonSessionId = lesson.Id, Attachment = thumb });
+                    _context.LessonSessionAttachments.Add(new LessonSessionAttachment { LessonSessionId = lesson.Id, Attachment = video });
 
                     CreateQuizForLesson(lesson);
                 }
@@ -435,6 +435,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                 Size = 1024
             };
             _context.Attachments.Add(attachment);
+            _context.SaveChanges(); // Ensure the ID is generated before it is used as a foreign key
             return attachment;
         }
     }
