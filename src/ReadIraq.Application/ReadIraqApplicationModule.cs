@@ -24,6 +24,7 @@ using ReadIraq.Domain.Regions.Dto;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.Terms;
+using ReadIraq.Domain.Terms.Dto;
 using ReadIraq.Domain.Translations;
 using ReadIraq.Domain.Translations.Dto;
 using ReadIraq.Grades.Dto;
@@ -52,6 +53,9 @@ using ReadIraq.NotificationService;
 using ReadIraq.Users.Dto;
 using ReadIraq.LessonSessions.Dto;
 using ReadIraq.Domain.Attachments;
+using ReadIraq.Domain.Comments;
+using ReadIraq.Comments.Dto;
+using System.Linq;
 
 namespace ReadIraq
 {
@@ -267,6 +271,12 @@ namespace ReadIraq
                 #region Settings
                 configuration.CreateMap<AppSetting, AppSettingDto>();
                 configuration.CreateMap<CreateAppSettingDto, AppSetting>();
+                #endregion
+
+                #region SessionComment
+                configuration.CreateMap<SessionComment, SessionCommentDto>();
+                configuration.CreateMap<CreateSessionCommentDto, SessionComment>();
+                configuration.CreateMap<UpdateSessionCommentDto, SessionComment>();
                 #endregion
             }
         }
