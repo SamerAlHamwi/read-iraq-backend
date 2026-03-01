@@ -28,6 +28,7 @@ namespace ReadIraq.Teachers
         private readonly IRepository<TeacherSubject, Guid> _teacherSubjectRepository;
         private readonly IRepository<LessonSession, Guid> _lessonSessionRepository;
         private readonly IAttachmentManager _attachmentManager;
+        private readonly IRepository<Attachment, long> _attachmentRepository;
         private readonly IRepository<TeacherFeature, Guid> _featureRepository;
         private readonly IRepository<UserFollowTeacher, Guid> _userFollowTeacherRepository;
 
@@ -38,6 +39,7 @@ namespace ReadIraq.Teachers
             IRepository<TeacherSubject, Guid> teacherSubjectRepository,
             IRepository<LessonSession, Guid> lessonSessionRepository,
             IAttachmentManager attachmentManager,
+            IRepository<Attachment, long> attachmentRepository,
             IRepository<TeacherFeature, Guid> featureRepository,
             IRepository<UserFollowTeacher, Guid> userFollowTeacherRepository)
             : base(repository)
@@ -47,6 +49,7 @@ namespace ReadIraq.Teachers
             _teacherSubjectRepository = teacherSubjectRepository;
             _lessonSessionRepository = lessonSessionRepository;
             _attachmentManager = attachmentManager;
+            _attachmentRepository = attachmentRepository;
             _featureRepository = featureRepository;
             _userFollowTeacherRepository = userFollowTeacherRepository;
         }
@@ -57,9 +60,17 @@ namespace ReadIraq.Teachers
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.Name.Contains(input.Keyword) || x.Specialization.Contains(input.Keyword))
                 .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive.Value);
 
-            if (input.SubjectId.HasValue)
+            if (input.SubjectId.HasValue && input.GradeId.HasValue)
+            {
+                query = query.Where(x => x.Subjects.Any(s => s.SubjectId == input.SubjectId.Value && s.GradeId == input.GradeId.Value));
+            }
+            else if (input.SubjectId.HasValue)
             {
                 query = query.Where(x => x.Subjects.Any(s => s.SubjectId == input.SubjectId.Value));
+            }
+            else if (input.GradeId.HasValue)
+            {
+                query = query.Where(x => x.Subjects.Any(s => s.GradeId == input.GradeId.Value));
             }
 
             return query;
@@ -73,12 +84,16 @@ namespace ReadIraq.Teachers
 
             foreach (var item in result.Items)
             {
-                var attachment = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.TeacherProfile);
-                if (attachment != null)
+                var entity = await Repository.GetAsync(item.Id);
+                if (entity.AttachmentId.HasValue)
                 {
-                    item.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
-                    item.Attachment.Url = _attachmentManager.GetUrl(attachment);
-                    item.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                    var attachment = await _attachmentRepository.GetAsync(entity.AttachmentId.Value);
+                    if (attachment != null)
+                    {
+                        item.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                        item.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                        item.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                    }
                 }
 
                 item.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.TeacherProfileId == item.Id && x.IsActive);
@@ -108,19 +123,22 @@ namespace ReadIraq.Teachers
 
             var dto = MapToEntityDto(entity);
             dto.FeatureIds = entity.Features.Select(f => f.TeacherFeatureId).ToList();
-            dto.SubjectIds = entity.Subjects.Select(s => s.SubjectId).ToList();
+            dto.Subjects = entity.Subjects.Select(s => new TeacherSubjectDto { SubjectId = s.SubjectId, GradeId = s.GradeId }).ToList();
 
             var features = await _featureRepository.GetAllListAsync(x => dto.FeatureIds.Contains(x.Id));
             dto.Features = ObjectMapper.Map<List<TeacherFeatureDto>>(features);
 
             dto.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.TeacherProfileId == entity.Id && x.IsActive);
 
-            var attachment = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.TeacherProfile);
-            if (attachment != null)
+            if (entity.AttachmentId.HasValue)
             {
-                dto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
-                dto.Attachment.Url = _attachmentManager.GetUrl(attachment);
-                dto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                var attachment = await _attachmentRepository.GetAsync(entity.AttachmentId.Value);
+                if (attachment != null)
+                {
+                    dto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                    dto.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                    dto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                }
             }
 
             var userId = AbpSession.UserId;
@@ -147,11 +165,11 @@ namespace ReadIraq.Teachers
                 }
             }
 
-            if (input.SubjectIds != null)
+            if (input.Subjects != null)
             {
-                foreach (var subjectId in input.SubjectIds)
+                foreach (var s in input.Subjects)
                 {
-                    entity.Subjects.Add(new TeacherSubject { SubjectId = subjectId });
+                    entity.Subjects.Add(new TeacherSubject { SubjectId = s.SubjectId, GradeId = s.GradeId });
                 }
             }
 
@@ -161,6 +179,7 @@ namespace ReadIraq.Teachers
             if (input.AttachmentId > 0)
             {
                 await _attachmentManager.CheckAndUpdateRefIdAsync(input.AttachmentId, AttachmentRefType.TeacherProfile, entity.Id.ToString());
+                entity.AttachmentId = input.AttachmentId;
             }
 
             return await GetAsync(new EntityDto<Guid>(entity.Id));
@@ -182,6 +201,24 @@ namespace ReadIraq.Teachers
 
             MapToEntity(input, entity);
 
+            if (input.FeatureIds != null)
+            {
+                entity.Features.Clear();
+                foreach (var featureId in input.FeatureIds)
+                {
+                    entity.Features.Add(new TeacherFeatureMap { TeacherFeatureId = featureId });
+                }
+            }
+
+            if (input.Subjects != null)
+            {
+                entity.Subjects.Clear();
+                foreach (var s in input.Subjects)
+                {
+                    entity.Subjects.Add(new TeacherSubject { SubjectId = s.SubjectId, GradeId = s.GradeId });
+                }
+            }
+
             if (input.AttachmentId > 0)
             {
                 var oldAttachment = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.TeacherProfile);
@@ -190,6 +227,7 @@ namespace ReadIraq.Teachers
                     await _attachmentManager.DeleteRefIdAsync(oldAttachment);
                 }
                 await _attachmentManager.CheckAndUpdateRefIdAsync(input.AttachmentId, AttachmentRefType.TeacherProfile, entity.Id.ToString());
+                entity.AttachmentId = input.AttachmentId;
             }
 
             await Repository.UpdateAsync(entity);
@@ -212,11 +250,11 @@ namespace ReadIraq.Teachers
             }
 
             entity.Subjects.Clear();
-            if (input.SubjectIds != null)
+            if (input.Subjects != null)
             {
-                foreach (var subjectId in input.SubjectIds)
+                foreach (var s in input.Subjects)
                 {
-                    entity.Subjects.Add(new TeacherSubject { SubjectId = subjectId, TeacherProfileId = entity.Id });
+                    entity.Subjects.Add(new TeacherSubject { SubjectId = s.SubjectId, GradeId = s.GradeId, TeacherProfileId = entity.Id });
                 }
             }
 

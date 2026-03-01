@@ -11,11 +11,13 @@
 
         public void Create()
         {
+            // _context.Database.Migrate(); // This line caused the error when tables already exist
+
             new DefaultEditionCreator(_context).Create();
             new DefaultLanguagesCreator(_context).Create();
             new HostRoleAndUserCreator(_context).Create();
             new DefaultSettingsCreator(_context).Create();
-            //new InitialSampleDataBuilder(_context).Create();
+            new InitialSampleDataBuilder(_context).Create();
 
             _context.SaveChanges();
         }

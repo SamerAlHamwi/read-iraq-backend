@@ -47,6 +47,9 @@ namespace ReadIraq.Domain.LessonSessions
         public bool IsActive { get; set; }
         public bool IsFree { get; set; }
 
+        public long? ThumbnailAttachmentId { get; set; }
+        public long? VideoAttachmentId { get; set; }
+
         public virtual ICollection<LessonSessionAttachment> Attachments { get; set; }
 
         public LessonSession()

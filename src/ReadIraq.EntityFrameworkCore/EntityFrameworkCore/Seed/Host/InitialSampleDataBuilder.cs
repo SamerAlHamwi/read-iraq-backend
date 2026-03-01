@@ -20,6 +20,7 @@ using ReadIraq.Domain.Quizzes;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.Translations;
+using ReadIraq.Domain.Attachments;
 using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.EntityFrameworkCore.Seed.Host
@@ -36,9 +37,58 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
 
         public void Create()
         {
+            DeleteAllData();
             CreateAdminUser();
             CreateCountryAndCities();
             CreateEducationalStructure();
+        }
+
+        private void DeleteAllData()
+        {
+            // Use raw SQL to avoid model mapping issues (like missing columns in DB) during deletion
+            // Order is important to respect foreign key constraints
+            var tables = new[]
+            {
+                "LessonSessionAttachments",
+                "Questions",
+                "QuizAttempts",
+                "Quizzes",
+                "UserSessionProgresses",
+                "LessonSessions",
+                "TeacherSubjects",
+                "TeacherProfiles",
+                "GradeSubjects",
+                "Translations",
+                "Subjects",
+                "Grades",
+                "GradeGroups",
+                "CityTranslations",
+                "Cities",
+                "CountryTranslations",
+                "Countries",
+                "Attachments"
+            };
+
+            foreach (var table in tables)
+            {
+                try
+                {
+                    _context.Database.ExecuteSqlRaw($"DELETE FROM {table}");
+                }
+                catch (Exception)
+                {
+                    // Ignore errors if table doesn't exist or deletion fails due to FKs handled in wrong order
+                    // We can also use TRUNCATE but DELETE is safer with FKs in some DBs
+                }
+            }
+            
+            try
+            {
+                _context.Database.ExecuteSqlRaw("DELETE FROM AbpUsers WHERE Type = 3"); // UserType.Teacher = 3
+            }
+            catch { }
+
+            _context.SaveChanges();
         }
 
         private void CreateAdminUser()
@@ -190,15 +240,20 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                         var subject = _context.Subjects.Include(s => s.Name).FirstOrDefault(s => s.Name.Any(t => t.Name == sub.En));
                         if (subject == null)
                         {
+                            var subjectId = Guid.NewGuid();
+                            var attachment = CreateAttachment(subjectId.ToString(), AttachmentRefType.Subject, MediaType.Image, $"https://picsum.photos/seed/{subjectId}/400/300");
+
                             subject = new Subject
                             {
+                                Id = subjectId,
                                 IsActive = true,
                                 Name = new List<Translation>
                                 {
                                     new Translation { Code = "en", Name = sub.En },
                                     new Translation { Code = "ar", Name = sub.Ar }
                                 },
-                                Level = SubjectLevel.Semester
+                                Level = SubjectLevel.Semester,
+                                AttachmentId = attachment.Id
                             };
                             _context.Subjects.Add(subject);
                             _context.SaveChanges();
@@ -211,7 +266,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                         }
 
                         var teacherName = teacherNames[_random.Next(teacherNames.Length)];
-                        var teacherProfile = CreateTeacher(teacherName, subject.Id);
+                        var teacherProfile = CreateTeacher(teacherName, subject.Id, grade.Id);
 
                         CreateLessons(teacherProfile, subject.Id);
                     }
@@ -225,7 +280,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             return n > 0 && n < numbers.Length ? numbers[n] : n.ToString();
         }
 
-        private TeacherProfile CreateTeacher(string arabicName, Guid subjectId)
+        private TeacherProfile CreateTeacher(string arabicName, Guid subjectId, int gradeId)
         {
             var userName = "teacher_" + arabicName.Replace(" ", "_") + "_" + _random.Next(100, 999);
             var teacherUser = _context.Users.FirstOrDefault(u => u.Name == arabicName && u.Type == UserType.Teacher);
@@ -253,21 +308,26 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             var profile = _context.TeacherProfiles.FirstOrDefault(p => p.UserId == teacherUser.Id);
             if (profile == null)
             {
+                var profileId = Guid.NewGuid();
+                var attachment = CreateAttachment(profileId.ToString(), AttachmentRefType.TeacherProfile, MediaType.Image, $"https://i.pravatar.cc/300?u={profileId}");
+
                 profile = new TeacherProfile
                 {
+                    Id = profileId,
                     UserId = teacherUser.Id,
                     Name = arabicName,
                     Bio = $"أستاذ خبير متخصص في مادة {arabicName}",
                     IsActive = true,
-                    AverageRating = 4.8m + (decimal)(_random.NextDouble() * 0.2)
+                    AverageRating = 4.8m + (decimal)(_random.NextDouble() * 0.2),
+                    AttachmentId = attachment.Id
                 };
                 _context.TeacherProfiles.Add(profile);
                 _context.SaveChanges();
             }
 
-            if (!_context.TeacherSubjects.Any(ts => ts.TeacherProfileId == profile.Id && ts.SubjectId == subjectId))
+            if (!_context.TeacherSubjects.Any(ts => ts.TeacherProfileId == profile.Id && ts.SubjectId == subjectId && ts.GradeId == gradeId))
             {
-                _context.TeacherSubjects.Add(new TeacherSubject { TeacherProfileId = profile.Id, SubjectId = subjectId });
+                _context.TeacherSubjects.Add(new TeacherSubject { TeacherProfileId = profile.Id, SubjectId = subjectId, GradeId = gradeId });
                 _context.SaveChanges();
             }
 
@@ -289,8 +349,13 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
 
                 if (lesson == null)
                 {
+                    var lessonId = Guid.NewGuid();
+                    var thumb = CreateAttachment(lessonId.ToString(), AttachmentRefType.LessonSessionThumbnail, MediaType.Image, $"https://picsum.photos/seed/{lessonId}/400/225");
+                    var video = CreateAttachment(lessonId.ToString(), AttachmentRefType.LessonSessionVideo, MediaType.Video, "https://www.w3schools.com/html/mov_bbb.mp4");
+
                     lesson = new LessonSession
                     {
+                        Id = lessonId,
                         Title = lessonTitle,
                         Description = $"في هذا الدرس، سنقوم بشرح المفاهيم الأساسية للدرس {i} في {subjectNameAr} بأسلوب مبسط وشيق.",
                         SubjectId = subjectId,
@@ -298,9 +363,16 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                         DurationSeconds = _random.Next(900, 2700),
                         Order = i,
                         IsActive = true,
-                        IsFree = i == 1
+                        IsFree = i == 1,
+                        ThumbnailAttachmentId = thumb.Id,
+                        VideoAttachmentId = video.Id
                     };
                     _context.LessonSessions.Add(lesson);
+                    _context.SaveChanges();
+
+                    // Link to LessonSessionAttachments table
+                    _context.LessonSessionAttachments.Add(new LessonSessionAttachment { LessonSessionId = lesson.Id, AttachmentId = thumb.Id });
+                    _context.LessonSessionAttachments.Add(new LessonSessionAttachment { LessonSessionId = lesson.Id, AttachmentId = video.Id });
                     _context.SaveChanges();
 
                     CreateQuizForLesson(lesson);
@@ -310,36 +382,74 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
 
         private void CreateQuizForLesson(LessonSession lesson)
         {
-            var quiz = new Quiz
+            var quiz = _context.Quizzes.FirstOrDefault(q => q.SessionId == lesson.Id);
+            if (quiz == null)
             {
-                Title = $"اختبار: {lesson.Title}",
-                Description = $"اختبار قصير لتقييم فهمك لمحتوى {lesson.Title}",
-                SubjectId = lesson.SubjectId,
-                SessionId = lesson.Id,
-                TeacherId = lesson.TeacherProfileId,
-                DurationSeconds = 600,
-                TotalMarks = 100
-            };
-            _context.Quizzes.Add(quiz);
-            _context.SaveChanges();
+                var quizId = Guid.NewGuid();
+                var attachment = CreateAttachment(quizId.ToString(), AttachmentRefType.Other, MediaType.Image, $"https://picsum.photos/seed/{quizId}/400/300");
 
-            int questionCount = _random.Next(5, 11);
-            for (int i = 1; i <= questionCount; i++)
-            {
-                bool isMcq = _random.Next(0, 2) == 0;
-                var question = new Question
+                quiz = new Quiz
                 {
-                    QuizId = quiz.Id,
-                    Type = isMcq ? QuestionType.MCQ : QuestionType.TrueFalse,
-                    Text = isMcq ? $"السؤال {i}: اختر الإجابة الصحيحة بناءً على ما ورد في {lesson.Title}" : $"السؤال {i}: هل العبارة التالية صحيحة بخصوص موضوع الدرس؟",
-                    Options = isMcq ? "[\"الخيار الأول\", \"الخيار الثاني\", \"الخيار الثالث\", \"الخيار الرابع\"]" : "[\"صح\", \"خطأ\"]",
-                    CorrectAnswer = isMcq ? "\"الخيار الأول\"" : "\"صح\"",
-                    AnswerDescription = "الإجابة مستمدة من الشرح التفصيلي الوارد في الفيديو التعليمي.",
-                    Marks = 100 / questionCount
+                    Id = quizId,
+                    Title = $"اختبار: {lesson.Title}",
+                    Description = $"اختبار قصير لتقييم فهمك لمحتوى {lesson.Title}",
+                    SubjectId = lesson.SubjectId,
+                    SessionId = lesson.Id,
+                    TeacherId = lesson.TeacherProfileId,
+                    DurationSeconds = 600,
+                    TotalMarks = 100,
+                    AttachmentId = attachment.Id
                 };
-                _context.Questions.Add(question);
+                _context.Quizzes.Add(quiz);
+                _context.SaveChanges();
+
+                // Add Quiz Video (Optional, just as an extra attachment if needed)
+                CreateAttachment(quiz.Id.ToString(), AttachmentRefType.Other, MediaType.Video, "https://www.w3schools.com/html/movie.mp4");
+
+                int questionCount = _random.Next(5, 11);
+                for (int i = 1; i <= questionCount; i++)
+                {
+                    bool isMcq = _random.Next(0, 2) == 0;
+                    var questionId = Guid.NewGuid();
+                    var qAttachment = CreateAttachment(questionId.ToString(), AttachmentRefType.Question, MediaType.Image, $"https://picsum.photos/seed/{questionId}/200/200");
+
+                    var question = new Question
+                    {
+                        Id = questionId,
+                        QuizId = quiz.Id,
+                        Type = isMcq ? QuestionType.MCQ : QuestionType.TrueFalse,
+                        Text = isMcq ? $"السؤال {i}: اختر الإجابة الصحيحة بناءً على ما ورد في {lesson.Title}" : $"السؤال {i}: هل العبارة التالية صحيحة بخصوص موضوع الدرس؟",
+                        Options = isMcq ? "[\"الخيار الأول\", \"الخيار الثاني\", \"الخيار الثالث\", \"الخيار الرابع\"]" : "[\"صح\", \"خطأ\"]",
+                        CorrectAnswer = isMcq ? "\"الخيار الأول\"" : "\"صح\"",
+                        AnswerDescription = "الإجابة مستمدة من الشرح التفصيلي الوارد في الفيديو التعليمي.",
+                        Marks = 100 / questionCount,
+                        AttachmentId = qAttachment.Id
+                    };
+                    _context.Questions.Add(question);
+                    _context.SaveChanges();
+                }
             }
-            _context.SaveChanges();
+        }
+
+        private Attachment CreateAttachment(string refId, AttachmentRefType refType, MediaType mediaType, string url)
+        {
+            var attachment = _context.Attachments.IgnoreQueryFilters().FirstOrDefault(a => a.RefId == refId && a.RefType == refType && a.Type == mediaType);
+            if (attachment == null)
+            {
+                attachment = new Attachment
+                {
+                    RefId = refId,
+                    RefType = refType,
+                    Type = mediaType,
+                    Url = url,
+                    StorageKey = Guid.NewGuid().ToString(),
+                    FileName = url.Split('/').Last(),
+                    Size = 1024
+                };
+                _context.Attachments.Add(attachment);
+                _context.SaveChanges();
+            }
+            return attachment;
         }
     }
 }

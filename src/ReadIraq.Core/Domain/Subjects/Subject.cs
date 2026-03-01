@@ -23,6 +23,8 @@ namespace ReadIraq.Domain.Subjects
 
         public bool IsActive { get; set; }
 
+        public long? AttachmentId { get; set; }
+
         public Subject()
         {
             Name = new HashSet<Translation>();

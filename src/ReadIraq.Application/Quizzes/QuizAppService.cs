@@ -22,15 +22,18 @@ namespace ReadIraq.Quizzes
     {
         private readonly IRepository<Question, Guid> _questionRepository;
         private readonly IAttachmentManager _attachmentManager;
+        private readonly IRepository<Attachment, long> _attachmentRepository;
 
         public QuizAppService(
             IRepository<Quiz, Guid> repository,
             IRepository<Question, Guid> questionRepository,
-            IAttachmentManager attachmentManager)
+            IAttachmentManager attachmentManager,
+            IRepository<Attachment, long> attachmentRepository)
             : base(repository)
         {
             _questionRepository = questionRepository;
             _attachmentManager = attachmentManager;
+            _attachmentRepository = attachmentRepository;
         }
 
         protected override IQueryable<Quiz> CreateFilteredQuery(PagedQuizResultRequestDto input)
@@ -86,14 +89,29 @@ namespace ReadIraq.Quizzes
             dto.TeacherName = entity.Teacher?.Name;
             dto.SecondsRemaining = entity.DurationSeconds; // Default to full duration
 
+            if (entity.AttachmentId.HasValue)
+            {
+                var attachment = await _attachmentRepository.GetAsync(entity.AttachmentId.Value);
+                if (attachment != null)
+                {
+                    dto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                    dto.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                }
+            }
+
             if (dto.Questions != null)
             {
                 foreach (var qDto in dto.Questions)
                 {
-                    var qImage = await _attachmentManager.GetElementByRefAsync(qDto.Id.ToString(), AttachmentRefType.Question);
-                    if (qImage != null)
+                    var question = entity.Questions.FirstOrDefault(x => x.Id == qDto.Id);
+                    if (question != null && question.AttachmentId.HasValue)
                     {
-                        qDto.ImageUrl = _attachmentManager.GetUrl(qImage);
+                        var qAttachment = await _attachmentRepository.GetAsync(question.AttachmentId.Value);
+                        if (qAttachment != null)
+                        {
+                            qDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(qAttachment);
+                            qDto.Attachment.Url = _attachmentManager.GetUrl(qAttachment);
+                        }
                     }
                     qDto.Category = entity.Subject?.Name?.FirstOrDefault()?.Name ?? "General";
                 }

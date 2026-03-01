@@ -64,7 +64,34 @@ namespace ReadIraq.LessonSessions
 
         public override async Task<LessonSessionDto> CreateAsync(CreateLessonSessionDto input)
         {
-            var lesson = await base.CreateAsync(input);
+            var entity = MapToEntity(input);
+            entity.IsActive = true;
+
+            await Repository.InsertAsync(entity);
+            await CurrentUnitOfWork.SaveChangesAsync();
+
+            if (input.ThumbnailAttachmentId > 0)
+            {
+                await _attachmentManager.CheckAndUpdateRefIdAsync(input.ThumbnailAttachmentId, AttachmentRefType.LessonSessionThumbnail, entity.Id.ToString());
+                entity.ThumbnailAttachmentId = input.ThumbnailAttachmentId;
+            }
+
+            if (input.VideoAttachmentId > 0)
+            {
+                await _attachmentManager.CheckAndUpdateRefIdAsync(input.VideoAttachmentId, AttachmentRefType.LessonSessionVideo, entity.Id.ToString());
+                entity.VideoAttachmentId = input.VideoAttachmentId;
+            }
+
+            if (input.AttachmentIds != null && input.AttachmentIds.Any())
+            {
+                foreach (var attachmentId in input.AttachmentIds)
+                {
+                    await _attachmentManager.CheckAndUpdateRefIdAsync(attachmentId, AttachmentRefType.LessonSessionOther, entity.Id.ToString());
+                    // Note: LessonSessionAttachment mapping might need more logic if it's a separate entity
+                }
+            }
+
+            var lesson = MapToEntityDto(entity);
 
             // Trigger notification for users enrolled in this subject
             var enrolledUserIds = await _enrollmentRepository.GetAll()
@@ -85,7 +112,7 @@ namespace ReadIraq.LessonSessions
                 );
             }
 
-            return lesson;
+            return await GetAsync(new EntityDto<Guid>(entity.Id));
         }
 
         public override async Task<PagedResultDto<LiteLessonSessionDto>> GetAllAsync(PagedLessonSessionResultRequestDto input)
@@ -94,19 +121,27 @@ namespace ReadIraq.LessonSessions
 
             foreach (var item in result.Items)
             {
-                var thumbnail = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.LessonSessionThumbnail);
-                if (thumbnail != null)
+                var entity = await Repository.GetAsync(item.Id);
+                
+                if (entity.ThumbnailAttachmentId.HasValue)
                 {
-                    item.Thumbnail = ObjectMapper.Map<LiteAttachmentDto>(thumbnail);
-                    item.Thumbnail.Url = _attachmentManager.GetUrl(thumbnail);
-                    item.Thumbnail.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(thumbnail);
+                    var thumbnail = await _attachmentRepository.GetAsync(entity.ThumbnailAttachmentId.Value);
+                    if (thumbnail != null)
+                    {
+                        item.Thumbnail = ObjectMapper.Map<LiteAttachmentDto>(thumbnail);
+                        item.Thumbnail.Url = _attachmentManager.GetUrl(thumbnail);
+                        item.Thumbnail.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(thumbnail);
+                    }
                 }
 
-                var video = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.LessonSessionVideo);
-                if (video != null)
+                if (entity.VideoAttachmentId.HasValue)
                 {
-                    item.Video = ObjectMapper.Map<LiteAttachmentDto>(video);
-                    item.Video.Url = _attachmentManager.GetUrl(video);
+                    var video = await _attachmentRepository.GetAsync(entity.VideoAttachmentId.Value);
+                    if (video != null)
+                    {
+                        item.Video = ObjectMapper.Map<LiteAttachmentDto>(video);
+                        item.Video.Url = _attachmentManager.GetUrl(video);
+                    }
                 }
             }
 
@@ -136,19 +171,25 @@ namespace ReadIraq.LessonSessions
                 dto.Attachments.Add(attDto);
             }
 
-            var thumbnail = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.LessonSessionThumbnail);
-            if (thumbnail != null)
+            if (entity.ThumbnailAttachmentId.HasValue)
             {
-                dto.Thumbnail = ObjectMapper.Map<LiteAttachmentDto>(thumbnail);
-                dto.Thumbnail.Url = _attachmentManager.GetUrl(thumbnail);
-                dto.Thumbnail.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(thumbnail);
+                var thumbnail = await _attachmentRepository.GetAsync(entity.ThumbnailAttachmentId.Value);
+                if (thumbnail != null)
+                {
+                    dto.Thumbnail = ObjectMapper.Map<LiteAttachmentDto>(thumbnail);
+                    dto.Thumbnail.Url = _attachmentManager.GetUrl(thumbnail);
+                    dto.Thumbnail.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(thumbnail);
+                }
             }
 
-            var video = await _attachmentManager.GetElementByRefAsync(entity.Id.ToString(), AttachmentRefType.LessonSessionVideo);
-            if (video != null)
+            if (entity.VideoAttachmentId.HasValue)
             {
-                dto.Video = ObjectMapper.Map<LiteAttachmentDto>(video);
-                dto.Video.Url = _attachmentManager.GetUrl(video);
+                var video = await _attachmentRepository.GetAsync(entity.VideoAttachmentId.Value);
+                if (video != null)
+                {
+                    dto.Video = ObjectMapper.Map<LiteAttachmentDto>(video);
+                    dto.Video.Url = _attachmentManager.GetUrl(video);
+                }
             }
 
             // Map Teacher Details
@@ -160,10 +201,13 @@ namespace ReadIraq.LessonSessions
                 dto.TeacherRating = entity.TeacherProfile.AverageRating;
                 dto.TeacherReviewsCount = entity.TeacherProfile.ReviewsCount;
 
-                var teacherImg = await _attachmentManager.GetElementByRefAsync(entity.TeacherProfileId.ToString(), AttachmentRefType.TeacherProfile);
-                if (teacherImg != null)
+                if (entity.TeacherProfile.AttachmentId.HasValue)
                 {
-                    dto.TeacherImageUrl = _attachmentManager.GetUrl(teacherImg);
+                    var teacherImg = await _attachmentRepository.GetAsync(entity.TeacherProfile.AttachmentId.Value);
+                    if (teacherImg != null)
+                    {
+                        dto.TeacherImageUrl = _attachmentManager.GetUrl(teacherImg);
+                    }
                 }
             }
 

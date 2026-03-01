@@ -41,8 +41,8 @@ namespace ReadIraq.Search
 
             if (string.IsNullOrEmpty(input.Type) || input.Type == "subject")
             {
-                var query = _subjectRepository.GetAll()
-                    .WhereIf(!string.IsNullOrEmpty(input.Q), x => x.Description.Contains(input.Q));
+                var query = _subjectRepository.GetAll().Include(x => x.Name)
+                    .WhereIf(!string.IsNullOrEmpty(input.Q), x => (x.Description != null && x.Description.Contains(input.Q)) || x.Name.Any(n => n.Name.Contains(input.Q)));
 
                 totalCount += await query.CountAsync();
                 var items = await query.OrderBy(x => x.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
@@ -52,7 +52,7 @@ namespace ReadIraq.Search
                     var searchResult = new SearchResultItem
                     {
                         Id = item.Id.ToString(),
-                        Title = "Subject", // Replace with translation if available
+                        Title = item.Name.FirstOrDefault()?.Name ?? item.Description ?? "Subject",
                         Description = item.Description,
                         Type = "subject",
                         LessonsCount = lessonsCount,
@@ -67,7 +67,7 @@ namespace ReadIraq.Search
             if (string.IsNullOrEmpty(input.Type) || input.Type == "session")
             {
                 var query = _sessionRepository.GetAll().Include(x => x.Subject)
-                    .WhereIf(!string.IsNullOrEmpty(input.Q), x => x.Title.Contains(input.Q) || x.Description.Contains(input.Q));
+                    .WhereIf(!string.IsNullOrEmpty(input.Q), x => x.Title.Contains(input.Q) || (x.Description != null && x.Description.Contains(input.Q)));
 
                 totalCount += await query.CountAsync();
                 var items = await query.OrderBy(x => x.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();

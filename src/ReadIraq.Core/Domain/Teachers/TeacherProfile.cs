@@ -35,6 +35,8 @@ namespace ReadIraq.Domain.Teachers
         public int ReviewsCount { get; set; }
         public bool IsActive { get; set; }
 
+        public long? AttachmentId { get; set; }
+
         public virtual ICollection<TeacherFeatureMap> Features { get; set; }
         public virtual ICollection<TeacherSubject> Subjects { get; set; }
         public virtual ICollection<TeacherRatingBreakdown> RatingBreakdowns { get; set; }

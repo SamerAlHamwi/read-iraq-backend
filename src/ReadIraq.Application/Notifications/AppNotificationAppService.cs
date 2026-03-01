@@ -72,6 +72,19 @@ namespace ReadIraq.Notifications
             await _notificationService.MarkAsReadAsync(input.Id);
         }
 
+        public async Task MarkAllAsReadAsync()
+        {
+            var userId = AbpSession.GetUserId();
+            var notifications = await Repository.GetAll()
+                .Where(x => x.UserId == userId && !x.IsRead)
+                .ToListAsync();
+
+            foreach (var notification in notifications)
+            {
+                notification.IsRead = true;
+            }
+        }
+
         public async Task DeleteNotificationAsync(EntityDto<Guid> input)
         {
             await _notificationService.DeleteNotificationAsync(input.Id);
@@ -117,7 +130,8 @@ namespace ReadIraq.Notifications
         protected override IQueryable<AppNotification> CreateFilteredQuery(PagedAndSortedResultRequestDto input)
         {
             return base.CreateFilteredQuery(input)
-                .Where(x => x.UserId == AbpSession.GetUserId() || x.UserId == null);
+                .Where(x => (x.UserId == AbpSession.GetUserId() || x.UserId == null) && x.SentAtUtc != null)
+                .OrderByDescending(x => x.CreationTime);
         }
     }
 }

@@ -29,6 +29,8 @@ namespace ReadIraq.Domain.Quizzes
         public int DurationSeconds { get; set; }
         public int TotalMarks { get; set; }
 
+        public long? AttachmentId { get; set; }
+
         public virtual ICollection<Question> Questions { get; set; }
 
         public Quiz()

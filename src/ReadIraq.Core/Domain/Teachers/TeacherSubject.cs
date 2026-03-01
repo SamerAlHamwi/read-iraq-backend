@@ -1,5 +1,6 @@
 using Abp.Domain.Entities.Auditing;
 using ReadIraq.Domain.Subjects;
+using ReadIraq.Domain.Grades;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,5 +18,10 @@ namespace ReadIraq.Domain.Teachers
 
         [ForeignKey(nameof(SubjectId))]
         public virtual Subject Subject { get; set; }
+
+        public int GradeId { get; set; }
+
+        [ForeignKey(nameof(GradeId))]
+        public virtual Grade Grade { get; set; }
     }
 }
