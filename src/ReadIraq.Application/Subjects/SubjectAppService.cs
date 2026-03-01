@@ -83,10 +83,10 @@ namespace ReadIraq.Subjects
 
             foreach (var item in result.Items)
             {
-                var entity = await Repository.GetAsync(item.Id);
-                if (entity.AttachmentId.HasValue)
+                var entity = await Repository.FirstOrDefaultAsync(item.Id);
+                if (entity != null && entity.AttachmentId.HasValue)
                 {
-                    var attachment = await _attachmentRepository.GetAsync(entity.AttachmentId.Value);
+                    var attachment = await _attachmentRepository.FirstOrDefaultAsync(entity.AttachmentId.Value);
                     if (attachment != null)
                     {
                         item.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
@@ -126,7 +126,7 @@ namespace ReadIraq.Subjects
             
             if (entity.AttachmentId.HasValue)
             {
-                var attachment = await _attachmentRepository.GetAsync(entity.AttachmentId.Value);
+                var attachment = await _attachmentRepository.FirstOrDefaultAsync(entity.AttachmentId.Value);
                 if (attachment != null)
                 {
                     dto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
@@ -166,7 +166,7 @@ namespace ReadIraq.Subjects
                 dto.TopTeacher = ObjectMapper.Map<LiteTeacherProfileDto>(topTeacher);
                 if (topTeacher.AttachmentId.HasValue)
                 {
-                    var teacherImg = await _attachmentRepository.GetAsync(topTeacher.AttachmentId.Value);
+                    var teacherImg = await _attachmentRepository.FirstOrDefaultAsync(topTeacher.AttachmentId.Value);
                     if (teacherImg != null)
                     {
                         dto.TopTeacher.Attachment = ObjectMapper.Map<LiteAttachmentDto>(teacherImg);
@@ -281,7 +281,7 @@ namespace ReadIraq.Subjects
                     var profile = teachers.First(x => x.Id == teacherDto.Id);
                     if (profile.AttachmentId.HasValue)
                     {
-                        var attachment = await _attachmentRepository.GetAsync(profile.AttachmentId.Value);
+                        var attachment = await _attachmentRepository.FirstOrDefaultAsync(profile.AttachmentId.Value);
                         if (attachment != null)
                         {
                             teacherDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
@@ -329,7 +329,7 @@ namespace ReadIraq.Subjects
                 var profile = allTeachers.First(x => x.Id == teacherDto.Id);
                 if (profile.AttachmentId.HasValue)
                 {
-                    var attachment = await _attachmentRepository.GetAsync(profile.AttachmentId.Value);
+                    var attachment = await _attachmentRepository.FirstOrDefaultAsync(profile.AttachmentId.Value);
                     if (attachment != null)
                     {
                         teacherDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
@@ -357,7 +357,7 @@ namespace ReadIraq.Subjects
                 var profile = teachers.First(x => x.Id == teacherDto.Id);
                 if (profile.AttachmentId.HasValue)
                 {
-                    var attachment = await _attachmentRepository.GetAsync(profile.AttachmentId.Value);
+                    var attachment = await _attachmentRepository.FirstOrDefaultAsync(profile.AttachmentId.Value);
                     if (attachment != null)
                     {
                         teacherDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);

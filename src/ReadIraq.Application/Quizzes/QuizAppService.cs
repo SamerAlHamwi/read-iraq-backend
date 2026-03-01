@@ -91,7 +91,7 @@ namespace ReadIraq.Quizzes
 
             if (entity.AttachmentId.HasValue)
             {
-                var attachment = await _attachmentRepository.GetAsync(entity.AttachmentId.Value);
+                var attachment = await _attachmentRepository.FirstOrDefaultAsync(entity.AttachmentId.Value);
                 if (attachment != null)
                 {
                     dto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
@@ -106,7 +106,7 @@ namespace ReadIraq.Quizzes
                     var question = entity.Questions.FirstOrDefault(x => x.Id == qDto.Id);
                     if (question != null && question.AttachmentId.HasValue)
                     {
-                        var qAttachment = await _attachmentRepository.GetAsync(question.AttachmentId.Value);
+                        var qAttachment = await _attachmentRepository.FirstOrDefaultAsync(question.AttachmentId.Value);
                         if (qAttachment != null)
                         {
                             qDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(qAttachment);

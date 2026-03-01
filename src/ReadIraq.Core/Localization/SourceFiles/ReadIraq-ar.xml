@@ -22,6 +22,8 @@
     <text name="ThereIsNoCurrentUser" value="لا يوجد مستخدم حالي!" />
     <text name="CanNotRegisterHostUsers" value="لا يمكن تسجيل مستخدمي المضيف!" />
     <text name="MediatorCodeIsNotCorrect" value="كود الوسيط غير صحيح" />
+    <text name="AlreadySaved" value="تم الحفظ مسبقاً" />
+    <text name="LessonNotFound" value="الدرس غير موجود" />
 
     <text name="Notification_DAILY_STUDY_REMINDER_Title" value="حافظ على تقدمك!" />
     <text name="Notification_DAILY_STUDY_REMINDER_Body" value="أكمل {0} للوصول لهدفك اليومي." />

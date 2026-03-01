@@ -121,11 +121,12 @@ namespace ReadIraq.LessonSessions
 
             foreach (var item in result.Items)
             {
-                var entity = await Repository.GetAsync(item.Id);
+                var entity = await Repository.FirstOrDefaultAsync(item.Id);
+                if (entity == null) continue;
                 
                 if (entity.ThumbnailAttachmentId.HasValue)
                 {
-                    var thumbnail = await _attachmentRepository.GetAsync(entity.ThumbnailAttachmentId.Value);
+                    var thumbnail = await _attachmentRepository.FirstOrDefaultAsync(entity.ThumbnailAttachmentId.Value);
                     if (thumbnail != null)
                     {
                         item.Thumbnail = ObjectMapper.Map<LiteAttachmentDto>(thumbnail);
@@ -136,7 +137,7 @@ namespace ReadIraq.LessonSessions
 
                 if (entity.VideoAttachmentId.HasValue)
                 {
-                    var video = await _attachmentRepository.GetAsync(entity.VideoAttachmentId.Value);
+                    var video = await _attachmentRepository.FirstOrDefaultAsync(entity.VideoAttachmentId.Value);
                     if (video != null)
                     {
                         item.Video = ObjectMapper.Map<LiteAttachmentDto>(video);
@@ -164,16 +165,22 @@ namespace ReadIraq.LessonSessions
             var dto = MapToEntityDto(entity);
             dto.Attachments = new List<LiteAttachmentDto>();
 
-            foreach (var lessonAttachment in entity.Attachments)
+            if (entity.Attachments != null)
             {
-                var attDto = ObjectMapper.Map<LiteAttachmentDto>(lessonAttachment.Attachment);
-                attDto.Url = _attachmentManager.GetUrl(lessonAttachment.Attachment);
-                dto.Attachments.Add(attDto);
+                foreach (var lessonAttachment in entity.Attachments)
+                {
+                    if (lessonAttachment.Attachment != null)
+                    {
+                        var attDto = ObjectMapper.Map<LiteAttachmentDto>(lessonAttachment.Attachment);
+                        attDto.Url = _attachmentManager.GetUrl(lessonAttachment.Attachment);
+                        dto.Attachments.Add(attDto);
+                    }
+                }
             }
 
             if (entity.ThumbnailAttachmentId.HasValue)
             {
-                var thumbnail = await _attachmentRepository.GetAsync(entity.ThumbnailAttachmentId.Value);
+                var thumbnail = await _attachmentRepository.FirstOrDefaultAsync(entity.ThumbnailAttachmentId.Value);
                 if (thumbnail != null)
                 {
                     dto.Thumbnail = ObjectMapper.Map<LiteAttachmentDto>(thumbnail);
@@ -184,7 +191,7 @@ namespace ReadIraq.LessonSessions
 
             if (entity.VideoAttachmentId.HasValue)
             {
-                var video = await _attachmentRepository.GetAsync(entity.VideoAttachmentId.Value);
+                var video = await _attachmentRepository.FirstOrDefaultAsync(entity.VideoAttachmentId.Value);
                 if (video != null)
                 {
                     dto.Video = ObjectMapper.Map<LiteAttachmentDto>(video);
@@ -203,7 +210,7 @@ namespace ReadIraq.LessonSessions
 
                 if (entity.TeacherProfile.AttachmentId.HasValue)
                 {
-                    var teacherImg = await _attachmentRepository.GetAsync(entity.TeacherProfile.AttachmentId.Value);
+                    var teacherImg = await _attachmentRepository.FirstOrDefaultAsync(entity.TeacherProfile.AttachmentId.Value);
                     if (teacherImg != null)
                     {
                         dto.TeacherImageUrl = _attachmentManager.GetUrl(teacherImg);

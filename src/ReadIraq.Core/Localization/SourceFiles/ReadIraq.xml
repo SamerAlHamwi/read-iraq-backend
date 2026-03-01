@@ -138,6 +138,8 @@
     <text name="ThereIsNoCurrentUser" value="There is no current user!" />
     <text name="CanNotRegisterHostUsers" value="Can not register host users!" />
     <text name="MediatorCodeIsNotCorrect" value="Mediator code is not correct" />
+    <text name="AlreadySaved" value="Already saved" />
+    <text name="LessonNotFound" value="Lesson not found" />
 
     <text name="Notification_DAILY_STUDY_REMINDER_Title" value="Keep your streak alive!" />
     <text name="Notification_DAILY_STUDY_REMINDER_Body" value="Complete {0} to reach your daily goal." />

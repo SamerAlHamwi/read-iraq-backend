@@ -2,6 +2,7 @@ using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
+using Abp.Runtime.Session;
 using Abp.UI;
 using Microsoft.EntityFrameworkCore;
 using ReadIraq.CrudAppServiceBase;
@@ -41,10 +42,31 @@ namespace ReadIraq.SavedItems
 
         public override async Task<UserSavedItemDto> CreateAsync(CreateUserSavedItemDto input)
         {
-            var exists = await Repository.GetAll().AnyAsync(x => x.UserId == input.UserId && x.ItemType == input.ItemType && x.ItemId == input.ItemId);
+            var userId = AbpSession.GetUserId();
+            input.UserId = userId; // Always set to current user ID
+
+            var exists = await Repository.GetAll().AnyAsync(x => x.UserId == userId && x.ItemType == input.ItemType && x.ItemId == input.ItemId);
             if (exists)
             {
                 throw new UserFriendlyException(L("AlreadySaved"));
+            }
+
+            // Verify if the item exists before saving
+            if (input.ItemType == SavedItemType.Teacher)
+            {
+                var teacherExists = await _teacherRepository.GetAll().AnyAsync(x => x.Id == input.ItemId);
+                if (!teacherExists)
+                {
+                    throw new UserFriendlyException(L("TeacherNotFound"));
+                }
+            }
+            else if (input.ItemType == SavedItemType.Session)
+            {
+                var lessonExists = await _lessonRepository.GetAll().AnyAsync(x => x.Id == input.ItemId);
+                if (!lessonExists)
+                {
+                    throw new UserFriendlyException(L("LessonNotFound"));
+                }
             }
 
             return await base.CreateAsync(input);
@@ -52,7 +74,9 @@ namespace ReadIraq.SavedItems
 
         protected override IQueryable<UserSavedItem> CreateFilteredQuery(PagedUserSavedItemResultRequestDto input)
         {
+            var userId = AbpSession.UserId;
             return base.CreateFilteredQuery(input)
+                .WhereIf(userId.HasValue, x => x.UserId == userId.Value) // Default to current user's items
                 .WhereIf(input.UserId.HasValue, x => x.UserId == input.UserId.Value)
                 .WhereIf(input.ItemType.HasValue, x => x.ItemType == input.ItemType.Value)
                 .WhereIf(input.ItemId.HasValue, x => x.ItemId == input.ItemId.Value);
@@ -96,7 +120,7 @@ namespace ReadIraq.SavedItems
                 }
                 else if (item.ItemType == SavedItemType.Teacher)
                 {
-                    var teacher = await _teacherRepository.GetAsync(item.ItemId);
+                    var teacher = await _teacherRepository.FirstOrDefaultAsync(item.ItemId);
                     if (teacher != null)
                     {
                         item.Title = teacher.Name;
