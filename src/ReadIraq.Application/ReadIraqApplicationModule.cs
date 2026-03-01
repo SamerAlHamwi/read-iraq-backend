@@ -106,7 +106,9 @@ namespace ReadIraq
                 #endregion
 
                 #region TeacherProfile
-                configuration.CreateMap<TeacherProfile, TeacherProfileDto>();
+                configuration.CreateMap<TeacherProfile, TeacherProfileDto>()
+                    .ForMember(dest => dest.Features, opt => opt.Ignore())
+                    .ForMember(dest => dest.Subjects, opt => opt.Ignore());
                 configuration.CreateMap<TeacherProfile, LiteTeacherProfileDto>();
                 configuration.CreateMap<TeacherRatingBreakdown, TeacherRatingBreakdownDto>();
                 #endregion

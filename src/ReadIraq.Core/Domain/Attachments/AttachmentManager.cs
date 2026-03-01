@@ -54,16 +54,28 @@ namespace ReadIraq.Domain.Attachments
 
         public string GetUrl(Attachment attachment)
         {
+            if (attachment == null) return null;
+
             var baseUri = new Uri(_appBaseUrl);
             if (!string.IsNullOrWhiteSpace(attachment.Url))
             {
                 return attachment.Url;
             }
 
+            if (string.IsNullOrWhiteSpace(attachment.StorageKey))
+            {
+                return null;
+            }
+
             return (new Uri(baseUri, attachment.StorageKey)).AbsoluteUri;
         }
         public string GetLowResolutionPhotoUrl(Attachment attachment)
         {
+            if (attachment == null || string.IsNullOrWhiteSpace(attachment.LowResolutionPhotoRelativePath))
+            {
+                return null;
+            }
+
             var baseUri = new Uri(_appBaseUrl);
             return (new Uri(baseUri, attachment.LowResolutionPhotoRelativePath)).AbsoluteUri;
         }
