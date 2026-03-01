@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static ReadIraq.Enums.Enum;
 using Abp.Domain.Uow;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ReadIraq.SavedItems
 {
@@ -83,6 +84,18 @@ namespace ReadIraq.SavedItems
             }
 
             return await base.CreateAsync(input);
+        }
+
+        [HttpPost]
+        public async Task UnsaveAsync(UnsaveItemInput input)
+        {
+            var userId = AbpSession.GetUserId();
+            var item = await Repository.FirstOrDefaultAsync(x => x.UserId == userId && x.ItemType == input.ItemType && x.ItemId == input.ItemId);
+            if (item != null)
+            {
+                await Repository.DeleteAsync(item.Id);
+                await CurrentUnitOfWork.SaveChangesAsync();
+            }
         }
 
         protected override IQueryable<UserSavedItem> CreateFilteredQuery(PagedUserSavedItemResultRequestDto input)

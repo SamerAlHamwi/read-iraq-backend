@@ -13,6 +13,12 @@ namespace ReadIraq.SavedItems
         Task<UserSavedItemDto> CreateAsync(CreateUserSavedItemDto input);
         Task<UserSavedItemDto> UpdateAsync(UpdateUserSavedItemDto input);
         Task DeleteAsync(EntityDto<Guid> input);
+        Task UnsaveAsync(UnsaveItemInput input);
+    }
+
+    public class UnsaveItemInput
+    {
+        public Guid ItemId { get; set; }
+        public Enums.Enum.SavedItemType ItemType { get; set; }
     }
 }
-
