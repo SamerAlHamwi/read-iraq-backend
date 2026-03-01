@@ -24,5 +24,6 @@ namespace ReadIraq.Subjects.Dto
         public double ProgressPercentage { get; set; }
         public LiteTeacherProfileDto TopTeacher { get; set; }
         public List<LiteLessonSessionDto> Lessons { get; set; }
+        public bool IsSaved { get; set; }
     }
 }

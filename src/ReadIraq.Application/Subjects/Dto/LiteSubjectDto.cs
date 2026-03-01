@@ -15,5 +15,6 @@ namespace ReadIraq.Subjects.Dto
         public int TeachersCount { get; set; }
         public int LessonsCount { get; set; }
         public string Color { get; set; }
+        public bool IsSaved { get; set; }
     }
 }

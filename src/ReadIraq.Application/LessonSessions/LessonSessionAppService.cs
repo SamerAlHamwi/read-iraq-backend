@@ -12,6 +12,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using ReadIraq.Domain.Attachments;
+using ReadIraq.Domain.SavedItems;
 using static ReadIraq.Enums.Enum;
 using System.Collections.Generic;
 using ReadIraq.NotificationService;
@@ -31,6 +32,7 @@ namespace ReadIraq.LessonSessions
         private readonly INotificationService _notificationService;
         private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
         private readonly UserManager _userManager;
+        private readonly IRepository<UserSavedItem, Guid> _userSavedItemRepository;
 
         public LessonSessionAppService(
             IRepository<LessonSession, Guid> repository,
@@ -39,7 +41,8 @@ namespace ReadIraq.LessonSessions
             IRepository<Attachment, long> attachmentRepository,
             INotificationService notificationService,
             IRepository<Enrollment, Guid> enrollmentRepository,
-            UserManager userManager)
+            UserManager userManager,
+            IRepository<UserSavedItem, Guid> userSavedItemRepository)
             : base(repository)
         {
             _progressRepository = progressRepository;
@@ -48,6 +51,7 @@ namespace ReadIraq.LessonSessions
             _notificationService = notificationService;
             _enrollmentRepository = enrollmentRepository;
             _userManager = userManager;
+            _userSavedItemRepository = userSavedItemRepository;
         }
 
         protected override IQueryable<LessonSession> CreateFilteredQuery(PagedLessonSessionResultRequestDto input)
@@ -118,6 +122,7 @@ namespace ReadIraq.LessonSessions
         public override async Task<PagedResultDto<LiteLessonSessionDto>> GetAllAsync(PagedLessonSessionResultRequestDto input)
         {
             var result = await base.GetAllAsync(input);
+            var userId = AbpSession.UserId;
 
             foreach (var item in result.Items)
             {
@@ -143,6 +148,11 @@ namespace ReadIraq.LessonSessions
                         item.Video = ObjectMapper.Map<LiteAttachmentDto>(video);
                         item.Video.Url = _attachmentManager.GetUrl(video);
                     }
+                }
+
+                if (userId.HasValue)
+                {
+                    item.IsSaved = await _userSavedItemRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.ItemId == item.Id && x.ItemType == SavedItemType.Session);
                 }
             }
 
@@ -232,6 +242,7 @@ namespace ReadIraq.LessonSessions
                 var progress = await _progressRepository.FirstOrDefaultAsync(p => p.SessionId == input.Id && p.UserId == userId.Value);
                 dto.IsCompleted = progress?.IsCompleted ?? false;
                 dto.WatchedSeconds = progress?.WatchedSeconds ?? 0;
+                dto.IsSaved = await _userSavedItemRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.ItemId == entity.Id && x.ItemType == SavedItemType.Session);
             }
 
             return dto;

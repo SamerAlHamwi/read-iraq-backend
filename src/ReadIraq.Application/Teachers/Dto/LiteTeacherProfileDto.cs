@@ -14,5 +14,6 @@ namespace ReadIraq.Teachers.Dto
         public decimal AverageRating { get; set; }
         public int LessonsCount { get; set; }
         public bool IsFollowed { get; set; }
+        public bool IsSaved { get; set; }
     }
 }

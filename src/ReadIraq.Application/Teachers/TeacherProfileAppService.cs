@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using ReadIraq.Domain.Attachments;
 using ReadIraq.Domain.LessonSessions;
 using ReadIraq.Domain.Follows;
+using ReadIraq.Domain.SavedItems;
 using static ReadIraq.Enums.Enum;
 using Abp.UI;
 
@@ -32,6 +33,7 @@ namespace ReadIraq.Teachers
         private readonly IRepository<Attachment, long> _attachmentRepository;
         private readonly IRepository<TeacherFeature, Guid> _featureRepository;
         private readonly IRepository<UserFollowTeacher, Guid> _userFollowTeacherRepository;
+        private readonly IRepository<UserSavedItem, Guid> _userSavedItemRepository;
 
         public TeacherProfileAppService(
             IRepository<TeacherProfile, Guid> repository,
@@ -42,7 +44,8 @@ namespace ReadIraq.Teachers
             IAttachmentManager attachmentManager,
             IRepository<Attachment, long> attachmentRepository,
             IRepository<TeacherFeature, Guid> featureRepository,
-            IRepository<UserFollowTeacher, Guid> userFollowTeacherRepository)
+            IRepository<UserFollowTeacher, Guid> userFollowTeacherRepository,
+            IRepository<UserSavedItem, Guid> userSavedItemRepository)
             : base(repository)
         {
             _teacherProfileManager = teacherProfileManager;
@@ -53,6 +56,7 @@ namespace ReadIraq.Teachers
             _attachmentRepository = attachmentRepository;
             _featureRepository = featureRepository;
             _userFollowTeacherRepository = userFollowTeacherRepository;
+            _userSavedItemRepository = userSavedItemRepository;
         }
 
         protected override IQueryable<TeacherProfile> CreateFilteredQuery(PagedTeacherProfileResultRequestDto input)
@@ -102,6 +106,7 @@ namespace ReadIraq.Teachers
                 if (userId.HasValue)
                 {
                     item.IsFollowed = await _userFollowTeacherRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.TeacherProfileId == item.Id);
+                    item.IsSaved = await _userSavedItemRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.ItemId == item.Id && x.ItemType == SavedItemType.Teacher);
                 }
             }
 
@@ -146,6 +151,7 @@ namespace ReadIraq.Teachers
             if (userId.HasValue)
             {
                 dto.IsFollowed = await _userFollowTeacherRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.TeacherProfileId == entity.Id);
+                dto.IsSaved = await _userSavedItemRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.ItemId == entity.Id && x.ItemType == SavedItemType.Teacher);
             }
 
             return dto;

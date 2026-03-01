@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.LessonSessions;
 using ReadIraq.Domain.Enrollments;
+using ReadIraq.Domain.SavedItems;
 using ReadIraq.Teachers.Dto;
 using ReadIraq.LessonSessions.Dto;
 using ReadIraq.Domain.Attachments;
@@ -34,6 +35,7 @@ namespace ReadIraq.Subjects
         private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
         private readonly IAttachmentManager _attachmentManager;
         private readonly IRepository<Attachment, long> _attachmentRepository;
+        private readonly IRepository<UserSavedItem, Guid> _userSavedItemRepository;
 
         public SubjectAppService(
             IRepository<Subject, Guid> repository,
@@ -44,7 +46,8 @@ namespace ReadIraq.Subjects
             IRepository<UserPreferredTeacher, Guid> userPreferredTeacherRepository,
             IRepository<Enrollment, Guid> enrollmentRepository,
             IAttachmentManager attachmentManager,
-            IRepository<Attachment, long> attachmentRepository)
+            IRepository<Attachment, long> attachmentRepository,
+            IRepository<UserSavedItem, Guid> userSavedItemRepository)
             : base(repository)
         {
             _subjectManager = subjectManager;
@@ -55,6 +58,7 @@ namespace ReadIraq.Subjects
             _enrollmentRepository = enrollmentRepository;
             _attachmentManager = attachmentManager;
             _attachmentRepository = attachmentRepository;
+            _userSavedItemRepository = userSavedItemRepository;
         }
 
         protected override IQueryable<Subject> CreateFilteredQuery(PagedSubjectResultRequestDto input)
@@ -80,6 +84,7 @@ namespace ReadIraq.Subjects
         public override async Task<PagedResultDto<LiteSubjectDto>> GetAllAsync(PagedSubjectResultRequestDto input)
         {
             var result = await base.GetAllAsync(input);
+            var userId = AbpSession.UserId;
 
             foreach (var item in result.Items)
             {
@@ -104,6 +109,11 @@ namespace ReadIraq.Subjects
                 else
                 {
                     item.TeachersCount = await _teacherSubjectRepository.CountAsync(x => x.SubjectId == item.Id && x.TeacherProfile.IsActive);
+                }
+
+                if (userId.HasValue)
+                {
+                    item.IsSaved = await _userSavedItemRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.ItemId == item.Id && x.ItemType == SavedItemType.Subject);
                 }
             }
 
@@ -151,6 +161,7 @@ namespace ReadIraq.Subjects
                 {
                     dto.ProgressPercentage = (double)enrollment.ProgressPercent;
                 }
+                dto.IsSaved = await _userSavedItemRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.ItemId == entity.Id && x.ItemType == SavedItemType.Subject);
             }
 
             // Top Teacher

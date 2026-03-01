@@ -36,5 +36,6 @@ namespace ReadIraq.LessonSessions.Dto
         // Progress fields for current user
         public bool IsCompleted { get; set; }
         public int WatchedSeconds { get; set; }
+        public bool IsSaved { get; set; }
     }
 }
