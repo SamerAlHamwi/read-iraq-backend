@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static ReadIraq.Enums.Enum;
+using Abp.Domain.Uow;
 
 namespace ReadIraq.SavedItems
 {
@@ -45,10 +46,22 @@ namespace ReadIraq.SavedItems
             var userId = AbpSession.GetUserId();
             input.UserId = userId; // Always set to current user ID
 
-            var exists = await Repository.GetAll().AnyAsync(x => x.UserId == userId && x.ItemType == input.ItemType && x.ItemId == input.ItemId);
-            if (exists)
+            using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.SoftDelete))
             {
-                throw new UserFriendlyException(L("AlreadySaved"));
+                var existingItem = await Repository.FirstOrDefaultAsync(x => x.UserId == userId && x.ItemType == input.ItemType && x.ItemId == input.ItemId);
+                if (existingItem != null)
+                {
+                    if (existingItem.IsDeleted)
+                    {
+                        existingItem.IsDeleted = false;
+                        existingItem.DeletionTime = null;
+                        existingItem.DeleterUserId = null;
+                        await Repository.UpdateAsync(existingItem);
+                        await CurrentUnitOfWork.SaveChangesAsync();
+                        return MapToEntityDto(existingItem);
+                    }
+                    throw new UserFriendlyException(L("AlreadySaved"));
+                }
             }
 
             // Verify if the item exists before saving

@@ -19,6 +19,7 @@ using ReadIraq.Domain.Follows;
 using ReadIraq.Domain.SavedItems;
 using static ReadIraq.Enums.Enum;
 using Abp.UI;
+using Abp.Domain.Uow;
 
 namespace ReadIraq.Teachers
 {
@@ -299,23 +300,36 @@ namespace ReadIraq.Teachers
             var userId = AbpSession.GetUserId();
             var teacherProfileId = input.Id;
 
-            var exists = await _userFollowTeacherRepository.GetAll().AnyAsync(x => x.UserId == userId && x.TeacherProfileId == teacherProfileId);
-            if (!exists)
+            using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.SoftDelete))
             {
-                // Verify teacher exists
-                if (!await Repository.GetAll().AnyAsync(x => x.Id == teacherProfileId))
+                var existingFollow = await _userFollowTeacherRepository.FirstOrDefaultAsync(x => x.UserId == userId && x.TeacherProfileId == teacherProfileId);
+                if (existingFollow != null)
                 {
-                    throw new UserFriendlyException(L("TeacherNotFound"));
+                    if (existingFollow.IsDeleted)
+                    {
+                        existingFollow.IsDeleted = false;
+                        existingFollow.DeletionTime = null;
+                        existingFollow.DeleterUserId = null;
+                        await _userFollowTeacherRepository.UpdateAsync(existingFollow);
+                        await CurrentUnitOfWork.SaveChangesAsync();
+                    }
+                    return;
                 }
-
-                await _userFollowTeacherRepository.InsertAsync(new UserFollowTeacher
-                {
-                    UserId = userId,
-                    TeacherProfileId = teacherProfileId
-                });
-
-                await CurrentUnitOfWork.SaveChangesAsync();
             }
+
+            // Verify teacher exists
+            if (!await Repository.GetAll().AnyAsync(x => x.Id == teacherProfileId))
+            {
+                throw new UserFriendlyException(L("TeacherNotFound"));
+            }
+
+            await _userFollowTeacherRepository.InsertAsync(new UserFollowTeacher
+            {
+                UserId = userId,
+                TeacherProfileId = teacherProfileId
+            });
+
+            await CurrentUnitOfWork.SaveChangesAsync();
         }
 
         [HttpPost]
