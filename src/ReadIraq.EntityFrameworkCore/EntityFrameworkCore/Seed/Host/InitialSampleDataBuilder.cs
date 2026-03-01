@@ -174,9 +174,9 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
         {
             var stages = new[]
             {
-                new { NameEn = "Primary School", NameAr = "المرحلة الابتدائية", Grades = new[] { 1, 2, 3, 4, 5, 6 } },
-                new { NameEn = "Middle School", NameAr = "المرحلة المتوسطة", Grades = new[] { 7, 8, 9 } },
-                new { NameEn = "High School", NameAr = "المرحلة الإعدادية", Grades = new[] { 10, 11, 12 } }
+                new { NameEn = "Primary School", NameAr = "المرحلة الابتدائية", Grades = new[] { 1,  } }, //2, 3, 4, 5, 6
+                new { NameEn = "Middle School", NameAr = "المرحلة المتوسطة", Grades = new[] {  } }, //7, 8, 9
+                new { NameEn = "High School", NameAr = "المرحلة الإعدادية", Grades = new[] {  } } //10, 11, 12
             };
 
             var subjects = new[]
