@@ -52,6 +52,17 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
         private void DeleteAllData()
         {
             Console.WriteLine("Cleaning up existing data...");
+
+            // Nullify user references to avoid foreign key constraints preventing deletion of Cities and Grades
+            try
+            {
+                _context.Database.ExecuteSqlRaw("UPDATE AbpUsers SET GovernorateId = NULL, GradeId = NULL");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Could not nullify AbpUsers references: {ex.Message}");
+            }
+
             var tables = new[]
             {
                 "LessonSessionAttachments",
@@ -59,6 +70,8 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                 "QuizAttempts",
                 "Quizzes",
                 "UserSessionProgresses",
+                "Enrollments",
+                "TeacherReviews",
                 "LessonSessions",
                 "TeacherSubjects",
                 "TeacherProfiles",
@@ -67,6 +80,9 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                 "Subjects",
                 "Grades",
                 "GradeGroups",
+                "RegionTranslations",
+                "Regions",
+                "Mediator",
                 "CityTranslations",
                 "Cities",
                 "CountryTranslations",
@@ -88,9 +104,14 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             
             try
             {
+                // Delete all users except the ones we want to keep (like existing non-sample admins)
+                // but usually for a clean seed we target specific types or all sample-created ones
                 _context.Database.ExecuteSqlRaw("DELETE FROM AbpUsers WHERE Type = 3");
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Could not delete sample users: {ex.Message}");
+            }
 
             _context.SaveChanges();
             Console.WriteLine("Cleanup done.");
