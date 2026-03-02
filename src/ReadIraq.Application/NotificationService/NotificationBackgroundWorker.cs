@@ -6,7 +6,7 @@ using Abp.Threading.BackgroundWorkers;
 using Abp.Threading.Timers;
 using Microsoft.EntityFrameworkCore;
 using ReadIraq.Authorization.Users;
-using ReadIraq.Domain.Enrollments;
+using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.LessonSessions;
 using ReadIraq.Domain.Quizzes;
 using ReadIraq.Domain.Subscriptions;
@@ -20,7 +20,7 @@ namespace ReadIraq.NotificationService
     public class NotificationBackgroundWorker : PeriodicBackgroundWorkerBase, ISingletonDependency
     {
         private readonly IRepository<User, long> _userRepository;
-        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly IRepository<UserPreferredSubject, Guid> _userPreferredSubjectRepository;
         private readonly IRepository<Subscription, Guid> _subscriptionRepository;
         private readonly IRepository<LessonSession, Guid> _lessonSessionRepository;
         private readonly IRepository<UserSessionProgress, Guid> _progressRepository;
@@ -31,7 +31,7 @@ namespace ReadIraq.NotificationService
         public NotificationBackgroundWorker(
             AbpTimer timer,
             IRepository<User, long> userRepository,
-            IRepository<Enrollment, Guid> enrollmentRepository,
+            IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
             IRepository<Subscription, Guid> subscriptionRepository,
             IRepository<LessonSession, Guid> lessonSessionRepository,
             IRepository<UserSessionProgress, Guid> progressRepository,
@@ -41,7 +41,7 @@ namespace ReadIraq.NotificationService
             : base(timer)
         {
             _userRepository = userRepository;
-            _enrollmentRepository = enrollmentRepository;
+            _userPreferredSubjectRepository = userPreferredSubjectRepository;
             _subscriptionRepository = subscriptionRepository;
             _lessonSessionRepository = lessonSessionRepository;
             _progressRepository = progressRepository;
@@ -81,22 +81,22 @@ namespace ReadIraq.NotificationService
 
             foreach (var user in usersToRemind)
             {
-                var enrollment = await _enrollmentRepository.GetAll()
+                var preferredSubject = await _userPreferredSubjectRepository.GetAll()
                     .Include(x => x.Subject)
                     .Where(x => x.UserId == user.Id && x.ProgressPercent < 100)
                     .OrderBy(x => x.ProgressPercent)
                     .FirstOrDefaultAsync();
 
-                if (enrollment != null)
+                if (preferredSubject != null)
                 {
                     var lesson = await _lessonSessionRepository.GetAll()
-                        .Where(x => x.SubjectId == enrollment.SubjectId)
+                        .Where(x => x.SubjectId == preferredSubject.SubjectId)
                         .OrderBy(x => x.Order)
                         .FirstOrDefaultAsync();
 
                     if (lesson != null)
                     {
-                        await _notificationService.NotifyDailyStudyReminderAsync(user.Id, lesson.Id, lesson.Title, enrollment.SubjectId);
+                        await _notificationService.NotifyDailyStudyReminderAsync(user.Id, lesson.Id, lesson.Title, preferredSubject.SubjectId);
                     }
                 }
             }
@@ -126,15 +126,15 @@ namespace ReadIraq.NotificationService
 
             foreach (var user in usersWithBrokenStreaks)
             {
-                 var enrollment = await _enrollmentRepository.GetAll()
+                 var preferredSubject = await _userPreferredSubjectRepository.GetAll()
                     .Where(x => x.UserId == user.Id)
                     .OrderByDescending(x => x.ProgressPercent)
                     .FirstOrDefaultAsync();
 
-                 if (enrollment != null)
+                 if (preferredSubject != null)
                  {
                     var lesson = await _lessonSessionRepository.GetAll()
-                        .Where(x => x.SubjectId == enrollment.SubjectId)
+                        .Where(x => x.SubjectId == preferredSubject.SubjectId)
                         .OrderBy(x => x.Order)
                         .FirstOrDefaultAsync();
 

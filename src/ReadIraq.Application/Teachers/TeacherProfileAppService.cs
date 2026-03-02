@@ -20,6 +20,8 @@ using ReadIraq.Domain.SavedItems;
 using static ReadIraq.Enums.Enum;
 using Abp.UI;
 using Abp.Domain.Uow;
+using ReadIraq.Domain.Subjects;
+using ReadIraq.Domain.Grades;
 
 namespace ReadIraq.Teachers
 {
@@ -35,6 +37,10 @@ namespace ReadIraq.Teachers
         private readonly IRepository<TeacherFeature, Guid> _featureRepository;
         private readonly IRepository<UserFollowTeacher, Guid> _userFollowTeacherRepository;
         private readonly IRepository<UserSavedItem, Guid> _userSavedItemRepository;
+        private readonly IRepository<Subject, Guid> _subjectRepository;
+        private readonly IRepository<UserPreferredSubject, Guid> _userPreferredSubjectRepository;
+        private readonly IRepository<UserPreferredTeacher, Guid> _userPreferredTeacherRepository;
+        private readonly IRepository<GradeSubject> _gradeSubjectRepository;
 
         public TeacherProfileAppService(
             IRepository<TeacherProfile, Guid> repository,
@@ -46,7 +52,11 @@ namespace ReadIraq.Teachers
             IRepository<Attachment, long> attachmentRepository,
             IRepository<TeacherFeature, Guid> featureRepository,
             IRepository<UserFollowTeacher, Guid> userFollowTeacherRepository,
-            IRepository<UserSavedItem, Guid> userSavedItemRepository)
+            IRepository<UserSavedItem, Guid> userSavedItemRepository,
+            IRepository<Subject, Guid> subjectRepository,
+            IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
+            IRepository<UserPreferredTeacher, Guid> userPreferredTeacherRepository,
+            IRepository<GradeSubject> gradeSubjectRepository)
             : base(repository)
         {
             _teacherProfileManager = teacherProfileManager;
@@ -58,6 +68,10 @@ namespace ReadIraq.Teachers
             _featureRepository = featureRepository;
             _userFollowTeacherRepository = userFollowTeacherRepository;
             _userSavedItemRepository = userSavedItemRepository;
+            _subjectRepository = subjectRepository;
+            _userPreferredSubjectRepository = userPreferredSubjectRepository;
+            _userPreferredTeacherRepository = userPreferredTeacherRepository;
+            _gradeSubjectRepository = gradeSubjectRepository;
         }
 
         protected override IQueryable<TeacherProfile> CreateFilteredQuery(PagedTeacherProfileResultRequestDto input)
@@ -349,6 +363,86 @@ namespace ReadIraq.Teachers
                 await _userFollowTeacherRepository.DeleteAsync(follow.Id);
                 await CurrentUnitOfWork.SaveChangesAsync();
             }
+        }
+
+        [AbpAllowAnonymous]
+        [HttpGet]
+        public async Task<Dictionary<string, List<LiteTeacherProfileDto>>> GetPreferredTeachersByGradeAsync(int gradeId)
+        {
+            var userId = AbpSession.UserId;
+
+            // 1. Get all subjects for this grade
+            var subjects = await _subjectRepository.GetAll()
+                .Include(x => x.Name)
+                .Where(s => _gradeSubjectRepository.GetAll().Any(gs => gs.SubjectId == s.Id && gs.GradeId == gradeId))
+                .ToListAsync();
+
+            var preferredSubjectIds = new List<Guid>();
+            var preferredTeacherMaps = new List<UserPreferredTeacher>();
+
+            if (userId.HasValue)
+            {
+                preferredSubjectIds = await _userPreferredSubjectRepository.GetAll()
+                    .Where(x => x.UserId == userId.Value)
+                    .Select(x => x.SubjectId)
+                    .ToListAsync();
+
+                preferredTeacherMaps = await _userPreferredTeacherRepository.GetAll()
+                    .Where(x => x.UserId == userId.Value)
+                    .ToListAsync();
+            }
+
+            // 2. Order subjects: Preferred first, then others
+            var orderedSubjects = subjects
+                .OrderByDescending(s => preferredSubjectIds.Contains(s.Id))
+                .ToList();
+
+            var result = new Dictionary<string, List<LiteTeacherProfileDto>>();
+
+            foreach (var subject in orderedSubjects)
+            {
+                // Get all teachers for this subject and grade
+                var teachers = await _teacherSubjectRepository.GetAll()
+                    .Include(ts => ts.TeacherProfile)
+                    .Where(ts => ts.SubjectId == subject.Id && ts.GradeId == gradeId && ts.TeacherProfile.IsActive)
+                    .Select(ts => ts.TeacherProfile)
+                    .ToListAsync();
+
+                // Order teachers: Preferred first, then by rating
+                var subjectPreferredTeacherIds = preferredTeacherMaps
+                    .Where(x => x.SubjectId == subject.Id)
+                    .Select(x => x.TeacherProfileId)
+                    .ToList();
+
+                var orderedTeachers = teachers
+                    .OrderByDescending(t => subjectPreferredTeacherIds.Contains(t.Id))
+                    .ThenByDescending(t => t.AverageRating)
+                    .ToList();
+
+                var teacherDtos = ObjectMapper.Map<List<LiteTeacherProfileDto>>(orderedTeachers);
+
+                // Attachments
+                foreach (var teacherDto in teacherDtos)
+                {
+                    var profile = teachers.First(x => x.Id == teacherDto.Id);
+                    if (profile.AttachmentId.HasValue)
+                    {
+                        var attachment = await _attachmentRepository.FirstOrDefaultAsync(profile.AttachmentId.Value);
+                        if (attachment != null)
+                        {
+                            teacherDto.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                            teacherDto.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                            teacherDto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                        }
+                    }
+                }
+
+                // Use the first translation name as the key (usually default)
+                var subjectKey = subject.Name.FirstOrDefault()?.Name ?? subject.Id.ToString();
+                result[subjectKey] = teacherDtos;
+            }
+
+            return result;
         }
     }
 }

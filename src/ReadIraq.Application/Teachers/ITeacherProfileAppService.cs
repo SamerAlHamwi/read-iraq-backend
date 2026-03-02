@@ -14,5 +14,6 @@ namespace ReadIraq.Teachers
         Task ToggleActiveAsync(EntityDto<Guid> input);
         Task FollowAsync(EntityDto<Guid> input);
         Task UnfollowAsync(EntityDto<Guid> input);
+        Task<Dictionary<string, List<LiteTeacherProfileDto>>> GetPreferredTeachersByGradeAsync(int gradeId);
     }
 }

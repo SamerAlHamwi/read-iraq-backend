@@ -29,7 +29,6 @@ using ReadIraq.Domain.Grades;
 using ReadIraq.Domain.Translations;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Teachers;
-using ReadIraq.Domain.Enrollments;
 using ReadIraq.Domain.UserSessionProgresses;
 using ReadIraq.Domain.Subscriptions;
 using ReadIraq.Domain.Quizzes;
@@ -88,7 +87,7 @@ namespace ReadIraq.EntityFrameworkCore
         public virtual DbSet<TeacherReport> TeacherReports { get; set; }
         public virtual DbSet<UserPreferredTeacher> UserPreferredTeachers { get; set; }
 
-        public virtual DbSet<Enrollment> Enrollments { get; set; }
+        public virtual DbSet<UserPreferredSubject> UserPreferredSubjects { get; set; }
         public virtual DbSet<UserSessionProgress> UserSessionProgresses { get; set; }
         public virtual DbSet<SubscriptionPlan> SubscriptionPlans { get; set; }
         public virtual DbSet<SubscriptionFeature> SubscriptionFeatures { get; set; }
@@ -241,7 +240,7 @@ namespace ReadIraq.EntityFrameworkCore
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<Enrollment>(b =>
+            modelBuilder.Entity<UserPreferredSubject>(b =>
             {
                 b.HasIndex(e => new { e.UserId, e.SubjectId }).IsUnique();
                 b.Property(e => e.ProgressPercent).HasPrecision(18, 2);

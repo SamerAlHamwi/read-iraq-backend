@@ -70,7 +70,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                 "QuizAttempts",
                 "Quizzes",
                 "UserSessionProgresses",
-                "Enrollments",
+                "UserPreferredSubjects",
                 "TeacherReviews",
                 "LessonSessions",
                 "TeacherSubjects",
@@ -436,7 +436,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                         Type = isMcq ? QuestionType.MCQ : QuestionType.TrueFalse,
                         Text = isMcq ? $"السؤال {i}: اختر الإجابة الصحيحة بناءً على ما ورد في {lesson.Title}" : $"السؤال {i}: هل العبارة التالية صحيحة بخصوص موضوع الدرس؟",
                         Options = isMcq ? "[\"الخيار الأول\", \"الخيار الثاني\", \"الخيار الثالث\", \"الخيار الرابع\"]" : "[\"صح\", \"خطأ\"]",
-                        CorrectAnswer = isMcq ? "\"الخيار الأول\"" : "\"صح\"",
+                        CorrectAnswer = isMcq ? "الخيار الأول" : "صح",
                         AnswerDescription = "الإجابة مستمدة من الشرح التفصيلي الوارد في الفيديو التعليمي.",
                         Marks = 100 / questionCount,
                         AttachmentId = qAttachment.Id

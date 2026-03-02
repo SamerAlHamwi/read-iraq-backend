@@ -16,7 +16,7 @@ using ReadIraq.Domain.SavedItems;
 using static ReadIraq.Enums.Enum;
 using System.Collections.Generic;
 using ReadIraq.NotificationService;
-using ReadIraq.Domain.Enrollments;
+using ReadIraq.Domain.Subjects;
 using ReadIraq.Authorization.Users;
 
 namespace ReadIraq.LessonSessions
@@ -30,7 +30,7 @@ namespace ReadIraq.LessonSessions
         private readonly IAttachmentManager _attachmentManager;
         private readonly IRepository<Attachment, long> _attachmentRepository;
         private readonly INotificationService _notificationService;
-        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly IRepository<UserPreferredSubject, Guid> _userPreferredSubjectRepository;
         private readonly UserManager _userManager;
         private readonly IRepository<UserSavedItem, Guid> _userSavedItemRepository;
 
@@ -40,7 +40,7 @@ namespace ReadIraq.LessonSessions
             IAttachmentManager attachmentManager,
             IRepository<Attachment, long> attachmentRepository,
             INotificationService notificationService,
-            IRepository<Enrollment, Guid> enrollmentRepository,
+            IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
             UserManager userManager,
             IRepository<UserSavedItem, Guid> userSavedItemRepository)
             : base(repository)
@@ -49,7 +49,7 @@ namespace ReadIraq.LessonSessions
             _attachmentManager = attachmentManager;
             _attachmentRepository = attachmentRepository;
             _notificationService = notificationService;
-            _enrollmentRepository = enrollmentRepository;
+            _userPreferredSubjectRepository = userPreferredSubjectRepository;
             _userManager = userManager;
             _userSavedItemRepository = userSavedItemRepository;
         }
@@ -97,7 +97,7 @@ namespace ReadIraq.LessonSessions
             var lesson = MapToEntityDto(entity);
 
             // Trigger notification for users enrolled in this subject
-            var enrolledUserIds = await _enrollmentRepository.GetAll()
+            var enrolledUserIds = await _userPreferredSubjectRepository.GetAll()
                 .Where(x => x.SubjectId == input.SubjectId)
                 .Select(x => x.UserId)
                 .ToArrayAsync();
@@ -241,6 +241,7 @@ namespace ReadIraq.LessonSessions
             {
                 var progress = await _progressRepository.FirstOrDefaultAsync(p => p.SessionId == input.Id && p.UserId == userId.Value);
                 dto.IsCompleted = progress?.IsCompleted ?? false;
+                dto.CanTakeQuiz = progress?.CanTakeQuiz ?? false;
                 dto.WatchedSeconds = progress?.WatchedSeconds ?? 0;
                 dto.IsSaved = await _userSavedItemRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.ItemId == entity.Id && x.ItemType == SavedItemType.Session);
             }
@@ -260,14 +261,15 @@ namespace ReadIraq.LessonSessions
 
             if (progress == null)
             {
-                await _progressRepository.InsertAsync(new UserSessionProgress
+                progress = new UserSessionProgress
                 {
                     SessionId = input.SessionId,
                     UserId = userId,
                     WatchedSeconds = input.WatchedSeconds,
                     IsCompleted = input.IsCompleted,
                     LastWatchedAt = DateTime.Now
-                });
+                };
+                await _progressRepository.InsertAsync(progress);
             }
             else
             {
@@ -281,6 +283,16 @@ namespace ReadIraq.LessonSessions
                 }
                 progress.LastWatchedAt = DateTime.Now;
                 await _progressRepository.UpdateAsync(progress);
+            }
+
+            // check 90% logic
+            var session = await Repository.FirstOrDefaultAsync(input.SessionId);
+            if (session != null && session.DurationSeconds > 0)
+            {
+                if ((double)progress.WatchedSeconds / session.DurationSeconds >= 0.9)
+                {
+                    progress.CanTakeQuiz = true;
+                }
             }
 
             // Update user LastStudiedAt

@@ -15,7 +15,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.LessonSessions;
-using ReadIraq.Domain.Enrollments;
 using ReadIraq.Domain.SavedItems;
 using ReadIraq.Teachers.Dto;
 using ReadIraq.LessonSessions.Dto;
@@ -32,7 +31,7 @@ namespace ReadIraq.Subjects
         private readonly IRepository<TeacherSubject, Guid> _teacherSubjectRepository;
         private readonly IRepository<LessonSession, Guid> _lessonSessionRepository;
         private readonly IRepository<UserPreferredTeacher, Guid> _userPreferredTeacherRepository;
-        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly IRepository<UserPreferredSubject, Guid> _userPreferredSubjectRepository;
         private readonly IAttachmentManager _attachmentManager;
         private readonly IRepository<Attachment, long> _attachmentRepository;
         private readonly IRepository<UserSavedItem, Guid> _userSavedItemRepository;
@@ -44,7 +43,7 @@ namespace ReadIraq.Subjects
             IRepository<TeacherSubject, Guid> teacherSubjectRepository,
             IRepository<LessonSession, Guid> lessonSessionRepository,
             IRepository<UserPreferredTeacher, Guid> userPreferredTeacherRepository,
-            IRepository<Enrollment, Guid> enrollmentRepository,
+            IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
             IAttachmentManager attachmentManager,
             IRepository<Attachment, long> attachmentRepository,
             IRepository<UserSavedItem, Guid> userSavedItemRepository)
@@ -55,7 +54,7 @@ namespace ReadIraq.Subjects
             _teacherSubjectRepository = teacherSubjectRepository;
             _lessonSessionRepository = lessonSessionRepository;
             _userPreferredTeacherRepository = userPreferredTeacherRepository;
-            _enrollmentRepository = enrollmentRepository;
+            _userPreferredSubjectRepository = userPreferredSubjectRepository;
             _attachmentManager = attachmentManager;
             _attachmentRepository = attachmentRepository;
             _userSavedItemRepository = userSavedItemRepository;
@@ -156,10 +155,10 @@ namespace ReadIraq.Subjects
             var userId = AbpSession.UserId;
             if (userId.HasValue)
             {
-                var enrollment = await _enrollmentRepository.FirstOrDefaultAsync(x => x.UserId == userId.Value && x.SubjectId == entity.Id);
-                if (enrollment != null)
+                var preferredSubject = await _userPreferredSubjectRepository.FirstOrDefaultAsync(x => x.UserId == userId.Value && x.SubjectId == entity.Id);
+                if (preferredSubject != null)
                 {
-                    dto.ProgressPercentage = (double)enrollment.ProgressPercent;
+                    dto.ProgressPercentage = (double)preferredSubject.ProgressPercent;
                 }
                 dto.IsSaved = await _userSavedItemRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.ItemId == entity.Id && x.ItemType == SavedItemType.Subject);
             }

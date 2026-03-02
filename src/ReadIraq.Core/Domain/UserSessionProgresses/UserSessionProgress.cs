@@ -23,6 +23,8 @@ namespace ReadIraq.Domain.UserSessionProgresses
 
         public bool IsCompleted { get; set; }
 
+        public bool CanTakeQuiz { get; set; }
+
         public DateTime LastWatchedAt { get; set; }
     }
 }

@@ -21,7 +21,7 @@ using ReadIraq.Domain.AskForHelps;
 using ReadIraq.Domain.AskForHelps.Dto;
 using ReadIraq.Domain.Subscriptions;
 using ReadIraq.Domain.UserSessionProgresses;
-using ReadIraq.Domain.Enrollments;
+using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Attachments;
 using ReadIraq.Localization.SourceFiles;
 using ReadIraq.NotificationSender;
@@ -52,7 +52,7 @@ namespace ReadIraq.Users
         private readonly UserRegistrationManager _userRegistrationManager;
         private readonly IRepository<Subscription, Guid> _subscriptionRepository;
         private readonly IRepository<UserSessionProgress, Guid> _userSessionProgressRepository;
-        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly IRepository<UserPreferredSubject, Guid> _userPreferredSubjectRepository;
         private readonly IAttachmentManager _attachmentManager;
 
         public UserAppService(
@@ -68,7 +68,7 @@ namespace ReadIraq.Users
             IRepository<AskForHelp> askForHelpRepository,
             IRepository<Subscription, Guid> subscriptionRepository,
             IRepository<UserSessionProgress, Guid> userSessionProgressRepository,
-            IRepository<Enrollment, Guid> enrollmentRepository,
+            IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
             IAttachmentManager attachmentManager)
             : base(repository)
         {
@@ -83,7 +83,7 @@ namespace ReadIraq.Users
             _userRegistrationManager = userRegistrationManager;
             _subscriptionRepository = subscriptionRepository;
             _userSessionProgressRepository = userSessionProgressRepository;
-            _enrollmentRepository = enrollmentRepository;
+            _userPreferredSubjectRepository = userPreferredSubjectRepository;
             _attachmentManager = attachmentManager;
         }
 
@@ -300,7 +300,7 @@ namespace ReadIraq.Users
 
             if (user == null) throw new UserFriendlyException(L("UserNotFound"));
 
-            var enrollments = await _enrollmentRepository.GetAll()
+            var preferredSubjects = await _userPreferredSubjectRepository.GetAll()
                 .Include(x => x.Subject).ThenInclude(x => x.Name)
                 .Where(x => x.UserId == input.Id)
                 .ToListAsync();
@@ -313,9 +313,9 @@ namespace ReadIraq.Users
                 SubjectProgresses = new List<UserSubjectProgressDto>()
             };
 
-            foreach (var enrollment in enrollments)
+            foreach (var preferredSubject in preferredSubjects)
             {
-                var subjectDto = ObjectMapper.Map<LiteSubjectDto>(enrollment.Subject);
+                var subjectDto = ObjectMapper.Map<LiteSubjectDto>(preferredSubject.Subject);
 
                 var attachment = await _attachmentManager.GetElementByRefAsync(subjectDto.Id.ToString(), AttachmentRefType.Subject);
                 if (attachment != null)
@@ -328,7 +328,7 @@ namespace ReadIraq.Users
                 result.SubjectProgresses.Add(new UserSubjectProgressDto
                 {
                     Subject = subjectDto,
-                    ProgressPercentage = enrollment.ProgressPercent
+                    ProgressPercentage = preferredSubject.ProgressPercent
                 });
             }
 

@@ -21,7 +21,7 @@ using ReadIraq.Authorization.Users;
 using ReadIraq.Domain.Attachments;
 using ReadIraq.Domain.Cities;
 using ReadIraq.Domain.Grades;
-using ReadIraq.Domain.Enrollments;
+using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.RegisterdPhoneNumbers;
 using ReadIraq.Domains.UserVerficationCodes;
 using ReadIraq.Localization.SourceFiles;
@@ -47,7 +47,7 @@ namespace ReadIraq.Authorization.Accounts
         private readonly IRepository<User, long> _userRepository;
         private readonly IRepository<Grade, int> _gradeRepository;
         private readonly IRepository<City, int> _cityRepository;
-        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly IRepository<UserPreferredSubject, Guid> _userPreferredSubjectRepository;
         private readonly IRepository<UserPreferredTeacher, Guid> _userPreferredTeacherRepository;
         private readonly ITokenAuthManager _tokenAuthManager;
         private readonly UserClaimsPrincipalFactory _claimsPrincipalFactory;
@@ -62,7 +62,7 @@ namespace ReadIraq.Authorization.Accounts
             IRepository<User, long> userRepository,
             IRepository<Grade, int> gradeRepository,
             IRepository<City, int> cityRepository,
-            IRepository<Enrollment, Guid> enrollmentRepository,
+            IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
             IRepository<UserPreferredTeacher, Guid> userPreferredTeacherRepository,
             ITokenAuthManager tokenAuthManager,
             UserClaimsPrincipalFactory claimsPrincipalFactory
@@ -77,7 +77,7 @@ namespace ReadIraq.Authorization.Accounts
             _userRepository = userRepository;
             _gradeRepository = gradeRepository;
             _cityRepository = cityRepository;
-            _enrollmentRepository = enrollmentRepository;
+            _userPreferredSubjectRepository = userPreferredSubjectRepository;
             _userPreferredTeacherRepository = userPreferredTeacherRepository;
             _tokenAuthManager = tokenAuthManager;
             _claimsPrincipalFactory = claimsPrincipalFactory;
@@ -305,15 +305,15 @@ namespace ReadIraq.Authorization.Accounts
         {
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
-                var existingEnrollments = await _enrollmentRepository.GetAllListAsync(x => x.UserId == input.UserId);
-                foreach (var enrollment in existingEnrollments)
+                var existingPreferredSubjects = await _userPreferredSubjectRepository.GetAllListAsync(x => x.UserId == input.UserId);
+                foreach (var item in existingPreferredSubjects)
                 {
-                    await _enrollmentRepository.DeleteAsync(enrollment);
+                    await _userPreferredSubjectRepository.DeleteAsync(item);
                 }
 
                 foreach (var subjectId in input.SubjectIds)
                 {
-                    await _enrollmentRepository.InsertAsync(new Enrollment
+                    await _userPreferredSubjectRepository.InsertAsync(new UserPreferredSubject
                     {
                         UserId = input.UserId,
                         SubjectId = subjectId,

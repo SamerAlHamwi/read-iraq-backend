@@ -33,8 +33,7 @@ using ReadIraq.PushNotifications.Dto;
 using ReadIraq.Subjects.Dto;
 using ReadIraq.Teachers.Dto;
 using ReadIraq.TermService.Dto;
-using ReadIraq.Domain.Enrollments;
-using ReadIraq.Enrollments.Dto;
+using ReadIraq.UserPreferredSubjects.Dto;
 using ReadIraq.Domain.UserSessionProgresses;
 using ReadIraq.UserSessionProgresses.Dto;
 using ReadIraq.Domain.Subscriptions;
@@ -56,6 +55,8 @@ using ReadIraq.Domain.Attachments;
 using ReadIraq.Domain.Comments;
 using ReadIraq.Comments.Dto;
 using System.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace ReadIraq
 {
@@ -218,10 +219,10 @@ namespace ReadIraq
                  .ForMember(dest => dest.Answer, opt => opt.MapFrom(src => src.Answer));
                 #endregion
 
-                #region Enrollment
-                configuration.CreateMap<Enrollment, EnrollmentDto>();
-                configuration.CreateMap<CreateEnrollmentDto, Enrollment>();
-                configuration.CreateMap<UpdateEnrollmentDto, Enrollment>();
+                #region UserPreferredSubject
+                configuration.CreateMap<UserPreferredSubject, UserPreferredSubjectDto>();
+                configuration.CreateMap<CreateUserPreferredSubjectDto, UserPreferredSubject>();
+                configuration.CreateMap<UpdateUserPreferredSubjectDto, UserPreferredSubject>();
                 #endregion
 
                 #region UserSessionProgress
