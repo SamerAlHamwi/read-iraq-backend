@@ -13,6 +13,7 @@ namespace ReadIraq.Teachers.Dto
         public LiteAttachmentDto Attachment { get; set; }
         public decimal AverageRating { get; set; }
         public int LessonsCount { get; set; }
+        public int StudentsCount { get; set; }
         public bool IsFollowed { get; set; }
         public bool IsSaved { get; set; }
     }

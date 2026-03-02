@@ -17,6 +17,6 @@ namespace ReadIraq.Authorization.Accounts.Dto
 
         public int? GovernorateId { get; set; }
 
-        public long ProfilePhoto { get; set; }
+        public long? ProfilePhoto { get; set; }
     }
 }

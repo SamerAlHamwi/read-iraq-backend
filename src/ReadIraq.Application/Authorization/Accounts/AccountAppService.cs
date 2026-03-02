@@ -299,14 +299,17 @@ namespace ReadIraq.Authorization.Accounts
             user.GradeId = input.GradeId;
             user.GovernorateId = input.GovernorateId;
 
-            if (input.ProfilePhoto > 0)
+            if (input.ProfilePhoto.HasValue)
             {
-                await _attachmentManager.CheckAndUpdateRefIdAsync((long)input.ProfilePhoto, AttachmentRefType.Profile, user.Id.ToString());
-            }
-            else if (input.ProfilePhoto == 0)
-            {
-                var oldAttachment = await _attachmentManager.GetElementByRefAsync(user.Id.ToString(), AttachmentRefType.Profile);
-                if (oldAttachment != null) await _attachmentManager.DeleteRefIdAsync(oldAttachment);
+                if (input.ProfilePhoto > 0)
+                {
+                    await _attachmentManager.CheckAndUpdateRefIdAsync((long)input.ProfilePhoto, AttachmentRefType.Profile, user.Id.ToString());
+                }
+                else if (input.ProfilePhoto == 0)
+                {
+                    var oldAttachment = await _attachmentManager.GetElementByRefAsync(user.Id.ToString(), AttachmentRefType.Profile);
+                    if (oldAttachment != null) await _attachmentManager.DeleteRefIdAsync(oldAttachment);
+                }
             }
 
             await _userManager.UpdateAsync(user);

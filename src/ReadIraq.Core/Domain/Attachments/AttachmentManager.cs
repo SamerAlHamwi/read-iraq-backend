@@ -81,9 +81,12 @@ namespace ReadIraq.Domain.Attachments
         }
         public async Task UpdateRefIdAsync(Attachment attachment, string refId, bool IsForDraft = false, bool IsForRequest = true)
         {
-            if (attachment.RefId != null && !IsForDraft)
+            if (attachment.RefId != null && attachment.RefId != refId && !IsForDraft)
                 throw new UserFriendlyException(L("AttachmentAlreadyRelatedToEntity"),
                     $"Id: {attachment.Id}, RefType: {attachment.RefType}");
+
+            if (attachment.RefId == refId) return;
+
             attachment.RefId = refId;
             await _repository.UpdateAsync(attachment);
         }

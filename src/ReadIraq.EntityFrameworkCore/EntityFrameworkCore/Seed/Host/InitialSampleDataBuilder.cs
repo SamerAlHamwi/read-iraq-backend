@@ -21,6 +21,7 @@ using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.Translations;
 using ReadIraq.Domain.Attachments;
+using ReadIraq.Domain.Advertisiments;
 using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.EntityFrameworkCore.Seed.Host
@@ -46,6 +47,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             CreateAdminUser();
             CreateCountryAndCities();
             CreateEducationalStructure();
+            CreateAdvertisiments();
             Console.WriteLine("--- InitialSampleDataBuilder Completed Successfully ---");
         }
 
@@ -87,6 +89,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                 "Cities",
                 "CountryTranslations",
                 "Countries",
+                "Advertisiments",
                 "Attachments"
             };
 
@@ -443,6 +446,24 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                     };
                     _context.Questions.Add(question);
                 }
+            }
+        }
+
+        private void CreateAdvertisiments()
+        {
+            Console.WriteLine("Creating Advertisements...");
+            for (int i = 1; i <= 3; i++)
+            {
+                var ad = new Advertisiment
+                {
+                    IsActive = true,
+                    Link = "https://readiraq.com",
+                    ForSettings = false
+                };
+                _context.Advertisiments.Add(ad);
+                _context.SaveChanges();
+
+                CreateAttachment(ad.Id.ToString(), AttachmentRefType.Advertisiment, MediaType.Image);
             }
         }
 
