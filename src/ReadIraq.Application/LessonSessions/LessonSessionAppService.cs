@@ -267,6 +267,7 @@ namespace ReadIraq.LessonSessions
                     UserId = userId,
                     WatchedSeconds = input.WatchedSeconds,
                     IsCompleted = input.IsCompleted,
+                    CanTakeQuiz = input.IsCompleted,
                     LastWatchedAt = DateTime.Now
                 };
                 await _progressRepository.InsertAsync(progress);
@@ -280,6 +281,7 @@ namespace ReadIraq.LessonSessions
                 if (input.IsCompleted)
                 {
                     progress.IsCompleted = true;
+                    progress.CanTakeQuiz = true;
                 }
                 progress.LastWatchedAt = DateTime.Now;
                 await _progressRepository.UpdateAsync(progress);
@@ -293,6 +295,12 @@ namespace ReadIraq.LessonSessions
                 {
                     progress.CanTakeQuiz = true;
                 }
+            }
+
+            // If it's a short session or finished, ensure it's unlocked
+            if (input.IsCompleted)
+            {
+                 progress.CanTakeQuiz = true;
             }
 
             // Update user LastStudiedAt
