@@ -33,6 +33,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Globalization;
 using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Authorization.Accounts
@@ -245,6 +246,7 @@ namespace ReadIraq.Authorization.Accounts
                 var user = await _userManager.Users
                     .Include(u => u.Grade).ThenInclude(g => g.GradeGroup)
                     .Include(u => u.Grade).ThenInclude(g => g.Name)
+                    .Include(u => u.Grade).ThenInclude(g => g.Name)
                     .Include(u => u.Grade).ThenInclude(g => g.GradeGroup).ThenInclude(gg => gg.Name)
                     .Include(u => u.Governorate).ThenInclude(c => c.Translations)
                     .FirstOrDefaultAsync(u => u.Id == AbpSession.GetUserId());
@@ -281,7 +283,7 @@ namespace ReadIraq.Authorization.Accounts
         private string GetLocalizedName(ICollection<Translation> names)
         {
             if (names == null || !names.Any()) return string.Empty;
-            var language = AbpSession.GetLanguageName() ?? "en";
+            var language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             var translation = names.FirstOrDefault(t => t.Code == language) ?? names.FirstOrDefault();
             return translation?.Name ?? string.Empty;
         }
