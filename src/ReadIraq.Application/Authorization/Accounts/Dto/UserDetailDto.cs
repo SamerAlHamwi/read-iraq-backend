@@ -19,6 +19,8 @@ namespace ReadIraq.Authorization.Accounts.Dto
         public bool IsActive { get; set; }
         public string PIN { get; set; }
         public GradeDto Grade { get; set; }
+        public string GradeName { get; set; }
+        public string GradeGroupName { get; set; }
         public CityDetailsDto Governorate { get; set; }
         public LiteAttachmentDto ProfilePhoto { get; set; }
     }

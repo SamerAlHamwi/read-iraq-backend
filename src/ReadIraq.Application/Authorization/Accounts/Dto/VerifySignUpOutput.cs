@@ -4,5 +4,6 @@ namespace ReadIraq.Authorization.Accounts.Dto
     {
         public UserDetailDto User { get; set; }
         public string Token { get; set; }
+        public string RefreshToken { get; set; }
     }
 }

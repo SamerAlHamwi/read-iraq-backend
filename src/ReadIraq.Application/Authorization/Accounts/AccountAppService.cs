@@ -26,6 +26,7 @@ using ReadIraq.Domain.RegisterdPhoneNumbers;
 using ReadIraq.Domains.UserVerficationCodes;
 using ReadIraq.Localization.SourceFiles;
 using ReadIraq.Domain.Teachers;
+using ReadIraq.Domain.Translations;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -147,7 +148,9 @@ namespace ReadIraq.Authorization.Accounts
                 }
 
                 var user = await _userManager.Users
-                    .Include(u => u.Grade)
+                    .Include(u => u.Grade).ThenInclude(g => g.GradeGroup)
+                    .Include(u => u.Grade).ThenInclude(g => g.Name)
+                    .Include(u => u.Grade).ThenInclude(g => g.GradeGroup).ThenInclude(gg => gg.Name)
                     .Include(u => u.Governorate).ThenInclude(c => c.Translations)
                     .FirstOrDefaultAsync(u => u.PhoneNumber == phone && u.DialCode == dialCode);
 
@@ -165,10 +168,14 @@ namespace ReadIraq.Authorization.Accounts
                 var principal = await _claimsPrincipalFactory.CreateAsync(user);
                 var accessToken = _tokenAuthManager.CreateAccessToken(principal.Identity as ClaimsIdentity);
 
+                var result = ObjectMapper.Map<UserDetailDto>(user);
+                PopulateGradeNames(result, user);
+
                 return new VerifySignUpOutput
                 {
-                    User = ObjectMapper.Map<UserDetailDto>(user),
-                    Token = accessToken
+                    User = result,
+                    Token = accessToken,
+                    RefreshToken = string.Empty
                 };
             }
         }
@@ -200,17 +207,22 @@ namespace ReadIraq.Authorization.Accounts
                 }
 
                 var user = await _userManager.Users
-                    .Include(u => u.Grade)
+                    .Include(u => u.Grade).ThenInclude(g => g.GradeGroup)
+                    .Include(u => u.Grade).ThenInclude(g => g.Name)
+                    .Include(u => u.Grade).ThenInclude(g => g.GradeGroup).ThenInclude(gg => gg.Name)
                     .Include(u => u.Governorate).ThenInclude(c => c.Translations)
                     .FirstOrDefaultAsync(u => u.Id == loginResult.User.Id);
 
                 var accessToken = _tokenAuthManager.CreateAccessToken(loginResult.Identity);
 
+                var userDetail = ObjectMapper.Map<UserDetailDto>(user);
+                PopulateGradeNames(userDetail, user);
+
                 return new SignInOutput
                 {
                     Token = accessToken,
                     RefreshToken = string.Empty,
-                    User = ObjectMapper.Map<UserDetailDto>(user)
+                    User = userDetail
                 };
             }
         }
@@ -231,11 +243,14 @@ namespace ReadIraq.Authorization.Accounts
             using (UnitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant, AbpDataFilters.MustHaveTenant))
             {
                 var user = await _userManager.Users
-                    .Include(u => u.Grade)
+                    .Include(u => u.Grade).ThenInclude(g => g.GradeGroup)
+                    .Include(u => u.Grade).ThenInclude(g => g.Name)
+                    .Include(u => u.Grade).ThenInclude(g => g.GradeGroup).ThenInclude(gg => gg.Name)
                     .Include(u => u.Governorate).ThenInclude(c => c.Translations)
                     .FirstOrDefaultAsync(u => u.Id == AbpSession.GetUserId());
 
                 var result = ObjectMapper.Map<UserDetailDto>(user);
+                PopulateGradeNames(result, user);
 
                 var attachment = await _attachmentManager.GetElementByRefAsync(user.Id.ToString(), AttachmentRefType.Profile);
                 if (attachment != null)
@@ -249,6 +264,26 @@ namespace ReadIraq.Authorization.Accounts
                 }
                 return result;
             }
+        }
+
+        private void PopulateGradeNames(UserDetailDto dto, User user)
+        {
+            if (user.Grade != null)
+            {
+                dto.GradeName = GetLocalizedName(user.Grade.Name);
+                if (user.Grade.GradeGroup != null)
+                {
+                    dto.GradeGroupName = GetLocalizedName(user.Grade.GradeGroup.Name);
+                }
+            }
+        }
+
+        private string GetLocalizedName(ICollection<Translation> names)
+        {
+            if (names == null || !names.Any()) return string.Empty;
+            var language = AbpSession.GetLanguageName() ?? "en";
+            var translation = names.FirstOrDefault(t => t.Code == language) ?? names.FirstOrDefault();
+            return translation?.Name ?? string.Empty;
         }
 
         [AbpAuthorize]
