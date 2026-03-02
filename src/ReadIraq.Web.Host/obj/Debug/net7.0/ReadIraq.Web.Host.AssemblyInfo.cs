@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ReadIraq.Web.Host")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3b7ff46859e5570b1445bf085487e09aea11a21a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+70241cac9c13a5ce7acc4084587c73e8a1890c6b")]
 [assembly: System.Reflection.AssemblyProductAttribute("ReadIraq.Web.Host")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ReadIraq.Web.Host")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
