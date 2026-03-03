@@ -8,7 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using ReadIraq.CrudAppServiceBase;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Grades;
+using ReadIraq.Domain.Units;
 using ReadIraq.Subjects.Dto;
+using ReadIraq.Units.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +37,7 @@ namespace ReadIraq.Subjects
         private readonly IAttachmentManager _attachmentManager;
         private readonly IRepository<Attachment, long> _attachmentRepository;
         private readonly IRepository<UserSavedItem, Guid> _userSavedItemRepository;
+        private readonly IRepository<Unit, Guid> _unitRepository;
 
         public SubjectAppService(
             IRepository<Subject, Guid> repository,
@@ -46,7 +49,8 @@ namespace ReadIraq.Subjects
             IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
             IAttachmentManager attachmentManager,
             IRepository<Attachment, long> attachmentRepository,
-            IRepository<UserSavedItem, Guid> userSavedItemRepository)
+            IRepository<UserSavedItem, Guid> userSavedItemRepository,
+            IRepository<Unit, Guid> unitRepository)
             : base(repository)
         {
             _subjectManager = subjectManager;
@@ -58,6 +62,7 @@ namespace ReadIraq.Subjects
             _attachmentManager = attachmentManager;
             _attachmentRepository = attachmentRepository;
             _userSavedItemRepository = userSavedItemRepository;
+            _unitRepository = unitRepository;
         }
 
         protected override IQueryable<Subject> CreateFilteredQuery(PagedSubjectResultRequestDto input)
@@ -147,9 +152,20 @@ namespace ReadIraq.Subjects
             dto.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.SubjectId == entity.Id);
             dto.TeachersCount = await _teacherSubjectRepository.CountAsync(x => x.SubjectId == entity.Id && x.TeacherProfile.IsActive);
 
-            // Lessons
-            var lessons = await _lessonSessionRepository.GetAllListAsync(x => x.SubjectId == entity.Id);
-            dto.Lessons = ObjectMapper.Map<List<LiteLessonSessionDto>>(lessons.OrderBy(x => x.Order));
+            // Units and Lessons
+            var units = await _unitRepository.GetAll()
+                .Include(x => x.Name)
+                .Where(x => x.SubjectId == entity.Id)
+                .OrderBy(x => x.Order)
+                .ToListAsync();
+
+            dto.Units = ObjectMapper.Map<List<UnitDto>>(units);
+
+            foreach (var unitDto in dto.Units)
+            {
+                var unitLessons = await _lessonSessionRepository.GetAllListAsync(x => x.UnitId == unitDto.Id);
+                unitDto.Lessons = ObjectMapper.Map<List<LiteLessonSessionDto>>(unitLessons.OrderBy(x => x.Order));
+            }
 
             // Progress
             var userId = AbpSession.UserId;

@@ -27,6 +27,8 @@ using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.Terms;
 using ReadIraq.Domain.Translations;
 using ReadIraq.Domain.Translations.Dto;
+using ReadIraq.Domain.Units;
+using ReadIraq.Units.Dto;
 using ReadIraq.Grades.Dto;
 using ReadIraq.PrivacyPolicyService.Dto;
 using ReadIraq.PushNotifications.Dto;
@@ -36,8 +38,6 @@ using ReadIraq.TermService.Dto;
 using ReadIraq.UserPreferredSubjects.Dto;
 using ReadIraq.Domain.UserSessionProgresses;
 using ReadIraq.UserSessionProgresses.Dto;
-using ReadIraq.Domain.Subscriptions;
-using ReadIraq.Subscriptions.Dto;
 using ReadIraq.Domain.Quizzes;
 using ReadIraq.Quizzes.Dto;
 using ReadIraq.Domain.Notifications;
@@ -129,6 +129,10 @@ namespace ReadIraq
                 #region Subject
                 configuration.CreateMap<Subject, SubjectDto>();
                 configuration.CreateMap<Subject, LiteSubjectDto>();
+                #endregion
+
+                #region Unit
+                configuration.CreateMap<Unit, UnitDto>();
                 #endregion
 
                 #region LessonSession
@@ -239,17 +243,6 @@ namespace ReadIraq
                 #region TeacherReport
                 configuration.CreateMap<TeacherReport, TeacherReportDto>();
                 configuration.CreateMap<CreateTeacherReportDto, TeacherReport>();
-                #endregion
-
-                #region Subscription
-                configuration.CreateMap<SubscriptionPlan, SubscriptionPlanDto>();
-                configuration.CreateMap<CreateSubscriptionPlanDto, SubscriptionPlan>();
-                configuration.CreateMap<UpdateSubscriptionPlanDto, SubscriptionPlan>();
-                configuration.CreateMap<SubscriptionFeature, SubscriptionFeatureDto>();
-                configuration.CreateMap<SubscriptionFeatureMap, SubscriptionFeatureMapDto>();
-                configuration.CreateMap<Subscription, SubscriptionDto>();
-                configuration.CreateMap<CreateSubscriptionDto, Subscription>();
-                configuration.CreateMap<UpdateSubscriptionDto, Subscription>();
                 #endregion
 
                 #region Quizzes

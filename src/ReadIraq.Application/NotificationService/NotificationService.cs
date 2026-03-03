@@ -200,16 +200,6 @@ namespace ReadIraq.NotificationService
 			await NotifyUsersAsync(data, new[] { userId }, true);
 		}
 
-		public async Task NotifySubscriptionExpiringAsync(long userId, int days)
-		{
-			var data = CreateLocalizedData(
-				NotificationType.SUBSCRIPTION_EXPIRING,
-				null,
-				days
-			);
-			await NotifyUsersAsync(data, new[] { userId }, true);
-		}
-
 		public async Task NotifyTeacherReplyAsync(long userId, Guid lessonId)
 		{
 			var data = CreateLocalizedData(

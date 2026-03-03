@@ -127,8 +127,7 @@ namespace ReadIraq.Enums
             TEACHER_REPLY = 6,
             STREAK_BROKEN = 7,
             SYSTEM_MAINTENANCE = 8,
-            CONTENT_RECOMMENDATION = 9,
-            SUBSCRIPTION_EXPIRING = 10,
+            CONTENT_RECOMMENDATION = 9
         }
 
         public enum NotificationPriority : byte

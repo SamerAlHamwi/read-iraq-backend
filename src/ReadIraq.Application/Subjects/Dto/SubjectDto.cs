@@ -4,6 +4,7 @@ using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Translations.Dto;
 using ReadIraq.Teachers.Dto;
 using ReadIraq.LessonSessions.Dto;
+using ReadIraq.Units.Dto;
 using System;
 using System.Collections.Generic;
 using static ReadIraq.Enums.Enum;
@@ -23,7 +24,7 @@ namespace ReadIraq.Subjects.Dto
         public string Color { get; set; }
         public double ProgressPercentage { get; set; }
         public LiteTeacherProfileDto TopTeacher { get; set; }
-        public List<LiteLessonSessionDto> Lessons { get; set; }
+        public List<UnitDto> Units { get; set; }
         public bool IsSaved { get; set; }
     }
 }

@@ -9,7 +9,6 @@ using ReadIraq.Authorization.Users;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.LessonSessions;
 using ReadIraq.Domain.Quizzes;
-using ReadIraq.Domain.Subscriptions;
 using ReadIraq.Domain.UserSessionProgresses;
 using System;
 using System.Linq;
@@ -21,7 +20,6 @@ namespace ReadIraq.NotificationService
     {
         private readonly IRepository<User, long> _userRepository;
         private readonly IRepository<UserPreferredSubject, Guid> _userPreferredSubjectRepository;
-        private readonly IRepository<Subscription, Guid> _subscriptionRepository;
         private readonly IRepository<LessonSession, Guid> _lessonSessionRepository;
         private readonly IRepository<UserSessionProgress, Guid> _progressRepository;
         private readonly IRepository<Quiz, Guid> _quizRepository;
@@ -32,7 +30,6 @@ namespace ReadIraq.NotificationService
             AbpTimer timer,
             IRepository<User, long> userRepository,
             IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
-            IRepository<Subscription, Guid> subscriptionRepository,
             IRepository<LessonSession, Guid> lessonSessionRepository,
             IRepository<UserSessionProgress, Guid> progressRepository,
             IRepository<Quiz, Guid> quizRepository,
@@ -42,7 +39,6 @@ namespace ReadIraq.NotificationService
         {
             _userRepository = userRepository;
             _userPreferredSubjectRepository = userPreferredSubjectRepository;
-            _subscriptionRepository = subscriptionRepository;
             _lessonSessionRepository = lessonSessionRepository;
             _progressRepository = progressRepository;
             _quizRepository = quizRepository;
@@ -57,7 +53,6 @@ namespace ReadIraq.NotificationService
         protected override void DoWork()
         {
             AsyncHelper.RunSync(() => ProcessDailyReminders());
-            AsyncHelper.RunSync(() => ProcessSubscriptionExpirations());
             AsyncHelper.RunSync(() => ProcessStreakBroken());
             AsyncHelper.RunSync(() => ProcessQuizReminders());
 
@@ -99,20 +94,6 @@ namespace ReadIraq.NotificationService
                         await _notificationService.NotifyDailyStudyReminderAsync(user.Id, lesson.Id, lesson.Title, preferredSubject.SubjectId);
                     }
                 }
-            }
-        }
-
-        private async Task ProcessSubscriptionExpirations()
-        {
-            var targetDate = DateTime.UtcNow.Date.AddDays(3);
-
-            var expiringSubscriptions = await _subscriptionRepository.GetAll()
-                .Where(s => s.IsActive && s.ExpiresAt.Date == targetDate)
-                .ToListAsync();
-
-            foreach (var sub in expiringSubscriptions)
-            {
-                await _notificationService.NotifySubscriptionExpiringAsync(sub.UserId, 3);
             }
         }
 

@@ -8,6 +8,7 @@ namespace ReadIraq.LessonSessions.Dto
         public string Keyword { get; set; }
         public Guid? TeacherProfileId { get; set; }
         public Guid? SubjectId { get; set; }
+        public Guid? UnitId { get; set; }
         public bool? IsFree { get; set; }
         public bool? IsActive { get; set; }
     }

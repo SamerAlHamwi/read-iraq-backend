@@ -30,12 +30,11 @@ using ReadIraq.Domain.Translations;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.UserSessionProgresses;
-using ReadIraq.Domain.Subscriptions;
 using ReadIraq.Domain.Quizzes;
 using ReadIraq.Domain.Notifications;
 using ReadIraq.Domain.Audit;
 using ReadIraq.Domain.Settings;
-using ReadIraq.Domain.Gifts;
+using ReadIraq.Domain.Units;
 using System;
 
 namespace ReadIraq.EntityFrameworkCore
@@ -76,6 +75,7 @@ namespace ReadIraq.EntityFrameworkCore
         public virtual DbSet<Translation> Translations { get; set; }
         public virtual DbSet<GradeGroup> GradeGroups { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
+        public virtual DbSet<Unit> Units { get; set; }
         public virtual DbSet<GradeSubject> GradeSubjects { get; set; }
 
         public virtual DbSet<TeacherFeature> TeacherFeatures { get; set; }
@@ -89,11 +89,6 @@ namespace ReadIraq.EntityFrameworkCore
 
         public virtual DbSet<UserPreferredSubject> UserPreferredSubjects { get; set; }
         public virtual DbSet<UserSessionProgress> UserSessionProgresses { get; set; }
-        public virtual DbSet<SubscriptionPlan> SubscriptionPlans { get; set; }
-        public virtual DbSet<SubscriptionFeature> SubscriptionFeatures { get; set; }
-        public virtual DbSet<SubscriptionFeatureMap> SubscriptionFeaturesMap { get; set; }
-        public virtual DbSet<Subscription> Subscriptions { get; set; }
-        public virtual DbSet<Gift> Gifts { get; set; }
 
         public virtual DbSet<Quiz> Quizzes { get; set; }
         public virtual DbSet<Question> Questions { get; set; }
@@ -167,6 +162,7 @@ namespace ReadIraq.EntityFrameworkCore
                 b.Property<Guid?>("GradeGroupId");
                 b.Property<int?>("GradeId");
                 b.Property<Guid?>("SubjectId");
+                b.Property<Guid?>("UnitId");
             });
 
             modelBuilder.Entity<Grade>(b =>
@@ -177,6 +173,11 @@ namespace ReadIraq.EntityFrameworkCore
             modelBuilder.Entity<Subject>(b =>
             {
                 b.HasMany(e => e.Name).WithOne().HasForeignKey("SubjectId");
+            });
+
+            modelBuilder.Entity<Unit>(b =>
+            {
+                b.HasMany(e => e.Name).WithOne().HasForeignKey("UnitId");
             });
 
             modelBuilder.Entity<GradeGroup>(b =>
@@ -256,17 +257,6 @@ namespace ReadIraq.EntityFrameworkCore
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
-            modelBuilder.Entity<SubscriptionFeatureMap>(b =>
-            {
-                b.HasIndex(e => new { e.PlanId, e.FeatureId }).IsUnique();
-            });
-
-            modelBuilder.Entity<SubscriptionPlan>(b =>
-            {
-                b.Property(e => e.Price).HasPrecision(18, 2);
-                b.Property(e => e.PriceBeforeDiscount).HasPrecision(18, 2);
-            });
-
             modelBuilder.Entity<ActivityLog>(b =>
             {
                 b.HasOne(x => x.Actor)
@@ -278,19 +268,6 @@ namespace ReadIraq.EntityFrameworkCore
             modelBuilder.Entity<AppSetting>(b =>
             {
                 b.HasIndex(e => e.Key).IsUnique();
-            });
-
-            modelBuilder.Entity<Gift>(b =>
-            {
-                b.HasOne(x => x.TargetUser)
-                    .WithMany()
-                    .HasForeignKey(x => x.TargetUserId)
-                    .OnDelete(DeleteBehavior.Restrict);
-
-                b.HasOne(x => x.AdminUser)
-                    .WithMany()
-                    .HasForeignKey(x => x.AdminUserId)
-                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

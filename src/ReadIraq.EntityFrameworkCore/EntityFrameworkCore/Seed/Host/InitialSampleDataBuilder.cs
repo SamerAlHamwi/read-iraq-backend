@@ -22,6 +22,7 @@ using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.Translations;
 using ReadIraq.Domain.Attachments;
 using ReadIraq.Domain.Advertisiments;
+using ReadIraq.Domain.Units;
 using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.EntityFrameworkCore.Seed.Host
@@ -46,6 +47,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             DeleteAllData();
             CreateAdminUser();
             CreateCountryAndCities();
+            CreateTeacherFeatures();
             CreateEducationalStructure();
             CreateAdvertisiments();
             Console.WriteLine("--- InitialSampleDataBuilder Completed Successfully ---");
@@ -75,6 +77,9 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                 "UserPreferredSubjects",
                 "TeacherReviews",
                 "LessonSessions",
+                "Units",
+                "TeacherFeatureMap",
+                "TeacherFeatures",
                 "TeacherSubjects",
                 "TeacherProfiles",
                 "GradeSubjects",
@@ -107,8 +112,6 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             
             try
             {
-                // Delete all users except the ones we want to keep (like existing non-sample admins)
-                // but usually for a clean seed we target specific types or all sample-created ones
                 _context.Database.ExecuteSqlRaw("DELETE FROM AbpUsers WHERE Type = 3");
             }
             catch (Exception ex)
@@ -196,6 +199,32 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                             new CityTranslation { Name = city.En, Language = "en" },
                             new CityTranslation { Name = city.Ar, Language = "ar" }
                         }
+                    });
+                }
+            }
+            _context.SaveChanges();
+        }
+
+        private void CreateTeacherFeatures()
+        {
+            Console.WriteLine("Creating Teacher Features...");
+            var features = new[]
+            {
+                new { En = "PhD Degree", Ar = "شهادة دكتوراه" },
+                new { En = "10+ Years Experience", Ar = "خبرة أكثر من 10 سنوات" },
+                new { En = "Certified Trainer", Ar = "مدرب معتمد" },
+                new { En = "Expert in Online Education", Ar = "خبير في التعليم عن بعد" }
+            };
+
+            foreach (var feature in features)
+            {
+                if (!_context.TeacherFeatures.Any(f => f.Name == feature.En))
+                {
+                    _context.TeacherFeatures.Add(new TeacherFeature
+                    {
+                        Name = feature.En,
+                        Description = feature.Ar,
+                        IsActive = true
                     });
                 }
             }
@@ -290,15 +319,49 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                             _context.GradeSubjects.Add(new GradeSubject { GradeId = grade.Id, SubjectId = subject.Id });
                         }
 
+                        // Create Units for this subject
+                        var units = CreateUnits(subject.Id, sub.Ar);
+
                         var teacherName = teacherNames[_random.Next(teacherNames.Length)];
                         var teacherProfile = CreateTeacher(teacherName, subject.Id, grade.Id);
 
-                        CreateLessons(teacherProfile, subject.Id);
+                        CreateLessons(teacherProfile, subject.Id, units);
 
                         _context.SaveChanges();
                     }
                 }
             }
+        }
+
+        private List<Unit> CreateUnits(Guid subjectId, string subjectNameAr)
+        {
+            var units = new List<Unit>();
+            for (int i = 1; i <= 2; i++)
+            {
+                var unitNameEn = $"Unit {i}";
+                var unitNameAr = $"الوحدة {i}";
+                var unit = _context.Units.Include(u => u.Name).FirstOrDefault(u => u.SubjectId == subjectId && u.Name.Any(t => t.Name == unitNameEn));
+                if (unit == null)
+                {
+                    unit = new Unit
+                    {
+                        Id = Guid.NewGuid(),
+                        SubjectId = subjectId,
+                        Order = i,
+                        IsActive = true,
+                        Name = new List<Translation>
+                        {
+                            new Translation { Code = "en", Name = unitNameEn },
+                            new Translation { Code = "ar", Name = unitNameAr }
+                        },
+                        Description = $"وصف {unitNameAr} لمادة {subjectNameAr}"
+                    };
+                    _context.Units.Add(unit);
+                }
+                units.Add(unit);
+            }
+            _context.SaveChanges();
+            return units;
         }
 
         private string GetArabicNumber(int n)
@@ -346,10 +409,23 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                     Bio = $"أستاذ خبير متخصص في مادة {arabicName}",
                     IsActive = true,
                     AverageRating = 4.8m + (decimal)(_random.NextDouble() * 0.2),
-                    AttachmentId = attachment.Id
+                    AttachmentId = attachment.Id,
+                    Specialization = arabicName
                 };
                 _context.TeacherProfiles.Add(profile);
                 _context.SaveChanges();
+
+                // Assign random features
+                var allFeatures = _context.TeacherFeatures.ToList();
+                var randomFeatures = allFeatures.OrderBy(x => Guid.NewGuid()).Take(2);
+                foreach (var feature in randomFeatures)
+                {
+                    _context.TeacherFeaturesMap.Add(new TeacherFeatureMap
+                    {
+                        TeacherProfileId = profile.Id,
+                        TeacherFeatureId = feature.Id
+                    });
+                }
             }
 
             if (!_context.TeacherSubjects.Any(ts => ts.TeacherProfileId == profile.Id && ts.SubjectId == subjectId && ts.GradeId == gradeId))
@@ -360,45 +436,50 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             return profile;
         }
 
-        private void CreateLessons(TeacherProfile teacher, Guid subjectId)
+        private void CreateLessons(TeacherProfile teacher, Guid subjectId, List<Unit> units)
         {
             var subjectNameAr = _context.Translations
                 .Where(t => t.Code == "ar" && EF.Property<Guid>(t, "SubjectId") == subjectId)
                 .Select(t => t.Name)
                 .FirstOrDefault() ?? "المادة";
 
-            int lessonCount = _random.Next(1, 3);
-            for (int i = 1; i <= lessonCount; i++)
+            foreach (var unit in units)
             {
-                var lessonTitle = $"الدرس {i}: مقدمة شاملة في {subjectNameAr}";
-                var lesson = _context.LessonSessions.FirstOrDefault(l => l.Title == lessonTitle && l.SubjectId == subjectId && l.TeacherProfileId == teacher.Id);
-
-                if (lesson == null)
+                var unitNameAr = unit.Name.FirstOrDefault(t => t.Code == "ar")?.Name ?? "الوحدة";
+                int lessonCount = _random.Next(1, 3);
+                for (int i = 1; i <= lessonCount; i++)
                 {
-                    var lessonId = Guid.NewGuid();
-                    var thumb = CreateAttachment(lessonId.ToString(), AttachmentRefType.LessonSessionThumbnail, MediaType.Image);
-                    var video = CreateAttachment(lessonId.ToString(), AttachmentRefType.LessonSessionVideo, MediaType.Video);
+                    var lessonTitle = $"{unitNameAr} - الدرس {i}: مقدمة في {subjectNameAr}";
+                    var lesson = _context.LessonSessions.FirstOrDefault(l => l.Title == lessonTitle && l.SubjectId == subjectId && l.TeacherProfileId == teacher.Id);
 
-                    lesson = new LessonSession
+                    if (lesson == null)
                     {
-                        Id = lessonId,
-                        Title = lessonTitle,
-                        Description = $"في هذا الدرس، سنقوم بشرح المفاهيم الأساسية للدرس {i} في {subjectNameAr} بأسلوب مبسط وشيق.",
-                        SubjectId = subjectId,
-                        TeacherProfileId = teacher.Id,
-                        DurationSeconds = _random.Next(900, 2700),
-                        Order = i,
-                        IsActive = true,
-                        IsFree = i == 1,
-                        ThumbnailAttachmentId = thumb.Id,
-                        VideoAttachmentId = video.Id
-                    };
-                    _context.LessonSessions.Add(lesson);
+                        var lessonId = Guid.NewGuid();
+                        var thumb = CreateAttachment(lessonId.ToString(), AttachmentRefType.LessonSessionThumbnail, MediaType.Image);
+                        var video = CreateAttachment(lessonId.ToString(), AttachmentRefType.LessonSessionVideo, MediaType.Video);
 
-                    _context.LessonSessionAttachments.Add(new LessonSessionAttachment { LessonSessionId = lesson.Id, Attachment = thumb });
-                    _context.LessonSessionAttachments.Add(new LessonSessionAttachment { LessonSessionId = lesson.Id, Attachment = video });
+                        lesson = new LessonSession
+                        {
+                            Id = lessonId,
+                            Title = lessonTitle,
+                            Description = $"في هذا الدرس، سنقوم بشرح المفاهيم الأساسية للدرس {i} في {unitNameAr} بأسلوب مبسط وشيق.",
+                            SubjectId = subjectId,
+                            UnitId = unit.Id,
+                            TeacherProfileId = teacher.Id,
+                            DurationSeconds = _random.Next(900, 2700),
+                            Order = i,
+                            IsActive = true,
+                            IsFree = i == 1,
+                            ThumbnailAttachmentId = thumb.Id,
+                            VideoAttachmentId = video.Id
+                        };
+                        _context.LessonSessions.Add(lesson);
 
-                    CreateQuizForLesson(lesson);
+                        _context.LessonSessionAttachments.Add(new LessonSessionAttachment { LessonSessionId = lesson.Id, Attachment = thumb });
+                        _context.LessonSessionAttachments.Add(new LessonSessionAttachment { LessonSessionId = lesson.Id, Attachment = video });
+
+                        CreateQuizForLesson(lesson);
+                    }
                 }
             }
         }

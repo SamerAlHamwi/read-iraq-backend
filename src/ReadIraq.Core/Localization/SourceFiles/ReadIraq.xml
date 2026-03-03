@@ -151,8 +151,6 @@
     <text name="Notification_QUIZ_PASSED_HIGH_SCORE_Body" value="You scored {0}% on the {1} quiz." />
     <text name="Notification_WEEKLY_PROGRESS_REPORT_Title" value="Weekly Report" />
     <text name="Notification_WEEKLY_PROGRESS_REPORT_Body" value="This week: {0} minutes, {1} lessons." />
-    <text name="Notification_SUBSCRIPTION_EXPIRING_Title" value="Subscription expiring soon" />
-    <text name="Notification_SUBSCRIPTION_EXPIRING_Body" value="Your subscription expires in {0} days. Renew now." />
     <text name="Notification_TEACHER_REPLY_Title" value="Teacher replied to your question" />
     <text name="Notification_TEACHER_REPLY_Body" value="Tap to view the reply." />
     <text name="Notification_STREAK_BROKEN_Title" value="You missed a day" />

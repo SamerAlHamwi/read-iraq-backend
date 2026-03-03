@@ -1,7 +1,6 @@
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using ReadIraq.Roles.Dto;
-using ReadIraq.Subscriptions.Dto;
 using ReadIraq.Users.Dto;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -28,6 +27,5 @@ namespace ReadIraq.Users
         Task AssignGrade(AssignGradeDto input);
         Task AddPoints(AddPointsDto input);
         Task<UserProgressDto> GetProgress(EntityDto<long> input);
-        Task<List<SubscriptionDto>> GetSubscriptions(EntityDto<long> input);
     }
 }

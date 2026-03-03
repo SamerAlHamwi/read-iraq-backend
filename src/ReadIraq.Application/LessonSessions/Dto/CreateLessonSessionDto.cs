@@ -18,6 +18,8 @@ namespace ReadIraq.LessonSessions.Dto
         [Required]
         public Guid SubjectId { get; set; }
 
+        public Guid? UnitId { get; set; }
+
         public long ThumbnailAttachmentId { get; set; }
 
         public long VideoAttachmentId { get; set; }

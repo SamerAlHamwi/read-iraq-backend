@@ -19,14 +19,12 @@ using ReadIraq.Authorization.Roles;
 using ReadIraq.Authorization.Users;
 using ReadIraq.Domain.AskForHelps;
 using ReadIraq.Domain.AskForHelps.Dto;
-using ReadIraq.Domain.Subscriptions;
 using ReadIraq.Domain.UserSessionProgresses;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Attachments;
 using ReadIraq.Localization.SourceFiles;
 using ReadIraq.NotificationSender;
 using ReadIraq.Roles.Dto;
-using ReadIraq.Subscriptions.Dto;
 using ReadIraq.Users.Dto;
 using ReadIraq.Subjects.Dto;
 using ReadIraq.Grades.Dto;
@@ -50,7 +48,6 @@ namespace ReadIraq.Users
         private readonly INotificationSender _notificationSender;
         private readonly IRepository<AskForHelp> _askForHelpRepository;
         private readonly UserRegistrationManager _userRegistrationManager;
-        private readonly IRepository<Subscription, Guid> _subscriptionRepository;
         private readonly IRepository<UserSessionProgress, Guid> _userSessionProgressRepository;
         private readonly IRepository<UserPreferredSubject, Guid> _userPreferredSubjectRepository;
         private readonly IAttachmentManager _attachmentManager;
@@ -66,7 +63,6 @@ namespace ReadIraq.Users
             INotificationSender notificationSender,
             UserRegistrationManager userRegistrationManager,
             IRepository<AskForHelp> askForHelpRepository,
-            IRepository<Subscription, Guid> subscriptionRepository,
             IRepository<UserSessionProgress, Guid> userSessionProgressRepository,
             IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
             IAttachmentManager attachmentManager)
@@ -81,7 +77,6 @@ namespace ReadIraq.Users
             _notificationSender = notificationSender;
             _askForHelpRepository = askForHelpRepository;
             _userRegistrationManager = userRegistrationManager;
-            _subscriptionRepository = subscriptionRepository;
             _userSessionProgressRepository = userSessionProgressRepository;
             _userPreferredSubjectRepository = userPreferredSubjectRepository;
             _attachmentManager = attachmentManager;
@@ -335,18 +330,6 @@ namespace ReadIraq.Users
             return result;
         }
 
-        [AbpAuthorize]
-        public async Task<List<SubscriptionDto>> GetSubscriptions(EntityDto<long> input)
-        {
-            var subscriptions = await _subscriptionRepository.GetAll()
-                .Include(x => x.Plan)
-                .Where(x => x.UserId == input.Id)
-                .OrderByDescending(x => x.CreationTime)
-                .ToListAsync();
-
-            return ObjectMapper.Map<List<SubscriptionDto>>(subscriptions);
-        }
-
         protected override User MapToEntity(CreateUserDto createInput)
         {
             var user = ObjectMapper.Map<User>(createInput);
@@ -387,23 +370,6 @@ namespace ReadIraq.Users
                     .WhereIf(input.UserType.HasValue, x => x.Type == input.UserType)
                     .WhereIf(!string.IsNullOrEmpty(input.MediatorCode), x => x.MediatorCode.Contains(input.MediatorCode))
                     .WhereIf(input.GradeId.HasValue, x => x.GradeId == input.GradeId.Value);
-
-            if (input.Subscribed.HasValue)
-            {
-                var now = DateTime.Now;
-                var userIdsWithActiveSubscriptions = _subscriptionRepository.GetAll()
-                    .Where(s => s.IsActive && s.ExpiresAt > now)
-                    .Select(s => s.UserId);
-
-                if (input.Subscribed.Value)
-                {
-                    data = data.Where(u => userIdsWithActiveSubscriptions.Contains(u.Id));
-                }
-                else
-                {
-                    data = data.Where(u => !userIdsWithActiveSubscriptions.Contains(u.Id));
-                }
-            }
 
             return data;
         }

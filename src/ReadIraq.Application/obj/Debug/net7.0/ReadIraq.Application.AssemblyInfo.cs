@@ -12,7 +12,7 @@ using System;
 using System.Reflection;
 
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0.0+70241cac9c13a5ce7acc4084587c73e8a1890c6b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0.0+dba9f0824ffa43ce2bdb8e001f1739da7efc758c")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ReadIraq.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 

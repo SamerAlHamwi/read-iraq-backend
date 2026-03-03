@@ -35,8 +35,6 @@
     <text name="Notification_QUIZ_PASSED_HIGH_SCORE_Body" value="حصلت على {0}% في اختبار {1}." />
     <text name="Notification_WEEKLY_PROGRESS_REPORT_Title" value="تقرير الأسبوع" />
     <text name="Notification_WEEKLY_PROGRESS_REPORT_Body" value="هذا الأسبوع: {0} دقيقة، {1} دروس." />
-    <text name="Notification_SUBSCRIPTION_EXPIRING_Title" value="اشتراكك على وشك الانتهاء" />
-    <text name="Notification_SUBSCRIPTION_EXPIRING_Body" value="سينتهي اشتراكك خلال {0} أيام. جدده الآن." />
     <text name="Notification_TEACHER_REPLY_Title" value="الأستاذ رد على سؤالك" />
     <text name="Notification_TEACHER_REPLY_Body" value="اضغط لعرض الرد." />
     <text name="Notification_STREAK_BROKEN_Title" value="فاتك يوم" />

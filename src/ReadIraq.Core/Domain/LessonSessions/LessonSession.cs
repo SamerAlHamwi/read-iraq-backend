@@ -3,6 +3,7 @@ using Abp.Domain.Entities.Auditing;
 using ReadIraq.Domain.Attachments;
 using ReadIraq.Domain.Teachers;
 using ReadIraq.Domain.Subjects;
+using ReadIraq.Domain.Units;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,6 +24,11 @@ namespace ReadIraq.Domain.LessonSessions
 
         [ForeignKey(nameof(SubjectId))]
         public virtual Subject Subject { get; set; }
+
+        public Guid? UnitId { get; set; }
+
+        [ForeignKey(nameof(UnitId))]
+        public virtual Unit Unit { get; set; }
 
         /// <summary>
         /// Presenter/teacher profile id.

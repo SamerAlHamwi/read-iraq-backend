@@ -17,7 +17,6 @@ namespace ReadIraq.NotificationService
         Task NotifyQuizReminderAsync(long userId, Guid quizId, Guid lessonId, string lessonName);
         Task NotifyQuizPassedHighScoreAsync(long userId, Guid quizId, Guid lessonId, string lessonName, int score);
         Task NotifyWeeklyProgressReportAsync(long userId, int minutesStudied, int lessonsCompleted);
-        Task NotifySubscriptionExpiringAsync(long userId, int days);
         Task NotifyTeacherReplyAsync(long userId, Guid lessonId);
         Task NotifyStreakBrokenAsync(long userId, int nDays, string lessonName, Guid lessonId);
         Task NotifySystemMaintenanceAsync(long[] userIds, string date, string start, string end);

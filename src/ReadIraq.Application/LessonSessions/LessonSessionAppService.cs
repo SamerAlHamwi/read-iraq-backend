@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using ReadIraq.NotificationService;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Authorization.Users;
+using System.Globalization;
 
 namespace ReadIraq.LessonSessions
 {
@@ -58,10 +59,12 @@ namespace ReadIraq.LessonSessions
         {
             return base.CreateFilteredQuery(input)
                 .Include(x => x.Subject)
+                .Include(x => x.Unit)
                 .WhereIf(!string.IsNullOrWhiteSpace(input.Keyword),
                     x => x.Title.Contains(input.Keyword) || x.Description.Contains(input.Keyword))
                 .WhereIf(input.TeacherProfileId.HasValue, x => x.TeacherProfileId == input.TeacherProfileId.Value)
                 .WhereIf(input.SubjectId.HasValue, x => x.SubjectId == input.SubjectId.Value)
+                .WhereIf(input.UnitId.HasValue, x => x.UnitId == input.UnitId.Value)
                 .WhereIf(input.IsFree.HasValue, x => x.IsFree == input.IsFree.Value)
                 .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive.Value);
         }
@@ -165,6 +168,7 @@ namespace ReadIraq.LessonSessions
             var entity = await Repository.GetAll()
                 .Include(x => x.Attachments).ThenInclude(x => x.Attachment)
                 .Include(x => x.Subject).ThenInclude(x => x.Name)
+                .Include(x => x.Unit).ThenInclude(x => x.Name)
                 .Include(x => x.TeacherProfile)
                 .FirstOrDefaultAsync(x => x.Id == input.Id);
 
@@ -173,6 +177,36 @@ namespace ReadIraq.LessonSessions
                 throw new Abp.UI.UserFriendlyException(L("SessionNotFound"));
             }
 
+            return await MapLessonSessionToDto(entity);
+        }
+
+        [AbpAllowAnonymous]
+        public async Task<ListResultDto<LessonSessionDto>> GetByIdsAsync(GetLessonsByIdsInput input)
+        {
+            if (input.Ids == null || !input.Ids.Any())
+            {
+                return new ListResultDto<LessonSessionDto>(new List<LessonSessionDto>());
+            }
+
+            var entities = await Repository.GetAll()
+                .Include(x => x.Attachments).ThenInclude(x => x.Attachment)
+                .Include(x => x.Subject).ThenInclude(x => x.Name)
+                .Include(x => x.Unit).ThenInclude(x => x.Name)
+                .Include(x => x.TeacherProfile)
+                .Where(x => input.Ids.Contains(x.Id))
+                .ToListAsync();
+
+            var dtos = new List<LessonSessionDto>();
+            foreach (var entity in entities)
+            {
+                dtos.Add(await MapLessonSessionToDto(entity));
+            }
+
+            return new ListResultDto<LessonSessionDto>(dtos);
+        }
+
+        private async Task<LessonSessionDto> MapLessonSessionToDto(LessonSession entity)
+        {
             var dto = MapToEntityDto(entity);
             dto.Attachments = new List<LiteAttachmentDto>();
 
@@ -232,14 +266,24 @@ namespace ReadIraq.LessonSessions
             // Map Subject Name
             if (entity.Subject != null)
             {
-                 dto.SubjectName = entity.Subject.Name?.FirstOrDefault()?.Name;
+                var currentLanguage = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+                dto.SubjectName = entity.Subject.Name?.FirstOrDefault(x => x.Code == currentLanguage)?.Name
+                    ?? entity.Subject.Name?.FirstOrDefault()?.Name;
+            }
+
+            // Map Unit Name
+            if (entity.Unit != null)
+            {
+                var currentLanguage = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+                dto.UnitName = entity.Unit.Name?.FirstOrDefault(x => x.Code == currentLanguage)?.Name
+                    ?? entity.Unit.Name?.FirstOrDefault()?.Name;
             }
 
             // Check progress for current user
             var userId = AbpSession.UserId;
             if (userId.HasValue)
             {
-                var progress = await _progressRepository.FirstOrDefaultAsync(p => p.SessionId == input.Id && p.UserId == userId.Value);
+                var progress = await _progressRepository.FirstOrDefaultAsync(p => p.SessionId == entity.Id && p.UserId == userId.Value);
                 dto.IsCompleted = progress?.IsCompleted ?? false;
                 dto.CanTakeQuiz = progress?.CanTakeQuiz ?? false;
                 dto.WatchedSeconds = progress?.WatchedSeconds ?? 0;

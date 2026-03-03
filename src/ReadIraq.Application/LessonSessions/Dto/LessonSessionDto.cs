@@ -24,6 +24,9 @@ namespace ReadIraq.LessonSessions.Dto
         public Guid SubjectId { get; set; }
         public string SubjectName { get; set; }
 
+        public Guid? UnitId { get; set; }
+        public string UnitName { get; set; }
+
         public int DurationSeconds { get; set; }
         public int Order { get; set; }
         public bool IsSavedByDefault { get; set; }
