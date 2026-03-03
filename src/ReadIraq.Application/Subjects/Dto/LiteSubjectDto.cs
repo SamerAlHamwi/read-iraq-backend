@@ -14,6 +14,7 @@ namespace ReadIraq.Subjects.Dto
         public LiteAttachmentDto Attachment { get; set; }
         public int TeachersCount { get; set; }
         public int LessonsCount { get; set; }
+        public int StudentsCount { get; set; }
         public string Color { get; set; }
         public bool IsSaved { get; set; }
     }

@@ -77,11 +77,20 @@ namespace ReadIraq.Subjects
                 .WhereIf(input.Level.HasValue, x => x.Level == input.Level.Value)
                 .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive.Value);
 
-            if (input.GradeId.HasValue)
+            if (input.GradeId.HasValue && !input.TeacherProfileId.HasValue)
             {
                 var subjectIds = _gradeSubjectRepository.GetAll()
                     .Where(gs => gs.GradeId == input.GradeId.Value)
                     .Select(gs => gs.SubjectId);
+                query = query.Where(x => subjectIds.Contains(x.Id));
+            }
+
+            if (input.TeacherProfileId.HasValue)
+            {
+                var subjectIds = _teacherSubjectRepository.GetAll()
+                    .Where(ts => ts.TeacherProfileId == input.TeacherProfileId.Value)
+                    .WhereIf(input.GradeId.HasValue, ts => ts.GradeId == input.GradeId.Value)
+                    .Select(ts => ts.SubjectId);
                 query = query.Where(x => subjectIds.Contains(x.Id));
             }
 
@@ -97,14 +106,19 @@ namespace ReadIraq.Subjects
             foreach (var item in result.Items)
             {
                 var entity = await Repository.FirstOrDefaultAsync(item.Id);
-                if (entity != null && entity.AttachmentId.HasValue)
+                if (entity != null)
                 {
-                    var attachment = await _attachmentRepository.FirstOrDefaultAsync(entity.AttachmentId.Value);
-                    if (attachment != null)
+                    item.StudentsCount = entity.StudentsCount;
+
+                    if (entity.AttachmentId.HasValue)
                     {
-                        item.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
-                        item.Attachment.Url = _attachmentManager.GetUrl(attachment);
-                        item.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                        var attachment = await _attachmentRepository.FirstOrDefaultAsync(entity.AttachmentId.Value);
+                        if (attachment != null)
+                        {
+                            item.Attachment = ObjectMapper.Map<LiteAttachmentDto>(attachment);
+                            item.Attachment.Url = _attachmentManager.GetUrl(attachment);
+                            item.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
+                        }
                     }
                 }
 

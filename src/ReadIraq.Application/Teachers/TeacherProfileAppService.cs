@@ -22,6 +22,7 @@ using Abp.UI;
 using Abp.Domain.Uow;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Grades;
+using ReadIraq.Domain.Enrollments;
 
 namespace ReadIraq.Teachers
 {
@@ -41,6 +42,7 @@ namespace ReadIraq.Teachers
         private readonly IRepository<UserPreferredSubject, Guid> _userPreferredSubjectRepository;
         private readonly IRepository<UserPreferredTeacher, Guid> _userPreferredTeacherRepository;
         private readonly IRepository<GradeSubject> _gradeSubjectRepository;
+        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
 
         public TeacherProfileAppService(
             IRepository<TeacherProfile, Guid> repository,
@@ -56,7 +58,8 @@ namespace ReadIraq.Teachers
             IRepository<Subject, Guid> subjectRepository,
             IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
             IRepository<UserPreferredTeacher, Guid> userPreferredTeacherRepository,
-            IRepository<GradeSubject> gradeSubjectRepository)
+            IRepository<GradeSubject> gradeSubjectRepository,
+            IRepository<Enrollment, Guid> enrollmentRepository)
             : base(repository)
         {
             _teacherProfileManager = teacherProfileManager;
@@ -72,6 +75,7 @@ namespace ReadIraq.Teachers
             _userPreferredSubjectRepository = userPreferredSubjectRepository;
             _userPreferredTeacherRepository = userPreferredTeacherRepository;
             _gradeSubjectRepository = gradeSubjectRepository;
+            _enrollmentRepository = enrollmentRepository;
         }
 
         protected override IQueryable<TeacherProfile> CreateFilteredQuery(PagedTeacherProfileResultRequestDto input)
@@ -117,6 +121,7 @@ namespace ReadIraq.Teachers
                 }
 
                 item.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.TeacherProfileId == item.Id && x.IsActive);
+                item.StudentsCount = await _enrollmentRepository.CountAsync(x => x.TeacherId == item.Id);
 
                 if (userId.HasValue)
                 {
@@ -150,6 +155,7 @@ namespace ReadIraq.Teachers
             dto.Features = ObjectMapper.Map<List<TeacherFeatureDto>>(features);
 
             dto.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.TeacherProfileId == entity.Id && x.IsActive);
+            dto.StudentsCount = await _enrollmentRepository.CountAsync(x => x.TeacherId == entity.Id);
 
             if (entity.AttachmentId.HasValue)
             {
@@ -285,11 +291,11 @@ namespace ReadIraq.Teachers
 
         public async Task<TeacherStatsDto> GetStatsAsync(EntityDto<Guid> input)
         {
-            var entity = await Repository.GetAsync(input.Id);
+            var studentsCount = await _enrollmentRepository.CountAsync(x => x.TeacherId == input.Id);
 
             return new TeacherStatsDto
             {
-                StudentsCount = entity.StudentsCount,
+                StudentsCount = studentsCount,
                 WatchTimeMinutes = 0,
                 QuizAttemptsCount = 0,
                 AverageQuizScore = 0
@@ -435,6 +441,8 @@ namespace ReadIraq.Teachers
                             teacherDto.Attachment.LowResolutionPhotoUrl = _attachmentManager.GetLowResolutionPhotoUrl(attachment);
                         }
                     }
+
+                    teacherDto.StudentsCount = await _enrollmentRepository.CountAsync(x => x.TeacherId == teacherDto.Id);
                 }
 
                 // Use the first translation name as the key (usually default)

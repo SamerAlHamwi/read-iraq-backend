@@ -129,9 +129,19 @@ namespace ReadIraq.LessonSessions
 
             foreach (var item in result.Items)
             {
-                var entity = await Repository.FirstOrDefaultAsync(item.Id);
+                var entity = await Repository.GetAll()
+                    .Include(x => x.Unit).ThenInclude(x => x.Name)
+                    .FirstOrDefaultAsync(x => x.Id == item.Id);
+
                 if (entity == null) continue;
-                
+
+                if (entity.Unit != null)
+                {
+                    var currentLanguage = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+                    item.UnitName = entity.Unit.Name?.FirstOrDefault(x => x.Code == currentLanguage)?.Name
+                        ?? entity.Unit.Name?.FirstOrDefault()?.Name;
+                }
+
                 if (entity.ThumbnailAttachmentId.HasValue)
                 {
                     var thumbnail = await _attachmentRepository.FirstOrDefaultAsync(entity.ThumbnailAttachmentId.Value);

@@ -9,6 +9,7 @@ namespace ReadIraq.Subjects.Dto
         public string Keyword { get; set; }
         public SubjectLevel? Level { get; set; }
         public int? GradeId { get; set; }
+        public Guid? TeacherProfileId { get; set; }
         public bool? IsActive { get; set; }
     }
 }
