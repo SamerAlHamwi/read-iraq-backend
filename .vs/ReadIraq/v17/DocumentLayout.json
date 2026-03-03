@@ -1,12 +1,71 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303081809_add-codes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303081809_add-codes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303081315_add-codes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303081315_add-codes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303071728_add-units.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303071728_add-units.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "20260303081809_add-codes.cs",
+              "DocumentMoniker": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303081809_add-codes.cs",
+              "RelativeDocumentMoniker": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303081809_add-codes.cs",
+              "ToolTip": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303081809_add-codes.cs",
+              "RelativeToolTip": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303081809_add-codes.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-03T08:18:09.751Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "20260303081315_add-codes.cs",
+              "DocumentMoniker": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303081315_add-codes.cs",
+              "RelativeDocumentMoniker": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303081315_add-codes.cs",
+              "ToolTip": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303081315_add-codes.cs",
+              "RelativeToolTip": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303081315_add-codes.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-03T08:13:15.303Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "20260303071728_add-units.cs",
+              "DocumentMoniker": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303071728_add-units.cs",
+              "RelativeDocumentMoniker": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303071728_add-units.cs",
+              "ToolTip": "C:\\Users\\Tech\\StudioProjects\\stugoo\\Flutter-start-project\\ReadIraq\\src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303071728_add-units.cs",
+              "RelativeToolTip": "src\\ReadIraq.EntityFrameworkCore\\Migrations\\20260303071728_add-units.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-03T07:17:28.672Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

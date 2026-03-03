@@ -13,7 +13,7 @@ using System.Reflection;
 
 [assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("AbpCompanyName-ReadIraq-56C2EF2F-ABD6-4EFC-AAF2-2E81C34E8FB1")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0.0+dba9f0824ffa43ce2bdb8e001f1739da7efc758c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0.0+cbcc14ecf045525446925484ddc54e3e5b51f9c7")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ReadIraq.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 

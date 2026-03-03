@@ -35,6 +35,8 @@ using ReadIraq.Domain.Notifications;
 using ReadIraq.Domain.Audit;
 using ReadIraq.Domain.Settings;
 using ReadIraq.Domain.Units;
+using ReadIraq.Domain.Codes;
+using ReadIraq.Domain.Enrollments;
 using System;
 
 namespace ReadIraq.EntityFrameworkCore
@@ -96,6 +98,8 @@ namespace ReadIraq.EntityFrameworkCore
         public virtual DbSet<AppNotification> AppNotifications { get; set; }
         public virtual DbSet<ActivityLog> ActivityLogs { get; set; }
         public virtual DbSet<AppSetting> AppSettings { get; set; }
+        public virtual DbSet<ActivationCode> ActivationCodes { get; set; }
+        public virtual DbSet<Enrollment> Enrollments { get; set; }
 
         public ReadIraqDbContext(DbContextOptions<ReadIraqDbContext> options)
             : base(options)
@@ -230,12 +234,12 @@ namespace ReadIraq.EntityFrameworkCore
             {
                 b.HasIndex(e => new { e.UserId, e.SubjectId, e.TeacherProfileId }).IsUnique();
 
-                b.HasOne(x => x.TeacherProfile)
+                modelBuilder.Entity<UserPreferredTeacher>().HasOne(x => x.TeacherProfile)
                     .WithMany()
                     .HasForeignKey(x => x.TeacherProfileId)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                b.HasOne(x => x.Subject)
+                modelBuilder.Entity<UserPreferredTeacher>().HasOne(x => x.Subject)
                     .WithMany()
                     .HasForeignKey(x => x.SubjectId)
                     .OnDelete(DeleteBehavior.Restrict);
@@ -268,6 +272,17 @@ namespace ReadIraq.EntityFrameworkCore
             modelBuilder.Entity<AppSetting>(b =>
             {
                 b.HasIndex(e => e.Key).IsUnique();
+            });
+
+            modelBuilder.Entity<ActivationCode>(b =>
+            {
+                b.HasIndex(e => e.Code).IsUnique();
+            });
+
+            modelBuilder.Entity<Enrollment>(b =>
+            {
+                b.HasIndex(e => new { e.UserId, e.SubjectId, e.TeacherId, e.GradeId }).IsUnique();
+                b.Property(e => e.ProgressPercent).HasPrecision(18, 2);
             });
         }
     }

@@ -54,6 +54,8 @@ using ReadIraq.Users.Dto;
 using ReadIraq.Domain.Attachments;
 using ReadIraq.Domain.Comments;
 using ReadIraq.Comments.Dto;
+using ReadIraq.Domain.Codes;
+using ReadIraq.ActivationCodes.Dto;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -273,6 +275,10 @@ namespace ReadIraq
                 configuration.CreateMap<SessionComment, SessionCommentDto>();
                 configuration.CreateMap<CreateSessionCommentDto, SessionComment>();
                 configuration.CreateMap<UpdateSessionCommentDto, SessionComment>();
+                #endregion
+
+                #region ActivationCodes
+                configuration.CreateMap<ActivationCode, ActivationCodeDto>();
                 #endregion
             }
         }

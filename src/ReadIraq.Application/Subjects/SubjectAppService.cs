@@ -21,6 +21,7 @@ using ReadIraq.Domain.SavedItems;
 using ReadIraq.Teachers.Dto;
 using ReadIraq.LessonSessions.Dto;
 using ReadIraq.Domain.Attachments;
+using ReadIraq.Domain.Enrollments;
 using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Subjects
@@ -38,6 +39,7 @@ namespace ReadIraq.Subjects
         private readonly IRepository<Attachment, long> _attachmentRepository;
         private readonly IRepository<UserSavedItem, Guid> _userSavedItemRepository;
         private readonly IRepository<Unit, Guid> _unitRepository;
+        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
 
         public SubjectAppService(
             IRepository<Subject, Guid> repository,
@@ -50,7 +52,8 @@ namespace ReadIraq.Subjects
             IAttachmentManager attachmentManager,
             IRepository<Attachment, long> attachmentRepository,
             IRepository<UserSavedItem, Guid> userSavedItemRepository,
-            IRepository<Unit, Guid> unitRepository)
+            IRepository<Unit, Guid> unitRepository,
+            IRepository<Enrollment, Guid> enrollmentRepository)
             : base(repository)
         {
             _subjectManager = subjectManager;
@@ -63,6 +66,7 @@ namespace ReadIraq.Subjects
             _attachmentRepository = attachmentRepository;
             _userSavedItemRepository = userSavedItemRepository;
             _unitRepository = unitRepository;
+            _enrollmentRepository = enrollmentRepository;
         }
 
         protected override IQueryable<Subject> CreateFilteredQuery(PagedSubjectResultRequestDto input)
@@ -177,6 +181,7 @@ namespace ReadIraq.Subjects
                     dto.ProgressPercentage = (double)preferredSubject.ProgressPercent;
                 }
                 dto.IsSaved = await _userSavedItemRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.ItemId == entity.Id && x.ItemType == SavedItemType.Subject);
+                dto.IsEnrolled = await _enrollmentRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.SubjectId == entity.Id);
             }
 
             // Top Teacher

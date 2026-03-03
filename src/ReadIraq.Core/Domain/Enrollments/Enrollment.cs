@@ -1,5 +1,6 @@
 using Abp.Domain.Entities.Auditing;
 using ReadIraq.Authorization.Users;
+using ReadIraq.Domain.Grades;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Teachers;
 using System;
@@ -24,6 +25,11 @@ namespace ReadIraq.Domain.Enrollments
 
         [ForeignKey(nameof(TeacherId))]
         public virtual TeacherProfile Teacher { get; set; }
+
+        public int? GradeId { get; set; }
+
+        [ForeignKey(nameof(GradeId))]
+        public virtual Grade Grade { get; set; }
 
         public decimal ProgressPercent { get; set; }
 

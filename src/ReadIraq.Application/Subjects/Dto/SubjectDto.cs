@@ -26,5 +26,6 @@ namespace ReadIraq.Subjects.Dto
         public LiteTeacherProfileDto TopTeacher { get; set; }
         public List<UnitDto> Units { get; set; }
         public bool IsSaved { get; set; }
+        public bool IsEnrolled { get; set; }
     }
 }
