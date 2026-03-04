@@ -12,5 +12,6 @@ namespace ReadIraq.Domain.Teachers
         Task<TeacherProfile> CreateAsync(TeacherProfile teacherProfile);
         Task<TeacherProfile> UpdateAsync(TeacherProfile teacherProfile);
         Task DeleteAsync(Guid id);
+        Task UpdateRatingAsync(Guid teacherProfileId);
     }
 }

@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ReadIraq.Domain.Attachments;
+using ReadIraq.Domain.Enrollments;
+using Abp.UI;
 using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Teachers
@@ -21,13 +23,19 @@ namespace ReadIraq.Teachers
     public class TeacherReviewAppService : ReadIraqAsyncCrudAppService<TeacherReview, TeacherReviewDto, Guid, TeacherReviewDto, PagedTeacherReviewResultRequestDto, CreateTeacherReviewDto, UpdateTeacherReviewDto>, ITeacherReviewAppService
     {
         private readonly IAttachmentManager _attachmentManager;
+        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly ITeacherProfileManager _teacherProfileManager;
 
         public TeacherReviewAppService(
             IRepository<TeacherReview, Guid> repository,
-            IAttachmentManager attachmentManager)
+            IAttachmentManager attachmentManager,
+            IRepository<Enrollment, Guid> enrollmentRepository,
+            ITeacherProfileManager teacherProfileManager)
             : base(repository)
         {
             _attachmentManager = attachmentManager;
+            _enrollmentRepository = enrollmentRepository;
+            _teacherProfileManager = teacherProfileManager;
         }
 
         protected override IQueryable<TeacherReview> CreateFilteredQuery(PagedTeacherReviewResultRequestDto input)
@@ -42,6 +50,13 @@ namespace ReadIraq.Teachers
         {
             var userId = AbpSession.GetUserId();
 
+            // Check enrollment
+            var isEnrolled = await _enrollmentRepository.GetAll().AnyAsync(x => x.UserId == userId && x.TeacherId == input.TeacherProfileId);
+            if (!isEnrolled)
+            {
+                throw new UserFriendlyException("You must be enrolled in one of the teacher's subjects to leave a review.");
+            }
+
             // Check if user already reviewed this teacher
             var existingReview = await Repository.FirstOrDefaultAsync(x => x.TeacherProfileId == input.TeacherProfileId && x.UserId == userId);
 
@@ -51,6 +66,9 @@ namespace ReadIraq.Teachers
                 existingReview.ReviewText = input.ReviewText;
                 await Repository.UpdateAsync(existingReview);
                 await CurrentUnitOfWork.SaveChangesAsync();
+
+                await _teacherProfileManager.UpdateRatingAsync(input.TeacherProfileId);
+
                 return await MapToEntityDtoAsync(existingReview);
             }
 
@@ -59,6 +77,8 @@ namespace ReadIraq.Teachers
 
             await Repository.InsertAsync(entity);
             await CurrentUnitOfWork.SaveChangesAsync();
+
+            await _teacherProfileManager.UpdateRatingAsync(input.TeacherProfileId);
 
             return await MapToEntityDtoAsync(entity);
         }

@@ -21,6 +21,7 @@ namespace ReadIraq.Teachers.Dto
         public int LessonsCount { get; set; }
         public bool IsFollowed { get; set; }
         public bool IsSaved { get; set; }
+        public bool IsEnrolled { get; set; }
 
         public List<Guid> FeatureIds { get; set; }
         public List<TeacherFeatureDto> Features { get; set; }

@@ -173,6 +173,7 @@ namespace ReadIraq.Teachers
             {
                 dto.IsFollowed = await _userFollowTeacherRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.TeacherProfileId == entity.Id);
                 dto.IsSaved = await _userSavedItemRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.ItemId == entity.Id && x.ItemType == SavedItemType.Teacher);
+                dto.IsEnrolled = await _enrollmentRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.TeacherId == entity.Id);
             }
 
             return dto;
