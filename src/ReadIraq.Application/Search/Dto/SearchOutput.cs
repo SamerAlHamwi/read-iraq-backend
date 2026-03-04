@@ -22,5 +22,7 @@ namespace ReadIraq.Search.Dto
         public double? Progress { get; set; }
         public string Color { get; set; }
         public string Icon { get; set; }
+        public string SubjectName { get; set; }
+        public string TeacherName { get; set; }
     }
 }

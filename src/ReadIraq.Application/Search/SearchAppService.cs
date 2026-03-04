@@ -20,17 +20,20 @@ namespace ReadIraq.Search
         private readonly IRepository<Subject, Guid> _subjectRepository;
         private readonly IRepository<LessonSession, Guid> _sessionRepository;
         private readonly IRepository<TeacherProfile, Guid> _teacherRepository;
+        private readonly IRepository<TeacherSubject, Guid> _teacherSubjectRepository;
         private readonly IAttachmentManager _attachmentManager;
 
         public SearchAppService(
             IRepository<Subject, Guid> subjectRepository,
             IRepository<LessonSession, Guid> sessionRepository,
             IRepository<TeacherProfile, Guid> teacherRepository,
+            IRepository<TeacherSubject, Guid> teacherSubjectRepository,
             IAttachmentManager attachmentManager)
         {
             _subjectRepository = subjectRepository;
             _sessionRepository = sessionRepository;
             _teacherRepository = teacherRepository;
+            _teacherSubjectRepository = teacherSubjectRepository;
             _attachmentManager = attachmentManager;
         }
 
@@ -49,6 +52,12 @@ namespace ReadIraq.Search
                 foreach (var item in items)
                 {
                     var lessonsCount = await _sessionRepository.CountAsync(x => x.SubjectId == item.Id);
+                    var teacherName = await _teacherSubjectRepository.GetAll()
+                        .Include(x => x.TeacherProfile)
+                        .Where(x => x.SubjectId == item.Id)
+                        .Select(x => x.TeacherProfile.Name)
+                        .FirstOrDefaultAsync();
+
                     var searchResult = new SearchResultItem
                     {
                         Id = item.Id.ToString(),
@@ -56,7 +65,8 @@ namespace ReadIraq.Search
                         Description = item.Description,
                         Type = "subject",
                         LessonsCount = lessonsCount,
-                        Color = item.Color
+                        Color = item.Color,
+                        TeacherName = teacherName
                     };
                     var attachment = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.Subject);
                     if (attachment != null) searchResult.ImageUrl = _attachmentManager.GetUrl(attachment);
@@ -66,7 +76,7 @@ namespace ReadIraq.Search
 
             if (string.IsNullOrEmpty(input.Type) || input.Type == "session")
             {
-                var query = _sessionRepository.GetAll().Include(x => x.Subject)
+                var query = _sessionRepository.GetAll().Include(x => x.Subject).ThenInclude(x => x.Name).Include(x => x.TeacherProfile)
                     .WhereIf(!string.IsNullOrEmpty(input.Q), x => x.Title.Contains(input.Q) || (x.Description != null && x.Description.Contains(input.Q)));
 
                 totalCount += await query.CountAsync();
@@ -80,7 +90,9 @@ namespace ReadIraq.Search
                         Description = item.Description,
                         Subtitle = item.Subject?.Description, // Or Level
                         Type = "session",
-                        Duration = TimeSpan.FromSeconds(item.DurationSeconds).ToString(@"mm\:ss")
+                        Duration = TimeSpan.FromSeconds(item.DurationSeconds).ToString(@"mm\:ss"),
+                        SubjectName = item.Subject?.Name?.FirstOrDefault()?.Name ?? item.Subject?.Description,
+                        TeacherName = item.TeacherProfile?.Name
                     };
                     var attachment = await _attachmentManager.GetElementByRefAsync(item.Id.ToString(), AttachmentRefType.LessonSessionThumbnail);
                     if (attachment != null) searchResult.ImageUrl = _attachmentManager.GetUrl(attachment);

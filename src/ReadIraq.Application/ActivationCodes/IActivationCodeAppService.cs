@@ -12,6 +12,6 @@ namespace ReadIraq.ActivationCodes
         Task<ActivationCodeDto> GetCode(Guid id);
         Task<PagedResultDto<ActivationCodeDto>> GetAll(GetActivationCodesInput input);
         Task<ActivationCodeStatisticsDto> GetStatistics();
-        Task UseCode(string code, Guid? subjectId);
+        Task UseCode(UseCodeInput input);
     }
 }

@@ -28,6 +28,9 @@ using ReadIraq.Roles.Dto;
 using ReadIraq.Users.Dto;
 using ReadIraq.Subjects.Dto;
 using ReadIraq.Grades.Dto;
+using ReadIraq.Domain.Enrollments;
+using ReadIraq.Domain.LessonSessions;
+using ReadIraq.Domain.Quizzes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +53,10 @@ namespace ReadIraq.Users
         private readonly UserRegistrationManager _userRegistrationManager;
         private readonly IRepository<UserSessionProgress, Guid> _userSessionProgressRepository;
         private readonly IRepository<UserPreferredSubject, Guid> _userPreferredSubjectRepository;
+        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly IRepository<LessonSession, Guid> _lessonSessionRepository;
+        private readonly IRepository<Quiz, Guid> _quizRepository;
+        private readonly IRepository<QuizAttempt, Guid> _quizAttemptRepository;
         private readonly IAttachmentManager _attachmentManager;
 
         public UserAppService(
@@ -65,6 +72,10 @@ namespace ReadIraq.Users
             IRepository<AskForHelp> askForHelpRepository,
             IRepository<UserSessionProgress, Guid> userSessionProgressRepository,
             IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
+            IRepository<Enrollment, Guid> enrollmentRepository,
+            IRepository<LessonSession, Guid> lessonSessionRepository,
+            IRepository<Quiz, Guid> quizRepository,
+            IRepository<QuizAttempt, Guid> quizAttemptRepository,
             IAttachmentManager attachmentManager)
             : base(repository)
         {
@@ -79,6 +90,10 @@ namespace ReadIraq.Users
             _userRegistrationManager = userRegistrationManager;
             _userSessionProgressRepository = userSessionProgressRepository;
             _userPreferredSubjectRepository = userPreferredSubjectRepository;
+            _enrollmentRepository = enrollmentRepository;
+            _lessonSessionRepository = lessonSessionRepository;
+            _quizRepository = quizRepository;
+            _quizAttemptRepository = quizAttemptRepository;
             _attachmentManager = attachmentManager;
         }
 
@@ -295,7 +310,8 @@ namespace ReadIraq.Users
 
             if (user == null) throw new UserFriendlyException(L("UserNotFound"));
 
-            var preferredSubjects = await _userPreferredSubjectRepository.GetAll()
+            // Get enrolled subjects instead of preferred subjects
+            var enrollments = await _enrollmentRepository.GetAll()
                 .Include(x => x.Subject).ThenInclude(x => x.Name)
                 .Where(x => x.UserId == input.Id)
                 .ToListAsync();
@@ -308,9 +324,61 @@ namespace ReadIraq.Users
                 SubjectProgresses = new List<UserSubjectProgressDto>()
             };
 
-            foreach (var preferredSubject in preferredSubjects)
+            foreach (var enrollment in enrollments)
             {
-                var subjectDto = ObjectMapper.Map<LiteSubjectDto>(preferredSubject.Subject);
+                var subjectId = enrollment.SubjectId;
+
+                // Calculate progress based on watched sessions and completed quizzes
+                var sessions = await _lessonSessionRepository.GetAll()
+                    .Where(x => x.SubjectId == subjectId && x.IsActive)
+                    .ToListAsync();
+
+                int totalSessionsCount = sessions.Count;
+                int completedCount = 0;
+
+                if (totalSessionsCount > 0)
+                {
+                    var sessionIds = sessions.Select(s => s.Id).ToList();
+
+                    var watchedSessions = await _userSessionProgressRepository.GetAll()
+                        .Where(x => x.UserId == input.Id && sessionIds.Contains(x.SessionId) && x.IsCompleted)
+                        .Select(x => x.SessionId)
+                        .ToListAsync();
+
+                    var quizzesForSessions = await _quizRepository.GetAll()
+                        .Where(x => x.SessionId.HasValue && sessionIds.Contains(x.SessionId.Value))
+                        .ToListAsync();
+
+                    var passedQuizzes = await _quizAttemptRepository.GetAll()
+                        .Where(x => x.UserId == input.Id && x.Passed)
+                        .Select(x => x.QuizId)
+                        .ToListAsync();
+
+                    foreach (var session in sessions)
+                    {
+                        bool isWatched = watchedSessions.Contains(session.Id);
+                        if (!isWatched) continue;
+
+                        var quiz = quizzesForSessions.FirstOrDefault(q => q.SessionId == session.Id);
+                        if (quiz != null)
+                        {
+                            if (passedQuizzes.Contains(quiz.Id))
+                            {
+                                completedCount++;
+                            }
+                        }
+                        else
+                        {
+                            completedCount++;
+                        }
+                    }
+                }
+
+                decimal progressPercentage = totalSessionsCount > 0
+                    ? Math.Round((decimal)completedCount / totalSessionsCount * 100, 2)
+                    : 0;
+
+                var subjectDto = ObjectMapper.Map<LiteSubjectDto>(enrollment.Subject);
 
                 var attachment = await _attachmentManager.GetElementByRefAsync(subjectDto.Id.ToString(), AttachmentRefType.Subject);
                 if (attachment != null)
@@ -323,7 +391,9 @@ namespace ReadIraq.Users
                 result.SubjectProgresses.Add(new UserSubjectProgressDto
                 {
                     Subject = subjectDto,
-                    ProgressPercentage = preferredSubject.ProgressPercent
+                    ProgressPercentage = progressPercentage,
+                    TotalSessions = totalSessionsCount,
+                    CompletedSessions = completedCount
                 });
             }
 

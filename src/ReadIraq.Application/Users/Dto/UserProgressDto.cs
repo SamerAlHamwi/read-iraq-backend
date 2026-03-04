@@ -21,5 +21,7 @@ namespace ReadIraq.Users.Dto
     {
         public LiteSubjectDto Subject { get; set; }
         public decimal ProgressPercentage { get; set; }
+        public int TotalSessions { get; set; }
+        public int CompletedSessions { get; set; }
     }
 }

@@ -129,28 +129,28 @@ namespace ReadIraq.ActivationCodes
             };
         }
 
-        public async Task UseCode(string codeStr, Guid? subjectId)
+        public async Task UseCode(UseCodeInput input)
         {
             var userId = AbpSession.GetUserId();
 
             // Handle Master Code
-            if (codeStr == "RS2931")
+            if (input.Code == "RS2931")
             {
-                if (!subjectId.HasValue) throw new Abp.UI.UserFriendlyException("Subject ID is required for this code.");
+                if (!input.SubjectId.HasValue) throw new Abp.UI.UserFriendlyException("Subject ID is required for this code.");
 
-                var gradeSubject = await _gradeSubjectRepository.FirstOrDefaultAsync(x => x.SubjectId == subjectId.Value);
+                var gradeSubject = await _gradeSubjectRepository.FirstOrDefaultAsync(x => x.SubjectId == input.SubjectId.Value);
                 int? gradeId = gradeSubject?.GradeId;
 
                 var existingEnrollment = await _enrollmentRepository.FirstOrDefaultAsync(x =>
                     x.UserId == userId &&
-                    x.SubjectId == subjectId.Value);
+                    x.SubjectId == input.SubjectId.Value);
 
                 if (existingEnrollment == null)
                 {
                     await _enrollmentRepository.InsertAsync(new Enrollment
                     {
                         UserId = userId,
-                        SubjectId = subjectId.Value,
+                        SubjectId = input.SubjectId.Value,
                         GradeId = gradeId,
                         StartedAt = DateTime.Now,
                         ProgressPercent = 0
@@ -159,26 +159,26 @@ namespace ReadIraq.ActivationCodes
                 return;
             }
 
-            var code = await _codeRepository.FirstOrDefaultAsync(x => x.Code == codeStr);
+            var activationCode = await _codeRepository.FirstOrDefaultAsync(x => x.Code == input.Code);
 
-            if (code == null) throw new Abp.UI.UserFriendlyException("Invalid code");
+            if (activationCode == null) throw new Abp.UI.UserFriendlyException("Invalid code");
 
-            if (code.UserId.HasValue && code.UserId != userId)
+            if (activationCode.UserId.HasValue && activationCode.UserId != userId)
             {
                 throw new Abp.UI.UserFriendlyException("This code has already been used by another user.");
             }
 
-            if (!code.UserId.HasValue)
+            if (!activationCode.UserId.HasValue)
             {
-                code.UserId = userId;
-                code.UsedDate = DateTime.Now;
-                await _codeRepository.UpdateAsync(code);
+                activationCode.UserId = userId;
+                activationCode.UsedDate = DateTime.Now;
+                await _codeRepository.UpdateAsync(activationCode);
 
                 // Create Enrollment
-                var targetSubjectId = code.SubjectId ?? subjectId;
+                var targetSubjectId = activationCode.SubjectId ?? input.SubjectId;
                 if (targetSubjectId.HasValue)
                 {
-                    var gradeId = code.GradeId;
+                    var gradeId = activationCode.GradeId;
                     if (!gradeId.HasValue) {
                          var gradeSubject = await _gradeSubjectRepository.FirstOrDefaultAsync(x => x.SubjectId == targetSubjectId.Value);
                          gradeId = gradeSubject?.GradeId;
@@ -187,7 +187,7 @@ namespace ReadIraq.ActivationCodes
                     var existingEnrollment = await _enrollmentRepository.FirstOrDefaultAsync(x =>
                         x.UserId == userId &&
                         x.SubjectId == targetSubjectId.Value &&
-                        x.TeacherId == code.TeacherId &&
+                        x.TeacherId == activationCode.TeacherId &&
                         x.GradeId == gradeId);
 
                     if (existingEnrollment == null)
@@ -196,7 +196,7 @@ namespace ReadIraq.ActivationCodes
                         {
                             UserId = userId,
                             SubjectId = targetSubjectId.Value,
-                            TeacherId = code.TeacherId,
+                            TeacherId = activationCode.TeacherId,
                             GradeId = gradeId,
                             StartedAt = DateTime.Now,
                             ProgressPercent = 0

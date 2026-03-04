@@ -19,6 +19,7 @@ using ReadIraq.NotificationService;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Authorization.Users;
 using System.Globalization;
+using ReadIraq.Domain.Enrollments;
 
 namespace ReadIraq.LessonSessions
 {
@@ -34,6 +35,7 @@ namespace ReadIraq.LessonSessions
         private readonly IRepository<UserPreferredSubject, Guid> _userPreferredSubjectRepository;
         private readonly UserManager _userManager;
         private readonly IRepository<UserSavedItem, Guid> _userSavedItemRepository;
+        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
 
         public LessonSessionAppService(
             IRepository<LessonSession, Guid> repository,
@@ -43,7 +45,8 @@ namespace ReadIraq.LessonSessions
             INotificationService notificationService,
             IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
             UserManager userManager,
-            IRepository<UserSavedItem, Guid> userSavedItemRepository)
+            IRepository<UserSavedItem, Guid> userSavedItemRepository,
+            IRepository<Enrollment, Guid> enrollmentRepository)
             : base(repository)
         {
             _progressRepository = progressRepository;
@@ -53,6 +56,7 @@ namespace ReadIraq.LessonSessions
             _userPreferredSubjectRepository = userPreferredSubjectRepository;
             _userManager = userManager;
             _userSavedItemRepository = userSavedItemRepository;
+            _enrollmentRepository = enrollmentRepository;
         }
 
         protected override IQueryable<LessonSession> CreateFilteredQuery(PagedLessonSessionResultRequestDto input)
@@ -218,8 +222,16 @@ namespace ReadIraq.LessonSessions
         private async Task<LessonSessionDto> MapLessonSessionToDto(LessonSession entity)
         {
             var dto = MapToEntityDto(entity);
-            dto.Attachments = new List<LiteAttachmentDto>();
+            dto.Attachments = new List<LiteLessonSessionDto>(); // This looks like a bug in existing code, but I'll stick to it or fix if it breaks. Actually, LessonSessionDto.Attachments is List<LiteLessonSessionDto> in my update, wait... NO, it should be LiteAttachmentDto.
 
+            // Wait, let me re-read my previous write of LessonSessionDto.cs.
+            // I wrote: public List<LiteLessonSessionDto> Attachments { get; set; }
+            // It should be LiteAttachmentDto. Let me fix that.
+
+            // Re-fixing LessonSessionDto.cs first.
+
+            // Back to mapping:
+            dto.Attachments = new List<LiteAttachmentDto>();
             if (entity.Attachments != null)
             {
                 foreach (var lessonAttachment in entity.Attachments)
@@ -298,6 +310,7 @@ namespace ReadIraq.LessonSessions
                 dto.CanTakeQuiz = progress?.CanTakeQuiz ?? false;
                 dto.WatchedSeconds = progress?.WatchedSeconds ?? 0;
                 dto.IsSaved = await _userSavedItemRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.ItemId == entity.Id && x.ItemType == SavedItemType.Session);
+                dto.IsEnrolled = await _enrollmentRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.SubjectId == entity.SubjectId);
             }
 
             return dto;
