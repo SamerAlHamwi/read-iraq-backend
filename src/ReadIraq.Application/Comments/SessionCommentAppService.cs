@@ -9,6 +9,7 @@ using ReadIraq.Comments.Dto;
 using ReadIraq.CrudAppServiceBase;
 using ReadIraq.Domain.Comments;
 using ReadIraq.Domain.LessonSessions;
+using ReadIraq.Domain.Enrollments;
 using ReadIraq.NotificationService;
 using System;
 using System.Collections.Generic;
@@ -22,15 +23,18 @@ namespace ReadIraq.Comments
     {
         private readonly INotificationService _notificationService;
         private readonly IRepository<LessonSession, Guid> _lessonSessionRepository;
+        private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
 
         public SessionCommentAppService(
             IRepository<SessionComment, Guid> repository,
             INotificationService notificationService,
-            IRepository<LessonSession, Guid> lessonSessionRepository)
+            IRepository<LessonSession, Guid> lessonSessionRepository,
+            IRepository<Enrollment, Guid> enrollmentRepository)
             : base(repository)
         {
             _notificationService = notificationService;
             _lessonSessionRepository = lessonSessionRepository;
+            _enrollmentRepository = enrollmentRepository;
         }
 
         protected override IQueryable<SessionComment> CreateFilteredQuery(PagedSessionCommentResultRequestDto input)
@@ -46,9 +50,23 @@ namespace ReadIraq.Comments
 
         public override async Task<SessionCommentDto> CreateAsync(CreateSessionCommentDto input)
         {
+            var userId = AbpSession.GetUserId();
+            var session = await _lessonSessionRepository.GetAsync(input.LessonSessionId);
+
+            bool isTeacher = await CheckIfTeacherAsync(session, userId);
+
+            if (!isTeacher && !session.IsFree)
+            {
+                var isEnrolled = await _enrollmentRepository.GetAll().AnyAsync(x => x.UserId == userId && x.SubjectId == session.SubjectId);
+                if (!isEnrolled)
+                {
+                    throw new UserFriendlyException("You must be enrolled in this subject to participate in the discussion.");
+                }
+            }
+
             var entity = MapToEntity(input);
-            entity.UserId = AbpSession.GetUserId();
-            await SetIsByTeacherAsync(entity);
+            entity.UserId = userId;
+            entity.IsByTeacher = isTeacher;
 
             await Repository.InsertAsync(entity);
             await CurrentUnitOfWork.SaveChangesAsync();
@@ -64,20 +82,34 @@ namespace ReadIraq.Comments
                 throw new UserFriendlyException(L("CommentNotFound"));
             }
 
+            var userId = AbpSession.GetUserId();
+            var session = await _lessonSessionRepository.GetAsync(parentComment.LessonSessionId);
+
+            bool isTeacher = await CheckIfTeacherAsync(session, userId);
+
+            if (!isTeacher && !session.IsFree)
+            {
+                var isEnrolled = await _enrollmentRepository.GetAll().AnyAsync(x => x.UserId == userId && x.SubjectId == session.SubjectId);
+                if (!isEnrolled)
+                {
+                    throw new UserFriendlyException("You must be enrolled in this subject to participate in the discussion.");
+                }
+            }
+
             var reply = new SessionComment
             {
                 LessonSessionId = parentComment.LessonSessionId,
                 ParentCommentId = id,
                 Text = input.Text,
-                UserId = AbpSession.GetUserId()
+                UserId = userId,
+                IsByTeacher = isTeacher
             };
-            await SetIsByTeacherAsync(reply);
 
             await Repository.InsertAsync(reply);
             await CurrentUnitOfWork.SaveChangesAsync();
 
             // Notify parent comment author if it's someone else replying
-            if (parentComment.UserId != AbpSession.GetUserId())
+            if (parentComment.UserId != userId)
             {
                 await _notificationService.NotifyTeacherReplyAsync(parentComment.UserId, parentComment.LessonSessionId);
             }
@@ -85,16 +117,12 @@ namespace ReadIraq.Comments
             return MapToEntityDto(reply);
         }
 
-        private async Task SetIsByTeacherAsync(SessionComment entity)
+        private async Task<bool> CheckIfTeacherAsync(LessonSession session, long userId)
         {
-            var session = await _lessonSessionRepository.GetAll()
-                .Include(s => s.TeacherProfile)
-                .FirstOrDefaultAsync(s => s.Id == entity.LessonSessionId);
+            if (session == null) return false;
             
-            if (session != null && session.TeacherProfile != null)
-            {
-                entity.IsByTeacher = session.TeacherProfile.UserId == entity.UserId;
-            }
+            var profile = await UnitOfWorkManager.Current.Repository<ReadIraq.Domain.Teachers.TeacherProfile, Guid>().FirstOrDefaultAsync(session.TeacherProfileId);
+            return profile != null && profile.UserId == userId;
         }
 
         public override async Task<SessionCommentDto> UpdateAsync(UpdateSessionCommentDto input)
