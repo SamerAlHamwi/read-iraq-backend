@@ -3,6 +3,7 @@ using Abp.AutoMapper;
 using ReadIraq.Domain.LessonSessions;
 using System;
 using System.Collections.Generic;
+using ReadIraq;
 
 namespace ReadIraq.LessonSessions.Dto
 {

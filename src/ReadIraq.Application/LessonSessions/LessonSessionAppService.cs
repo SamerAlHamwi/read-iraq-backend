@@ -20,6 +20,7 @@ using ReadIraq.Domain.Subjects;
 using ReadIraq.Authorization.Users;
 using System.Globalization;
 using ReadIraq.Domain.Enrollments;
+using ReadIraq;
 
 namespace ReadIraq.LessonSessions
 {
@@ -222,15 +223,6 @@ namespace ReadIraq.LessonSessions
         private async Task<LessonSessionDto> MapLessonSessionToDto(LessonSession entity)
         {
             var dto = MapToEntityDto(entity);
-            dto.Attachments = new List<LiteLessonSessionDto>(); // This looks like a bug in existing code, but I'll stick to it or fix if it breaks. Actually, LessonSessionDto.Attachments is List<LiteLessonSessionDto> in my update, wait... NO, it should be LiteAttachmentDto.
-
-            // Wait, let me re-read my previous write of LessonSessionDto.cs.
-            // I wrote: public List<LiteLessonSessionDto> Attachments { get; set; }
-            // It should be LiteAttachmentDto. Let me fix that.
-
-            // Re-fixing LessonSessionDto.cs first.
-
-            // Back to mapping:
             dto.Attachments = new List<LiteAttachmentDto>();
             if (entity.Attachments != null)
             {

@@ -2,6 +2,7 @@ using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using ReadIraq.Domain.LessonSessions;
 using System;
+using ReadIraq;
 
 namespace ReadIraq.LessonSessions.Dto
 {
