@@ -22,6 +22,7 @@ using ReadIraq.Teachers.Dto;
 using ReadIraq.LessonSessions.Dto;
 using ReadIraq.Domain.Attachments;
 using ReadIraq.Domain.Enrollments;
+using ReadIraq.Domain.UserSessionProgresses;
 using static ReadIraq.Enums.Enum;
 
 namespace ReadIraq.Subjects
@@ -40,6 +41,7 @@ namespace ReadIraq.Subjects
         private readonly IRepository<UserSavedItem, Guid> _userSavedItemRepository;
         private readonly IRepository<Unit, Guid> _unitRepository;
         private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly IRepository<UserSessionProgress, Guid> _userSessionProgressRepository;
 
         public SubjectAppService(
             IRepository<Subject, Guid> repository,
@@ -53,7 +55,8 @@ namespace ReadIraq.Subjects
             IRepository<Attachment, long> attachmentRepository,
             IRepository<UserSavedItem, Guid> userSavedItemRepository,
             IRepository<Unit, Guid> unitRepository,
-            IRepository<Enrollment, Guid> enrollmentRepository)
+            IRepository<Enrollment, Guid> enrollmentRepository,
+            IRepository<UserSessionProgress, Guid> userSessionProgressRepository)
             : base(repository)
         {
             _subjectManager = subjectManager;
@@ -67,6 +70,7 @@ namespace ReadIraq.Subjects
             _userSavedItemRepository = userSavedItemRepository;
             _unitRepository = unitRepository;
             _enrollmentRepository = enrollmentRepository;
+            _userSessionProgressRepository = userSessionProgressRepository;
         }
 
         protected override IQueryable<Subject> CreateFilteredQuery(PagedSubjectResultRequestDto input)
@@ -179,14 +183,29 @@ namespace ReadIraq.Subjects
 
             dto.Units = ObjectMapper.Map<List<UnitDto>>(units);
 
+            // Progress
+            var userId = AbpSession.UserId;
+
+            var completedLessonIds = new List<Guid>();
+            if (userId.HasValue)
+            {
+                completedLessonIds = await _userSessionProgressRepository.GetAll()
+                    .Where(x => x.UserId == userId.Value && x.IsCompleted)
+                    .Select(x => x.SessionId)
+                    .ToListAsync();
+            }
+
             foreach (var unitDto in dto.Units)
             {
                 var unitLessons = await _lessonSessionRepository.GetAllListAsync(x => x.UnitId == unitDto.Id);
                 unitDto.Lessons = ObjectMapper.Map<List<LiteLessonSessionDto>>(unitLessons.OrderBy(x => x.Order));
+
+                foreach (var lessonDto in unitDto.Lessons)
+                {
+                    lessonDto.IsCompleted = completedLessonIds.Contains(lessonDto.Id);
+                }
             }
 
-            // Progress
-            var userId = AbpSession.UserId;
             if (userId.HasValue)
             {
                 var preferredSubject = await _userPreferredSubjectRepository.FirstOrDefaultAsync(x => x.UserId == userId.Value && x.SubjectId == entity.Id);

@@ -20,6 +20,7 @@ using ReadIraq.Domain.Subjects;
 using ReadIraq.Authorization.Users;
 using System.Globalization;
 using ReadIraq.Domain.Enrollments;
+using ReadIraq.Domain.Quizzes;
 using ReadIraq;
 
 namespace ReadIraq.LessonSessions
@@ -37,6 +38,8 @@ namespace ReadIraq.LessonSessions
         private readonly UserManager _userManager;
         private readonly IRepository<UserSavedItem, Guid> _userSavedItemRepository;
         private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly IRepository<Quiz, Guid> _quizRepository;
+        private readonly IRepository<QuizAttempt, Guid> _quizAttemptRepository;
 
         public LessonSessionAppService(
             IRepository<LessonSession, Guid> repository,
@@ -47,7 +50,9 @@ namespace ReadIraq.LessonSessions
             IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
             UserManager userManager,
             IRepository<UserSavedItem, Guid> userSavedItemRepository,
-            IRepository<Enrollment, Guid> enrollmentRepository)
+            IRepository<Enrollment, Guid> enrollmentRepository,
+            IRepository<Quiz, Guid> quizRepository,
+            IRepository<QuizAttempt, Guid> quizAttemptRepository)
             : base(repository)
         {
             _progressRepository = progressRepository;
@@ -58,6 +63,8 @@ namespace ReadIraq.LessonSessions
             _userManager = userManager;
             _userSavedItemRepository = userSavedItemRepository;
             _enrollmentRepository = enrollmentRepository;
+            _quizRepository = quizRepository;
+            _quizAttemptRepository = quizAttemptRepository;
         }
 
         protected override IQueryable<LessonSession> CreateFilteredQuery(PagedLessonSessionResultRequestDto input)
@@ -303,6 +310,24 @@ namespace ReadIraq.LessonSessions
                 dto.WatchedSeconds = progress?.WatchedSeconds ?? 0;
                 dto.IsSaved = await _userSavedItemRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.ItemId == entity.Id && x.ItemType == SavedItemType.Session);
                 dto.IsEnrolled = await _enrollmentRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.SubjectId == entity.SubjectId);
+
+                // Quiz info
+                var quiz = await _quizRepository.FirstOrDefaultAsync(q => q.SessionId == entity.Id);
+                if (quiz != null)
+                {
+                    var attempt = await _quizAttemptRepository.GetAll()
+                        .Where(a => a.QuizId == quiz.Id && a.UserId == userId.Value)
+                        .OrderByDescending(a => a.TakenAt)
+                        .FirstOrDefaultAsync();
+
+                    if (attempt != null)
+                    {
+                        dto.HasCompletedQuiz = true;
+                        dto.QuizScore = attempt.Score;
+                        dto.QuizMaxScore = quiz.TotalMarks;
+                        dto.CanTakeQuiz = false; // Cannot re-take quiz if completed
+                    }
+                }
             }
 
             return dto;

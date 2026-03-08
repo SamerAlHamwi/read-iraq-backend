@@ -22,5 +22,7 @@ namespace ReadIraq.LessonSessions.Dto
         public int LikesCount { get; set; }
         public string Level { get; set; } // Extra for UI
         public bool IsSaved { get; set; }
+        public bool IsCompleted { get; set; }
+        public bool IsFree { get; set; }
     }
 }

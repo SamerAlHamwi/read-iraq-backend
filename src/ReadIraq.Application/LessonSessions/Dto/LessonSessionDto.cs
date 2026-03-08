@@ -43,5 +43,10 @@ namespace ReadIraq.LessonSessions.Dto
         public int WatchedSeconds { get; set; }
         public bool IsSaved { get; set; }
         public bool IsEnrolled { get; set; }
+
+        // Quiz Result fields
+        public bool HasCompletedQuiz { get; set; }
+        public int? QuizScore { get; set; }
+        public int? QuizMaxScore { get; set; }
     }
 }

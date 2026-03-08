@@ -44,7 +44,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
         public void Create()
         {
             Console.WriteLine("--- Starting InitialSampleDataBuilder ---");
-            DeleteAllData();
+            //DeleteAllData();
             CreateAdminUser();
             CreateCountryAndCities();
             CreateTeacherFeatures();
@@ -236,7 +236,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             Console.WriteLine("Creating Educational Structure...");
             var stages = new[]
             {
-                new { NameEn = "Primary School", NameAr = "المرحلة الابتدائية", Grades = new[] { 1  } }
+                new { NameEn = "Primary School", NameAr = "المرحلة الابتدائية", Grades = new[] { 1 , 2 , 3  } }
             };
 
             var subjects = new[]
@@ -519,7 +519,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                         QuizId = quiz.Id,
                         Type = isMcq ? QuestionType.MCQ : QuestionType.TrueFalse,
                         Text = isMcq ? $"السؤال {i}: اختر الإجابة الصحيحة بناءً على ما ورد في {lesson.Title}" : $"السؤال {i}: هل العبارة التالية صحيحة بخصوص موضوع الدرس؟",
-                        Options = isMcq ? "[\"الخيار الأول\", \"الخيار الثاني\", \"الخيار الثالث\", \"الخيار الرابع\"]" : "[\"صح\", \"خطأ\"]",
+                        Options = isMcq ? "الخيار الأول,الخيار الثاني,الخيار الثالث,الخيار الرابع" : "صح,خطأ",
                         CorrectAnswer = isMcq ? "الخيار الأول" : "صح",
                         AnswerDescription = "الإجابة مستمدة من الشرح التفصيلي الوارد في الفيديو التعليمي.",
                         Marks = 100 / questionCount,
