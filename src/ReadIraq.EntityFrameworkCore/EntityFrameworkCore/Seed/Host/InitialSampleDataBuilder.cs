@@ -236,7 +236,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             Console.WriteLine("Creating Educational Structure...");
             var stages = new[]
             {
-                new { NameEn = "Primary School", NameAr = "المرحلة الابتدائية", Grades = new[] { 1 , 2 , 3  } }
+                new { NameEn = "Primary School", NameAr = "المرحلة الابتدائية", Grades = new[] { 1 } }
             };
 
             var subjects = new[]
