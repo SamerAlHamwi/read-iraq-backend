@@ -10,6 +10,7 @@ using ReadIraq.CrudAppServiceBase;
 using ReadIraq.Domain.Comments;
 using ReadIraq.Domain.LessonSessions;
 using ReadIraq.Domain.Enrollments;
+using ReadIraq.Domain.Teachers;
 using ReadIraq.NotificationService;
 using System;
 using System.Collections.Generic;
@@ -24,17 +25,20 @@ namespace ReadIraq.Comments
         private readonly INotificationService _notificationService;
         private readonly IRepository<LessonSession, Guid> _lessonSessionRepository;
         private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly IRepository<TeacherProfile, Guid> _teacherProfileRepository;
 
         public SessionCommentAppService(
             IRepository<SessionComment, Guid> repository,
             INotificationService notificationService,
             IRepository<LessonSession, Guid> lessonSessionRepository,
-            IRepository<Enrollment, Guid> enrollmentRepository)
+            IRepository<Enrollment, Guid> enrollmentRepository,
+            IRepository<TeacherProfile, Guid> teacherProfileRepository)
             : base(repository)
         {
             _notificationService = notificationService;
             _lessonSessionRepository = lessonSessionRepository;
             _enrollmentRepository = enrollmentRepository;
+            _teacherProfileRepository = teacherProfileRepository;
         }
 
         protected override IQueryable<SessionComment> CreateFilteredQuery(PagedSessionCommentResultRequestDto input)
@@ -120,8 +124,8 @@ namespace ReadIraq.Comments
         private async Task<bool> CheckIfTeacherAsync(LessonSession session, long userId)
         {
             if (session == null) return false;
-            
-            var profile = await UnitOfWorkManager.Current.Repository<ReadIraq.Domain.Teachers.TeacherProfile, Guid>().FirstOrDefaultAsync(session.TeacherProfileId);
+
+            var profile = await _teacherProfileRepository.FirstOrDefaultAsync(session.TeacherProfileId);
             return profile != null && profile.UserId == userId;
         }
 
