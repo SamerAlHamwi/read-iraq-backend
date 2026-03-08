@@ -121,7 +121,14 @@ namespace ReadIraq.Teachers
                 }
 
                 item.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.TeacherProfileId == item.Id && x.IsActive);
-                item.StudentsCount = await _enrollmentRepository.CountAsync(x => x.TeacherId == item.Id);
+
+                // Count students enrolled in any subject related to this teacher
+                item.StudentsCount = await _enrollmentRepository.GetAll()
+                    .Where(e => _teacherSubjectRepository.GetAll()
+                        .Any(ts => ts.TeacherProfileId == item.Id && ts.SubjectId == e.SubjectId && ts.GradeId == e.GradeId))
+                    .Select(e => e.UserId)
+                    .Distinct()
+                    .CountAsync();
 
                 if (userId.HasValue)
                 {
@@ -155,7 +162,14 @@ namespace ReadIraq.Teachers
             dto.Features = ObjectMapper.Map<List<TeacherFeatureDto>>(features);
 
             dto.LessonsCount = await _lessonSessionRepository.CountAsync(x => x.TeacherProfileId == entity.Id && x.IsActive);
-            dto.StudentsCount = await _enrollmentRepository.CountAsync(x => x.TeacherId == entity.Id);
+
+            // Count students enrolled in any subject related to this teacher
+            dto.StudentsCount = await _enrollmentRepository.GetAll()
+                .Where(e => _teacherSubjectRepository.GetAll()
+                    .Any(ts => ts.TeacherProfileId == entity.Id && ts.SubjectId == e.SubjectId && ts.GradeId == e.GradeId))
+                .Select(e => e.UserId)
+                .Distinct()
+                .CountAsync();
 
             if (entity.AttachmentId.HasValue)
             {
@@ -173,7 +187,10 @@ namespace ReadIraq.Teachers
             {
                 dto.IsFollowed = await _userFollowTeacherRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.TeacherProfileId == entity.Id);
                 dto.IsSaved = await _userSavedItemRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.ItemId == entity.Id && x.ItemType == SavedItemType.Teacher);
-                dto.IsEnrolled = await _enrollmentRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && x.TeacherId == entity.Id);
+
+                // Check if user is enrolled in any subject taught by this teacher
+                dto.IsEnrolled = await _enrollmentRepository.GetAll().AnyAsync(x => x.UserId == userId.Value && _teacherSubjectRepository.GetAll()
+                    .Any(ts => ts.TeacherProfileId == entity.Id && ts.SubjectId == x.SubjectId && ts.GradeId == x.GradeId));
             }
 
             return dto;
@@ -292,7 +309,12 @@ namespace ReadIraq.Teachers
 
         public async Task<TeacherStatsDto> GetStatsAsync(EntityDto<Guid> input)
         {
-            var studentsCount = await _enrollmentRepository.CountAsync(x => x.TeacherId == input.Id);
+            var studentsCount = await _enrollmentRepository.GetAll()
+                .Where(e => _teacherSubjectRepository.GetAll()
+                    .Any(ts => ts.TeacherProfileId == input.Id && ts.SubjectId == e.SubjectId && ts.GradeId == e.GradeId))
+                .Select(e => e.UserId)
+                .Distinct()
+                .CountAsync();
 
             return new TeacherStatsDto
             {
@@ -374,9 +396,10 @@ namespace ReadIraq.Teachers
 
         [AbpAllowAnonymous]
         [HttpGet]
-        public async Task<Dictionary<string, List<LiteTeacherProfileDto>>> GetPreferredTeachersByGradeAsync(int gradeId)
+        public async Task<List<PreferredTeachersSectionDto>> GetPreferredTeachersByGradeAsync(int gradeId)
         {
             var userId = AbpSession.UserId;
+            var currentLanguage = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
 
             // 1. Get all subjects for this grade
             var subjects = await _subjectRepository.GetAll()
@@ -404,7 +427,7 @@ namespace ReadIraq.Teachers
                 .OrderByDescending(s => preferredSubjectIds.Contains(s.Id))
                 .ToList();
 
-            var result = new Dictionary<string, List<LiteTeacherProfileDto>>();
+            var result = new List<PreferredTeachersSectionDto>();
 
             foreach (var subject in orderedSubjects)
             {
@@ -443,12 +466,25 @@ namespace ReadIraq.Teachers
                         }
                     }
 
-                    teacherDto.StudentsCount = await _enrollmentRepository.CountAsync(x => x.TeacherId == teacherDto.Id);
+                    // Count students enrolled in any subject related to this teacher
+                    teacherDto.StudentsCount = await _enrollmentRepository.GetAll()
+                        .Where(e => _teacherSubjectRepository.GetAll()
+                            .Any(ts => ts.TeacherProfileId == teacherDto.Id && ts.SubjectId == e.SubjectId && ts.GradeId == e.GradeId))
+                        .Select(e => e.UserId)
+                        .Distinct()
+                        .CountAsync();
                 }
 
-                // Use the first translation name as the key (usually default)
-                var subjectKey = subject.Name.FirstOrDefault()?.Name ?? subject.Id.ToString();
-                result[subjectKey] = teacherDtos;
+                var localizedTitle = subject.Name.FirstOrDefault(x => x.Code == currentLanguage)?.Name
+                                     ?? subject.Name.FirstOrDefault()?.Name
+                                     ?? subject.Id.ToString();
+
+                result.Add(new PreferredTeachersSectionDto
+                {
+                    SubjectId = subject.Id,
+                    Title = localizedTitle,
+                    Teachers = teacherDtos
+                });
             }
 
             return result;
