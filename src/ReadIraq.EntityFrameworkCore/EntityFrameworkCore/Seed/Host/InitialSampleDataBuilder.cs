@@ -236,16 +236,15 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
             Console.WriteLine("Creating Educational Structure...");
             var stages = new[]
             {
-                new { NameEn = "Primary School", NameAr = "المرحلة الابتدائية", Grades = new[] { 1 } }
+                new { NameEn = "Primary School", NameAr = "المرحلة الابتدائية", Grades = new[] { 6 } }
             };
 
             var subjects = new[]
             {
-                new { En = "Arabic", Ar = "اللغة العربية" },
-                new { En = "English", Ar = "اللغة الإنجليزية" }
+                new { En = "Math", Ar = "الياضيات" }
             };
 
-            var teacherNames = new[] { "أحمد علي", "فاطمة حسن" };
+            var teacherNames = new[] { "وسام الكرعاوي" };
 
             foreach (var stage in stages)
             {
@@ -325,7 +324,7 @@ namespace ReadIraq.EntityFrameworkCore.Seed.Host
                         var teacherName = teacherNames[_random.Next(teacherNames.Length)];
                         var teacherProfile = CreateTeacher(teacherName, subject.Id, grade.Id);
 
-                        CreateLessons(teacherProfile, subject.Id, units);
+                        //CreateLessons(teacherProfile, subject.Id, units);
 
                         _context.SaveChanges();
                     }
