@@ -42,6 +42,7 @@ namespace ReadIraq.Subjects
         private readonly IRepository<Unit, Guid> _unitRepository;
         private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
         private readonly IRepository<UserSessionProgress, Guid> _userSessionProgressRepository;
+        private readonly IRepository<Grade, int> _gradeRepository;
 
         public SubjectAppService(
             IRepository<Subject, Guid> repository,
@@ -56,7 +57,8 @@ namespace ReadIraq.Subjects
             IRepository<UserSavedItem, Guid> userSavedItemRepository,
             IRepository<Unit, Guid> unitRepository,
             IRepository<Enrollment, Guid> enrollmentRepository,
-            IRepository<UserSessionProgress, Guid> userSessionProgressRepository)
+            IRepository<UserSessionProgress, Guid> userSessionProgressRepository,
+            IRepository<Grade, int> gradeRepository)
             : base(repository)
         {
             _subjectManager = subjectManager;
@@ -71,6 +73,7 @@ namespace ReadIraq.Subjects
             _unitRepository = unitRepository;
             _enrollmentRepository = enrollmentRepository;
             _userSessionProgressRepository = userSessionProgressRepository;
+            _gradeRepository = gradeRepository;
         }
 
         protected override IQueryable<Subject> CreateFilteredQuery(PagedSubjectResultRequestDto input)
@@ -99,6 +102,25 @@ namespace ReadIraq.Subjects
             }
 
             return query;
+        }
+
+        private async Task ValidateSubjectInput(long attachmentId, List<int> gradeIds)
+        {
+            if (attachmentId > 0 && !await _attachmentRepository.GetAll().AnyAsync(x => x.Id == attachmentId))
+            {
+                throw new Abp.UI.UserFriendlyException(L("AttachmentNotFound"));
+            }
+
+            if (gradeIds != null && gradeIds.Any())
+            {
+                foreach (var gradeId in gradeIds)
+                {
+                    if (!await _gradeRepository.GetAll().AnyAsync(x => x.Id == gradeId))
+                    {
+                        throw new Abp.UI.UserFriendlyException(L("GradeNotFound") + ": " + gradeId);
+                    }
+                }
+            }
         }
 
         [AbpAllowAnonymous]
@@ -242,9 +264,21 @@ namespace ReadIraq.Subjects
             return dto;
         }
 
+        protected override async Task<Subject> GetEntityByIdAsync(Guid id)
+        {
+            var entity = await Repository.FirstOrDefaultAsync(id);
+            if (entity == null)
+            {
+                throw new Abp.UI.UserFriendlyException(L("SubjectNotFound"));
+            }
+            return entity;
+        }
+
         public override async Task<SubjectDto> CreateAsync(CreateSubjectDto input)
         {
             CheckCreatePermission();
+
+            await ValidateSubjectInput(input.AttachmentId, input.GradeIds);
 
             var entity = MapToEntity(input);
             entity.IsActive = true;
@@ -273,9 +307,16 @@ namespace ReadIraq.Subjects
         {
             CheckUpdatePermission();
 
+            await ValidateSubjectInput(input.AttachmentId, input.GradeIds);
+
             var entity = await Repository.GetAll()
                 .Include(x => x.Name)
                 .FirstOrDefaultAsync(x => x.Id == input.Id);
+
+            if (entity == null)
+            {
+                throw new Abp.UI.UserFriendlyException(L("SubjectNotFound"));
+            }
 
             MapToEntity(input, entity);
 

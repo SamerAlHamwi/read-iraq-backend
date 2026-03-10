@@ -23,6 +23,7 @@ using Abp.Domain.Uow;
 using ReadIraq.Domain.Subjects;
 using ReadIraq.Domain.Grades;
 using ReadIraq.Domain.Enrollments;
+using ReadIraq.Authorization.Users;
 
 namespace ReadIraq.Teachers
 {
@@ -43,6 +44,8 @@ namespace ReadIraq.Teachers
         private readonly IRepository<UserPreferredTeacher, Guid> _userPreferredTeacherRepository;
         private readonly IRepository<GradeSubject> _gradeSubjectRepository;
         private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
+        private readonly IRepository<User, long> _userRepository;
+        private readonly IRepository<Grade, int> _gradeRepository;
 
         public TeacherProfileAppService(
             IRepository<TeacherProfile, Guid> repository,
@@ -59,7 +62,9 @@ namespace ReadIraq.Teachers
             IRepository<UserPreferredSubject, Guid> userPreferredSubjectRepository,
             IRepository<UserPreferredTeacher, Guid> userPreferredTeacherRepository,
             IRepository<GradeSubject> gradeSubjectRepository,
-            IRepository<Enrollment, Guid> enrollmentRepository)
+            IRepository<Enrollment, Guid> enrollmentRepository,
+            IRepository<User, long> userRepository,
+            IRepository<Grade, int> gradeRepository)
             : base(repository)
         {
             _teacherProfileManager = teacherProfileManager;
@@ -76,6 +81,8 @@ namespace ReadIraq.Teachers
             _userPreferredTeacherRepository = userPreferredTeacherRepository;
             _gradeSubjectRepository = gradeSubjectRepository;
             _enrollmentRepository = enrollmentRepository;
+            _userRepository = userRepository;
+            _gradeRepository = gradeRepository;
         }
 
         protected override IQueryable<TeacherProfile> CreateFilteredQuery(PagedTeacherProfileResultRequestDto input)
@@ -98,6 +105,46 @@ namespace ReadIraq.Teachers
             }
 
             return query;
+        }
+
+        private async Task ValidateTeacherProfileInput(long userId, long attachmentId, List<Guid> featureIds, List<TeacherSubjectDto> subjects)
+        {
+            if (userId > 0 && !await _userRepository.GetAll().AnyAsync(x => x.Id == userId))
+            {
+                throw new Abp.UI.UserFriendlyException(L("UserNotFound"));
+            }
+
+            if (attachmentId > 0 && !await _attachmentRepository.GetAll().AnyAsync(x => x.Id == attachmentId))
+            {
+                throw new Abp.UI.UserFriendlyException(L("AttachmentNotFound"));
+            }
+
+            if (featureIds != null && featureIds.Any())
+            {
+                foreach (var featureId in featureIds)
+                {
+                    if (!await _featureRepository.GetAll().AnyAsync(x => x.Id == featureId))
+                    {
+                        throw new Abp.UI.UserFriendlyException(L("TeacherFeatureNotFound") + ": " + featureId);
+                    }
+                }
+            }
+
+            if (subjects != null && subjects.Any())
+            {
+                foreach (var s in subjects)
+                {
+                    if (!await _subjectRepository.GetAll().AnyAsync(x => x.Id == s.SubjectId))
+                    {
+                        throw new Abp.UI.UserFriendlyException(L("SubjectNotFound") + ": " + s.SubjectId);
+                    }
+
+                    if (!await _gradeRepository.GetAll().AnyAsync(x => x.Id == s.GradeId))
+                    {
+                        throw new Abp.UI.UserFriendlyException(L("GradeNotFound") + ": " + s.GradeId);
+                    }
+                }
+            }
         }
 
         [AbpAllowAnonymous]
@@ -151,7 +198,7 @@ namespace ReadIraq.Teachers
 
             if (entity == null)
             {
-                throw new UserFriendlyException(L("TeacherNotFound"));
+                throw new Abp.UI.UserFriendlyException(L("TeacherNotFound"));
             }
 
             var dto = MapToEntityDto(entity);
@@ -196,9 +243,21 @@ namespace ReadIraq.Teachers
             return dto;
         }
 
+        protected override async Task<TeacherProfile> GetEntityByIdAsync(Guid id)
+        {
+            var entity = await Repository.FirstOrDefaultAsync(id);
+            if (entity == null)
+            {
+                throw new Abp.UI.UserFriendlyException(L("TeacherNotFound"));
+            }
+            return entity;
+        }
+
         public override async Task<TeacherProfileDto> CreateAsync(CreateTeacherProfileDto input)
         {
             CheckCreatePermission();
+
+            await ValidateTeacherProfileInput(input.UserId, input.AttachmentId, input.FeatureIds, input.Subjects);
 
             var entity = MapToEntity(input);
             entity.IsActive = true;
@@ -235,6 +294,8 @@ namespace ReadIraq.Teachers
         {
             CheckUpdatePermission();
 
+            await ValidateTeacherProfileInput(input.UserId, input.AttachmentId, input.FeatureIds, input.Subjects);
+
             var entity = await Repository.GetAll()
                 .Include(x => x.Features)
                 .Include(x => x.Subjects)
@@ -242,7 +303,7 @@ namespace ReadIraq.Teachers
 
             if (entity == null)
             {
-                throw new UserFriendlyException(L("TeacherNotFound"));
+                throw new Abp.UI.UserFriendlyException(L("TeacherNotFound"));
             }
 
             MapToEntity(input, entity);
@@ -292,7 +353,23 @@ namespace ReadIraq.Teachers
 
             if (entity == null)
             {
-                throw new UserFriendlyException(L("TeacherNotFound"));
+                throw new Abp.UI.UserFriendlyException(L("TeacherNotFound"));
+            }
+
+            if (input.Subjects != null && input.Subjects.Any())
+            {
+                foreach (var s in input.Subjects)
+                {
+                    if (!await _subjectRepository.GetAll().AnyAsync(x => x.Id == s.SubjectId))
+                    {
+                        throw new Abp.UI.UserFriendlyException(L("SubjectNotFound") + ": " + s.SubjectId);
+                    }
+
+                    if (!await _gradeRepository.GetAll().AnyAsync(x => x.Id == s.GradeId))
+                    {
+                        throw new Abp.UI.UserFriendlyException(L("GradeNotFound") + ": " + s.GradeId);
+                    }
+                }
             }
 
             entity.Subjects.Clear();

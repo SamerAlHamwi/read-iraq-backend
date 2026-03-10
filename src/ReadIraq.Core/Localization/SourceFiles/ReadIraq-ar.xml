@@ -24,6 +24,13 @@
     <text name="MediatorCodeIsNotCorrect" value="كود الوسيط غير صحيح" />
     <text name="AlreadySaved" value="تم الحفظ مسبقاً" />
     <text name="LessonNotFound" value="الدرس غير موجود" />
+    <text name="UnitNotFound" value="الوحدة غير موجودة" />
+    <text name="ThumbnailAttachmentNotFound" value="مرفق الصورة المصغرة غير موجود" />
+    <text name="VideoAttachmentNotFound" value="مرفق الفيديو غير موجود" />
+    <text name="AttachmentNotFound" value="المرفق غير موجود" />
+    <text name="GradeNotFound" value="المرحلة الدراسية غير موجودة" />
+    <text name="TeacherFeatureNotFound" value="ميزة الأستاذ غير موجودة" />
+    <text name="QuestionNotFound" value="السؤال غير موجود" />
 
     <text name="Notification_DAILY_STUDY_REMINDER_Title" value="حافظ على تقدمك!" />
     <text name="Notification_DAILY_STUDY_REMINDER_Body" value="أكمل {0} للوصول لهدفك اليومي." />

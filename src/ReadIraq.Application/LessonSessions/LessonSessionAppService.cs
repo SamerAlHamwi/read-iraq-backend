@@ -22,6 +22,8 @@ using System.Globalization;
 using ReadIraq.Domain.Enrollments;
 using ReadIraq.Domain.Quizzes;
 using ReadIraq;
+using ReadIraq.Domain.Units;
+using ReadIraq.Domain.Teachers;
 
 namespace ReadIraq.LessonSessions
 {
@@ -40,6 +42,9 @@ namespace ReadIraq.LessonSessions
         private readonly IRepository<Enrollment, Guid> _enrollmentRepository;
         private readonly IRepository<Quiz, Guid> _quizRepository;
         private readonly IRepository<QuizAttempt, Guid> _quizAttemptRepository;
+        private readonly IRepository<Subject, Guid> _subjectRepository;
+        private readonly IRepository<Unit, Guid> _unitRepository;
+        private readonly IRepository<TeacherProfile, Guid> _teacherProfileRepository;
 
         public LessonSessionAppService(
             IRepository<LessonSession, Guid> repository,
@@ -52,7 +57,10 @@ namespace ReadIraq.LessonSessions
             IRepository<UserSavedItem, Guid> userSavedItemRepository,
             IRepository<Enrollment, Guid> enrollmentRepository,
             IRepository<Quiz, Guid> quizRepository,
-            IRepository<QuizAttempt, Guid> quizAttemptRepository)
+            IRepository<QuizAttempt, Guid> quizAttemptRepository,
+            IRepository<Subject, Guid> subjectRepository,
+            IRepository<Unit, Guid> unitRepository,
+            IRepository<TeacherProfile, Guid> teacherProfileRepository)
             : base(repository)
         {
             _progressRepository = progressRepository;
@@ -65,6 +73,9 @@ namespace ReadIraq.LessonSessions
             _enrollmentRepository = enrollmentRepository;
             _quizRepository = quizRepository;
             _quizAttemptRepository = quizAttemptRepository;
+            _subjectRepository = subjectRepository;
+            _unitRepository = unitRepository;
+            _teacherProfileRepository = teacherProfileRepository;
         }
 
         protected override IQueryable<LessonSession> CreateFilteredQuery(PagedLessonSessionResultRequestDto input)
@@ -81,8 +92,49 @@ namespace ReadIraq.LessonSessions
                 .WhereIf(input.IsActive.HasValue, x => x.IsActive == input.IsActive.Value);
         }
 
+        private async Task ValidateLessonSessionInput(Guid? subjectId, Guid? unitId, Guid? teacherProfileId, long thumbnailAttachmentId, long videoAttachmentId, List<long> attachmentIds)
+        {
+            if (subjectId.HasValue && !await _subjectRepository.GetAll().AnyAsync(x => x.Id == subjectId.Value))
+            {
+                throw new Abp.UI.UserFriendlyException(L("SubjectNotFound"));
+            }
+
+            if (unitId.HasValue && !await _unitRepository.GetAll().AnyAsync(x => x.Id == unitId.Value))
+            {
+                throw new Abp.UI.UserFriendlyException(L("UnitNotFound"));
+            }
+
+            if (teacherProfileId.HasValue && !await _teacherProfileRepository.GetAll().AnyAsync(x => x.Id == teacherProfileId.Value))
+            {
+                throw new Abp.UI.UserFriendlyException(L("TeacherNotFound"));
+            }
+
+            if (thumbnailAttachmentId > 0 && !await _attachmentRepository.GetAll().AnyAsync(x => x.Id == thumbnailAttachmentId))
+            {
+                throw new Abp.UI.UserFriendlyException(L("ThumbnailAttachmentNotFound"));
+            }
+
+            if (videoAttachmentId > 0 && !await _attachmentRepository.GetAll().AnyAsync(x => x.Id == videoAttachmentId))
+            {
+                throw new Abp.UI.UserFriendlyException(L("VideoAttachmentNotFound"));
+            }
+
+            if (attachmentIds != null && attachmentIds.Any())
+            {
+                foreach (var attachmentId in attachmentIds)
+                {
+                    if (!await _attachmentRepository.GetAll().AnyAsync(x => x.Id == attachmentId))
+                    {
+                        throw new Abp.UI.UserFriendlyException(L("AttachmentNotFound") + ": " + attachmentId);
+                    }
+                }
+            }
+        }
+
         public override async Task<LessonSessionDto> CreateAsync(CreateLessonSessionDto input)
         {
+            await ValidateLessonSessionInput(input.SubjectId, input.UnitId, input.TeacherProfileId, input.ThumbnailAttachmentId, input.VideoAttachmentId, input.AttachmentIds);
+
             var entity = MapToEntity(input);
             entity.IsActive = true;
 
@@ -131,6 +183,23 @@ namespace ReadIraq.LessonSessions
             }
 
             return await GetAsync(new EntityDto<Guid>(entity.Id));
+        }
+
+        public override async Task<LessonSessionDto> UpdateAsync(UpdateLessonSessionDto input)
+        {
+            await ValidateLessonSessionInput(null, input.UnitId, input.TeacherProfileId, input.ThumbnailAttachmentId, input.VideoAttachmentId, input.AttachmentIds);
+
+            return await base.UpdateAsync(input);
+        }
+
+        protected override async Task<LessonSession> GetEntityByIdAsync(Guid id)
+        {
+            var entity = await Repository.FirstOrDefaultAsync(id);
+            if (entity == null)
+            {
+                throw new Abp.UI.UserFriendlyException(L("SessionNotFound"));
+            }
+            return entity;
         }
 
         [AbpAllowAnonymous]
