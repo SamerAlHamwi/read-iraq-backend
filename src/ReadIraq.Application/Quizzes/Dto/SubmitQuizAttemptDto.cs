@@ -6,6 +6,7 @@ namespace ReadIraq.Quizzes.Dto
     public class SubmitQuizAttemptDto
     {
         public Guid QuizId { get; set; }
+        public int TimeSpentSeconds { get; set; }
         public List<UserAnswerDto> Answers { get; set; }
     }
 
